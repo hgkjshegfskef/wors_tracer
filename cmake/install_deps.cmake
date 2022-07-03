@@ -175,11 +175,11 @@ install_deps_cmake_configure(PROJECT fmt
 install_deps_cmake_build_install(PROJECT fmt BUILD_DIR "build_8.1.1")
 
 message(STATUS "Installing googletest")
-install_deps_git_clone(URL https://github.com/google/googletest.git TAG release-1.11.0)
+install_deps_git_clone(URL https://github.com/google/googletest.git TAG release-1.12.1)
 install_deps_cmake_configure(PROJECT googletest
-                             BUILD_DIR "build_release-1.11.0"
+                             BUILD_DIR "build_release-1.12.1"
                              INSTALL_DIR "${${script_name}_INSTALL_PREFIX}")
-install_deps_cmake_build_install(PROJECT googletest BUILD_DIR "build_release-1.11.0")
+install_deps_cmake_build_install(PROJECT googletest BUILD_DIR "build_release-1.12.1")
 # cmake-format: on
 
 message(STATUS "Cleaning up")
