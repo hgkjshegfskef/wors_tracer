@@ -165,6 +165,7 @@ install_deps_cmake_configure(PROJECT spdlog
                              CMAKE_DEFINITIONS "${cmake_definitions}")
 install_deps_cmake_build_install(PROJECT spdlog BUILD_DIR "build_v1.10.0")
 
+# fmt version should match the one that is currently used by spdlog
 message(STATUS "Installing fmt")
 install_deps_git_clone(URL https://github.com/fmtlib/fmt.git TAG 8.1.1)
 set(cmake_definitions -DFMT_TEST=OFF)

@@ -71,7 +71,7 @@ struct vec3 {
 
 inline vec3 operator*(vec3 const& v, float s) noexcept { return {v.x * s, v.y * s, v.z * s}; }
 
-inline vec3 operator*(float s, vec3 const& v) noexcept { return {v.x * s, v.y * s, v.z * s}; }
+inline vec3 operator*(float s, vec3 const& v) noexcept { return v * s; }
 
 inline vec3 operator/(vec3 const& v, float s) noexcept {
     s = 1.0f / s;

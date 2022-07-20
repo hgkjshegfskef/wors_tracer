@@ -1,3 +1,5 @@
+// Some code is based on "Foundations of Game Engine Development, Volume 1: Mathematics", E.Lengyel
+
 #pragma once
 
 #include <cmath>
@@ -5,7 +7,7 @@
 
 namespace wt {
 
-struct vec4 {
+struct vec4 final {
     float x, y, z, w;
 
     vec4() noexcept = default;

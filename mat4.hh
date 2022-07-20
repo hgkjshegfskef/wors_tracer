@@ -36,19 +36,23 @@ class mat4 {
 
     const float& operator()(int i, int j) const noexcept { return n[j][i]; }
 
-    vec4& operator[](int j) noexcept { return *reinterpret_cast<vec4*>(n[j]); }
+    vec4& operator[](int j) noexcept {
+        return *reinterpret_cast<vec4*>(n[j]); // UB
+    }
 
-    const vec4& operator[](int j) const noexcept { return (*reinterpret_cast<const vec4*>(n[j])); }
+    const vec4& operator[](int j) const noexcept {
+        return *reinterpret_cast<vec4 const*>(n[j]); // UB
+    }
 
   protected:
     float n[4][4];
 };
 
 inline mat4 inverse(mat4 const& M) noexcept {
-    vec3 const& a = reinterpret_cast<const vec3&>(M[0]);
-    vec3 const& b = reinterpret_cast<const vec3&>(M[1]);
-    vec3 const& c = reinterpret_cast<const vec3&>(M[2]);
-    vec3 const& d = reinterpret_cast<const vec3&>(M[3]);
+    vec3 const& a = reinterpret_cast<const vec3&>(M[0]); // UB
+    vec3 const& b = reinterpret_cast<const vec3&>(M[1]); // UB
+    vec3 const& c = reinterpret_cast<const vec3&>(M[2]); // UB
+    vec3 const& d = reinterpret_cast<const vec3&>(M[3]); // UB
 
     const float& x = M(3, 0);
     const float& y = M(3, 1);

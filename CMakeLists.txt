@@ -60,7 +60,7 @@ if(PROJECT_IS_TOP_LEVEL)
       $<${isGNUorClang}:-Wall>
       $<${isGNUorClang}:-Wextra>
       $<${isGNUorClang}:-Wstrict-aliasing>
-      $<${isDebug}:$<${isGNUorClang}:$<IF:${hasOg},-Og,-g>>>
+      $<${isDebug}:$<${isGNUorClang}:$<IF:${hasOg},-Og,>>>
       $<${isDebug}:$<${isGNUorClang}:-ggdb3>>
       $<${isRelease}:$<${isGNUorClang}:-O3>>
       $<$<OR:${isRelWithDebInfo},${isTesting}>:$<${isGNUorClang}:-O2>>
@@ -69,7 +69,6 @@ if(PROJECT_IS_TOP_LEVEL)
       $<${isTesting}:$<${isGNUorClang}:$<${hasAsanUbsan}:-fno-omit-frame-pointer>>>
       $<${isFast}:$<${isGNUorClang}:-Ofast>>
       $<${isCoverage}:$<${isGNUorClang}:-ggdb3>>
-      $<${isCoverage}:$<${isGNUorClang}:-O0>>
       $<${isCoverage}:$<${isGNUorClang}:-fno-omit-frame-pointer>>)
 
   target_compile_definitions(
@@ -90,41 +89,44 @@ find_package(spdlog CONFIG REQUIRED)
 find_package_message(spdlog "Using spdlog ${spdlog_VERSION}"
                      "[${spdlog_VERSION}]")
 
-add_executable(${PROJECT_NAME} main.cc log.cc)
-target_compile_definitions(${PROJECT_NAME} PRIVATE SPDLOG_FMT_EXTERNAL)
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
-target_include_directories(${PROJECT_NAME} PRIVATE .)
-target_link_libraries(
-  ${PROJECT_NAME} PRIVATE $<TARGET_NAME_IF_EXISTS:${PROJECT_NAME}_common_flags>
-                          spdlog::spdlog fmt::fmt m)
-
+add_library(lib${PROJECT_NAME} mat3.cc tform4.cc canvas.cc color.cc)
+target_include_directories(lib${PROJECT_NAME} PUBLIC .)
+target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL)
+target_compile_features(lib${PROJECT_NAME} PUBLIC cxx_std_20)
 if(${PROJECT_NAME}_LOGGING_LEVEL STREQUAL "Trace")
-  target_compile_definitions(${PROJECT_NAME}
-                             PRIVATE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE)
+  target_compile_definitions(lib${PROJECT_NAME}
+                             PUBLIC SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE)
 elseif(${PROJECT_NAME}_LOGGING_LEVEL STREQUAL "Debug")
-  target_compile_definitions(${PROJECT_NAME}
-                             PRIVATE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG)
+  target_compile_definitions(lib${PROJECT_NAME}
+                             PUBLIC SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_DEBUG)
 elseif(${PROJECT_NAME}_LOGGING_LEVEL STREQUAL "Info")
-  target_compile_definitions(${PROJECT_NAME}
-                             PRIVATE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_INFO)
+  target_compile_definitions(lib${PROJECT_NAME}
+                             PUBLIC SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_INFO)
 elseif(${PROJECT_NAME}_LOGGING_LEVEL STREQUAL "Warning")
-  target_compile_definitions(${PROJECT_NAME}
-                             PRIVATE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_WARN)
+  target_compile_definitions(lib${PROJECT_NAME}
+                             PUBLIC SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_WARN)
 elseif(${PROJECT_NAME}_LOGGING_LEVEL STREQUAL "Error")
-  target_compile_definitions(${PROJECT_NAME}
-                             PRIVATE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_ERROR)
+  target_compile_definitions(lib${PROJECT_NAME}
+                             PUBLIC SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_ERROR)
 elseif(${PROJECT_NAME}_LOGGING_LEVEL STREQUAL "Critical")
-  target_compile_definitions(${PROJECT_NAME}
-                             PRIVATE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_CRITICAL)
+  target_compile_definitions(lib${PROJECT_NAME}
+                             PUBLIC SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_CRITICAL)
 elseif(${PROJECT_NAME}_LOGGING_LEVEL STREQUAL "Off")
-  target_compile_definitions(${PROJECT_NAME}
-                             PRIVATE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_OFF)
+  target_compile_definitions(lib${PROJECT_NAME}
+                             PUBLIC SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_OFF)
 else()
   message(
     FATAL_ERROR
       "${PROJECT_NAME}_LOGGING_LEVEL has incorrect value. "
       "Available logging levels are: ${${PROJECT_NAME}_logging_levels}")
 endif()
+target_link_libraries(
+  lib${PROJECT_NAME}
+  PUBLIC $<TARGET_NAME_IF_EXISTS:${PROJECT_NAME}_common_flags> m fmt::fmt
+         spdlog::spdlog)
+
+add_executable(${PROJECT_NAME} main.cc log.cc)
+target_link_libraries(${PROJECT_NAME} PRIVATE lib${PROJECT_NAME})
 
 if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
   enable_testing()
@@ -134,18 +136,25 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
                        "[${GTest_VERSION}]")
 
   add_library(${PROJECT_NAME}_test_base INTERFACE)
-  target_sources(${PROJECT_NAME}_test_base INTERFACE vec3_test.cc vec4_test.cc
-                                                     mat3_test.cc mat4_test.cc)
-  target_include_directories(${PROJECT_NAME}_test_base INTERFACE .)
-  target_compile_features(${PROJECT_NAME}_test_base INTERFACE cxx_std_20)
+  target_sources(
+    ${PROJECT_NAME}_test_base
+    INTERFACE vec3_test.cc
+              vec4_test.cc
+              mat3_test.cc
+              mat4_test.cc
+              pnt3_test.cc
+              canvas_test.cc
+              color_test.cc
+              test_main.cc
+              log.cc)
   target_compile_options(
     ${PROJECT_NAME}_test_base
     INTERFACE $<${isCoverage}:$<${isGNUorClang}:--coverage>>)
   target_link_libraries(
     ${PROJECT_NAME}_test_base
     INTERFACE $<TARGET_NAME_IF_EXISTS:${PROJECT_NAME}_common_flags>
-              $<${isCoverage}:$<${isGNUorClang}:--coverage>> GTest::gtest
-              GTest::gtest_main)
+              $<${isCoverage}:$<${isGNUorClang}:--coverage>> lib${PROJECT_NAME}
+              GTest::gtest)
 
   add_executable(${PROJECT_NAME}_test)
   target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME}_test_base)
