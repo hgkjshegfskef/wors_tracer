@@ -17,6 +17,13 @@ void setup_logging() {
     // To change the default level at runtime, use SPDLOG_LEVEL=level environment variable on
     // executable invocation.
     spdlog::cfg::load_env_levels();
+
+    //    SPDLOG_TRACE("ON");
+    //    SPDLOG_DEBUG("ON");
+    //    SPDLOG_INFO("ON");
+    //    SPDLOG_WARN("ON");
+    //    SPDLOG_ERROR("ON");
+    //    SPDLOG_CRITICAL("ON");
 }
 
 } // namespace wt

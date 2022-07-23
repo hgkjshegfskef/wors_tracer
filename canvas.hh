@@ -9,12 +9,12 @@
 
 namespace wt {
 
-struct color;
 class canvas {
   public:
     canvas() noexcept = default;
     canvas(unsigned w, unsigned h) noexcept;
 
+    // X grows right, Y grows up
     color& operator()(unsigned x, unsigned y) noexcept;
     color const& operator()(unsigned x, unsigned y) const noexcept;
 

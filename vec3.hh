@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include <cmath>
-#include <cstddef>
+#include <fmt/core.h>
+
+#include <cstddef> // size_t
 
 namespace wt {
 
@@ -11,105 +12,44 @@ struct vec3 {
     float x, y, z;
 
     vec3() noexcept = default;
-    vec3(float x, float y, float z) noexcept : x{x}, y{y}, z{z} {}
+    vec3(float x, float y, float z) noexcept;
 
-    float& operator[](std::size_t idx) noexcept {
-        switch (idx) {
-        case 0:
-            return x;
-        case 1:
-            return y;
-        case 2:
-            return z;
-        default:
-            __builtin_unreachable();
-        }
-    }
+    float& operator[](std::size_t idx) noexcept;
 
-    float const& operator[](std::size_t idx) const noexcept {
-        switch (idx) {
-        case 0:
-            return x;
-        case 1:
-            return y;
-        case 2:
-            return z;
-        default:
-            __builtin_unreachable();
-        }
-    }
+    float const& operator[](std::size_t idx) const noexcept;
 
-    vec3& operator*=(float s) noexcept {
-        x *= s;
-        y *= s;
-        z *= s;
-        return *this;
-    }
+    vec3& operator*=(float s) noexcept;
+    vec3& operator/=(float s) noexcept;
 
-    vec3& operator/=(float s) noexcept {
-        s = 1.0f / s;
-        x *= s;
-        y *= s;
-        z *= s;
-        return *this;
-    }
-
-    vec3& operator+=(vec3 const& v) {
-        x += v.x;
-        y += v.y;
-        z += v.z;
-        return *this;
-    }
-
-    vec3& operator-=(vec3 const& v) {
-        x -= v.x;
-        y -= v.y;
-        z -= v.z;
-        return *this;
-    }
+    vec3& operator+=(vec3 const& v) noexcept;
+    vec3& operator-=(vec3 const& v) noexcept;
 };
 
-inline vec3 operator*(vec3 const& v, float s) noexcept { return {v.x * s, v.y * s, v.z * s}; }
+bool operator==(vec3 const& l, vec3 const& r) noexcept;
 
-inline vec3 operator*(float s, vec3 const& v) noexcept { return v * s; }
+vec3 operator*(vec3 const& v, float s) noexcept;
+vec3 operator*(float s, vec3 const& v) noexcept;
+vec3 operator/(vec3 const& v, float s) noexcept;
 
-inline vec3 operator/(vec3 const& v, float s) noexcept {
-    s = 1.0f / s;
-    return {v.x * s, v.y * s, v.z * s};
-}
+vec3 operator-(vec3 const& v) noexcept;
+vec3 operator+(vec3 const& a, vec3 const& b) noexcept;
+vec3 operator-(vec3 const& a, vec3 const& b) noexcept;
 
-inline vec3 operator-(vec3 const& v) noexcept { return {-v.x, -v.y, -v.z}; }
+float magnitude(vec3 const& v) noexcept;
+vec3 normalize(vec3 const& v) noexcept;
 
-inline vec3 operator+(vec3 const& a, vec3 const& b) { return {a.x + b.x, a.y + b.y, a.z + b.z}; }
+float dot(vec3 const& a, vec3 const& b) noexcept;
+vec3 cross(vec3 const& a, vec3 const& b) noexcept;
 
-inline vec3 operator-(vec3 const& a, vec3 const& b) { return {a.x - b.x, a.y - b.y, a.z - b.z}; }
-
-inline float magnitude(vec3 const& v) noexcept {
-    return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-}
-
-inline vec3 normalize(vec3 const& v) noexcept { return v / magnitude(v); }
-
-inline float dot(vec3 const& a, vec3 const& b) noexcept {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-
-inline vec3 cross(vec3 const& a, vec3 const& b) noexcept {
-    return {a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
-}
-
-inline vec3 project(vec3 const& a, vec3 const& b, bool b_is_unit = false) noexcept {
-    if (b_is_unit) {
-        return dot(a, b) * b;
-    }
-    return (dot(a, b) / dot(b, b)) * b;
-}
-
-inline vec3 reject(vec3 const& a, vec3 const& b, bool b_is_unit = false) noexcept {
-    if (b_is_unit) {
-        return a - dot(a, b) * b;
-    }
-    return a - (dot(a, b) / dot(b, b)) * b;
-}
+// Projection of a onto b
+vec3 project(vec3 const& a, vec3 const& b, bool b_is_unit = false) noexcept;
+// Rejection of a from b
+vec3 reject(vec3 const& a, vec3 const& b, bool b_is_unit = false) noexcept;
 
 } // namespace wt
+
+template <> struct fmt::formatter<wt::vec3> : fmt::formatter<float> {
+    auto format(wt::vec3 const& vec, fmt::format_context& ctx) -> decltype(ctx.out());
+};
+
+extern template struct fmt::formatter<wt::vec3>;

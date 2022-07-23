@@ -78,6 +78,7 @@ if(PROJECT_IS_TOP_LEVEL)
   target_link_options(
     ${PROJECT_NAME}_common_flags
     INTERFACE
+    $<${isClang}:-fuse-ld=lld>
     $<$<AND:${isTesting},${isGNUorClang},${hasAsanUbsan}>:-fsanitize=address,undefined>
   )
 endif() # PROJECT_IS_TOPLEVEL
@@ -89,7 +90,21 @@ find_package(spdlog CONFIG REQUIRED)
 find_package_message(spdlog "Using spdlog ${spdlog_VERSION}"
                      "[${spdlog_VERSION}]")
 
-add_library(lib${PROJECT_NAME} mat3.cc tform4.cc canvas.cc color.cc)
+add_library(
+  lib${PROJECT_NAME}
+  mat3.cc
+  mat4.cc
+  vec3.cc
+  vec4.cc
+  ray.cc
+  pnt3.cc
+  pnt4.cc
+  tform4.cc
+  canvas.cc
+  color.cc
+  util.cc
+  sphere.cc
+  intersection.cc)
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL)
 target_compile_features(lib${PROJECT_NAME} PUBLIC cxx_std_20)
@@ -139,9 +154,11 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
   target_sources(
     ${PROJECT_NAME}_test_base
     INTERFACE vec3_test.cc
+              ray_test.cc
               vec4_test.cc
               mat3_test.cc
               mat4_test.cc
+              sphere_test.cc
               pnt3_test.cc
               canvas_test.cc
               color_test.cc

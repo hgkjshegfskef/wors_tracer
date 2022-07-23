@@ -2,7 +2,39 @@
 
 #include "mat3.hh"
 
+#include <cmath> // cos, sin
+
 namespace wt {
+
+mat3::mat3(float n00, float n01, float n02, //
+           float n10, float n11, float n12, //
+           float n20, float n21, float n22) noexcept {
+    // clang-format off
+    n[0][0] = n00; n[0][1] = n10; n[0][2] = n20;
+    n[1][0] = n01; n[1][1] = n11; n[1][2] = n21;
+    n[2][0] = n02; n[2][1] = n12; n[2][2] = n22;
+    // clang-format on
+}
+
+mat3::mat3(vec3 const& a, vec3 const& b, vec3 const& c) noexcept {
+    // clang-format off
+    n[0][0] = a.x; n[0][1] = a.y; n[0][2] = a.z;
+    n[1][0] = b.x; n[1][1] = b.y; n[1][2] = b.z;
+    n[2][0] = c.x; n[2][1] = c.y; n[2][2] = c.z;
+    // clang-format on
+}
+
+float& mat3::operator()(int i, int j) noexcept { return n[j][i]; }
+
+float const& mat3::operator()(int i, int j) const noexcept { return n[j][i]; }
+
+vec3& mat3::operator[](int j) noexcept {
+    return *reinterpret_cast<vec3*>(n[j]); // UB
+}
+
+vec3 const& mat3::operator[](int j) const noexcept {
+    return *reinterpret_cast<vec3 const*>(n[j]); // UB
+}
 
 mat3 operator*(mat3 const& A, mat3 const& B) noexcept {
     return {A(0, 0) * B(0, 0) + A(0, 1) * B(1, 0) + A(0, 2) * B(2, 0),

@@ -4,33 +4,27 @@
 
 #include "vec3.hh"
 
+#include <fmt/core.h>
+
 namespace wt {
 
 struct pnt3 final : vec3 {
     pnt3() noexcept = default;
-    pnt3(float a, float b, float c) noexcept : vec3(a, b, c) {}
-    pnt3(vec3 const& v) noexcept : vec3(v) {}
+    pnt3(float x, float y, float z) noexcept;
+    pnt3(vec3 const& v) noexcept;
 
-    pnt3& operator=(vec3 const& v) noexcept {
-        x = v.x;
-        y = v.y;
-        z = v.z;
-        return *this;
-    }
+    pnt3& operator=(vec3 const& v) noexcept;
 };
 
-inline pnt3 operator+(pnt3 const& a, vec3 const& b) noexcept {
-    return {a.x + b.x, a.y + b.y, a.z + b.z};
-}
-
-inline pnt3 operator+(vec3 const& b, pnt3 const& a) noexcept { return a + b; }
-
-inline pnt3 operator-(pnt3 const& a, vec3 const& b) noexcept {
-    return {a.x - b.x, a.y - b.y, a.z - b.z};
-}
-
-inline vec3 operator-(pnt3 const& a, pnt3 const& b) noexcept {
-    return {a.x - b.x, a.y - b.y, a.z - b.z};
-}
+pnt3 operator+(pnt3 const& a, vec3 const& b) noexcept;
+pnt3 operator+(vec3 const& b, pnt3 const& a) noexcept;
+pnt3 operator-(pnt3 const& a, vec3 const& b) noexcept;
+vec3 operator-(pnt3 const& a, pnt3 const& b) noexcept;
 
 } // namespace wt
+
+template <> struct fmt::formatter<wt::pnt3> : fmt::formatter<float> {
+    auto format(wt::pnt3 const& pnt, fmt::format_context& ctx) -> decltype(ctx.out());
+};
+
+extern template struct fmt::formatter<wt::pnt3>;

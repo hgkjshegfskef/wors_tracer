@@ -1,7 +1,6 @@
 #include "canvas.hh"
 
 #include <gtest/gtest.h>
-#include <spdlog/spdlog.h>
 
 using namespace wt;
 

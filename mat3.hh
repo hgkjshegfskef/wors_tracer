@@ -10,39 +10,17 @@ class mat3 final {
   public:
     mat3() noexcept = default;
 
-    // clang-format off
+    mat3(float n00, float n01, float n02, //
+         float n10, float n11, float n12, //
+         float n20, float n21, float n22) noexcept;
 
-    mat3(float n00, float n01, float n02,
-         float n10, float n11, float n12,
-         float n20, float n21, float n22) noexcept {
-        n[0][0] = n00; n[0][1] = n10; n[0][2] = n20;
-        n[1][0] = n01; n[1][1] = n11; n[1][2] = n21;
-        n[2][0] = n02; n[2][1] = n12; n[2][2] = n22;
-    }
+    mat3(vec3 const& a, vec3 const& b, vec3 const& c) noexcept;
 
-    mat3(vec3 const& a, vec3 const& b, vec3 const& c) noexcept {
-        n[0][0] = a.x; n[0][1] = a.y; n[0][2] = a.z;
-        n[1][0] = b.x; n[1][1] = b.y; n[1][2] = b.z;
-        n[2][0] = c.x; n[2][1] = c.y; n[2][2] = c.z;
-    }
+    float& operator()(int i, int j) noexcept;
+    float const& operator()(int i, int j) const noexcept;
 
-    // clang-format on
-
-    float& operator()(int i, int j) noexcept { return n[j][i]; }
-
-    float const& operator()(int i, int j) const noexcept { return n[j][i]; }
-
-    vec3& operator[](int j) noexcept {
-        return *reinterpret_cast<vec3*>(n[j]); // UB
-    }
-
-    //    vec3 operator[](int j) noexcept { return {n[j][0], n[j][1], n[j][2]}; }
-
-    vec3 const& operator[](int j) const noexcept {
-        return *reinterpret_cast<vec3 const*>(n[j]); // UB
-    }
-
-    //    vec3 const operator[](int j) const noexcept { return {n[j][0], n[j][1], n[j][2]}; }
+    vec3& operator[](int j) noexcept;
+    vec3 const& operator[](int j) const noexcept;
 
   private:
     // Column-major

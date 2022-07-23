@@ -1,5 +1,7 @@
 #include "canvas.hh"
 
+#include "util.hh" // lerp
+
 #include <fmt/format.h> // formatter
 
 #include <algorithm> // fill, clamp
@@ -9,23 +11,13 @@
 
 namespace {
 
-// https://en.wikipedia.org/wiki/Linear_interpolation
-// If the two known points are given by the coordinates (x0,y0) and (x1,y1), the linear interpolant
-// is the straight line between these points. If the value of x is in the interval [x0;x1], the
-// function interpolates, otherwise, the function extrapolates.
-float lerp(float x, std::pair<float, float> left_point,
-           std::pair<float, float> right_point) noexcept {
-    return left_point.second + (x - left_point.first) * (right_point.second - left_point.second) /
-                                   (right_point.first - left_point.first);
-}
-
 // Scale a number between two (possibly overlapping) ranges.
 // Use-case example: given a value in range [0;1], find out its respective value in range [0;255].
 // Further reading: https://gamedev.stackexchange.com/a/33445
 float scale(float value, std::pair<float, float> source_range,
             std::pair<float, float> target_range) noexcept {
-    return lerp(value, {source_range.first, target_range.first},
-                {source_range.second, target_range.second});
+    return wt::lerp(value, {source_range.first, target_range.first},
+                    {source_range.second, target_range.second});
 }
 
 // template <std::floating_point T>
@@ -44,6 +36,7 @@ canvas::canvas(unsigned int w, unsigned int h) noexcept
     : canvas_{std::make_unique<color[]>(/*may overflow*/ w * h)}, w_{w}, h_{h} {}
 
 color& canvas::operator()(unsigned int x, unsigned int y) noexcept {
+    // Internally, X grows right, but Y grows down, hence the conversion
     return canvas_[(h_ - y - 1) * w_ + x];
 }
 
