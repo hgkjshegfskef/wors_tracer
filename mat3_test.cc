@@ -1,4 +1,5 @@
 #include "mat3.hh"
+#include "vec3.hh"
 
 #include <gtest/gtest.h>
 

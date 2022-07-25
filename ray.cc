@@ -1,8 +1,10 @@
 #include "ray.hh"
 
+#include "intersection.hh"
 #include "sphere.hh"
 
-#include <cmath> // abs, sqrt, pow
+#include <cmath>  // abs, sqrt, pow
+#include <limits> // numeric_limits<float>
 
 namespace {
 
@@ -154,7 +156,18 @@ std::array<intersection, 2> intersect(ray const& world_r, sphere const& s) noexc
                       intersection{&s, (-quad_b - sqrt_quad_D) / two_quad_a}};
 }
 
-// std::optional<float> hit()
+template <typename Container> intersection hit(Container const& isecs) noexcept {
+    intersection min_t{nullptr, std::numeric_limits<float>::max()};
+    for (auto const& isec : isecs) {
+        if (!isec.empty() && isec.t > 0 && isec.t < min_t.t) {
+            min_t = isec;
+        }
+    }
+    return min_t;
+}
+
+template intersection hit<std::vector<intersection>>(std::vector<intersection> const&) noexcept;
+template intersection hit<std::array<intersection, 2>>(std::array<intersection, 2> const&) noexcept;
 
 } // namespace v2
 

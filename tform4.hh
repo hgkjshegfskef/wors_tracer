@@ -2,14 +2,15 @@
 
 #pragma once
 
-#include "mat3.hh"
 #include "mat4.hh"
-#include "pnt3.hh"
-#include "vec3.hh"
 
 #include <fmt/core.h>
 
 namespace wt {
+
+struct pnt3;
+struct vec3;
+class mat3;
 
 class tform4 final : public mat4 {
   public:

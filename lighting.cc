@@ -1,5 +1,8 @@
 #include "lighting.hh"
 
+#include "mat3.hh"
+#include "material.hh"
+#include "pnt_light.hh"
 #include "tform4.hh"
 
 #include <cmath> // pow

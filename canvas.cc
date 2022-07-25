@@ -1,5 +1,6 @@
 #include "canvas.hh"
 
+#include "color.hh"
 #include "util.hh" // lerp
 
 #include <fmt/format.h> // formatter
@@ -103,13 +104,16 @@ std::string canvas::as_ppm() const noexcept {
 
 auto fmt::formatter<wt::canvas>::format(const wt::canvas& c, fmt::format_context& ctx)
     -> decltype(ctx.out()) {
+    fmt::formatter<wt::color> color_formatter;
     auto&& out = ctx.out();
     for (int y = c.h_ - 1; y >= 0; --y) {
         for (unsigned x = 0; x < c.w_ - 1; ++x) {
-            fmt::formatter<wt::color>::format(c(x, y), ctx);
+            //            fmt::formatter<wt::color>::format(c(x, y), ctx);
+            color_formatter.format(c(x, y), ctx);
             fmt::format_to(out, " ");
         }
-        fmt::formatter<wt::color>::format(c(c.w_ - 1, y), ctx);
+        //        fmt::formatter<wt::color>::format(c(c.w_ - 1, y), ctx);
+        color_formatter.format(c(c.w_ - 1, y), ctx);
         fmt::format_to(out, "\n");
     }
     return out;

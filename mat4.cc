@@ -1,6 +1,7 @@
 #include "mat4.hh"
 
 #include "vec3.hh"
+#include "vec4.hh"
 
 namespace wt {
 

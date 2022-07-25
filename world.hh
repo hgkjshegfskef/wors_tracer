@@ -1,7 +1,6 @@
 #pragma once
 
 #include "pnt_light.hh"
-#include "sphere.hh"
 
 #include <vector>
 
@@ -9,12 +8,13 @@ namespace wt {
 
 // fwd
 struct ray;
+struct sphere;
 
 struct world {
     pnt_light light;
     std::vector<sphere> shapes;
 
-    world() noexcept = default;
+    world() noexcept;
     world(pnt_light light, std::vector<sphere> spheres) noexcept;
 
     static world make_default() noexcept;

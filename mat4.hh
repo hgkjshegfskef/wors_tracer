@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "vec4.hh"
-
 namespace wt {
+
+struct vec4;
 
 class mat4 {
   public:

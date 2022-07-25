@@ -1,5 +1,9 @@
 #include "tform4.hh"
 
+#include "mat3.hh"
+#include "pnt3.hh"
+#include "vec3.hh"
+
 #include <fmt/format.h>
 
 namespace wt {

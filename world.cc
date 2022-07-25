@@ -1,11 +1,15 @@
 #include "world.hh"
 
+#include "mat3.hh"
 #include "ray.hh"
+#include "sphere.hh"
 
 #include <algorithm> // sort
 #include <utility>   // move
 
 namespace wt {
+
+world::world() noexcept = default;
 
 world::world(pnt_light light, std::vector<sphere> spheres) noexcept
     : light{std::move(light)}, shapes{std::move(spheres)} {}

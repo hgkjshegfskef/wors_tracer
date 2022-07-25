@@ -1,3 +1,5 @@
+#include "mat3.hh"
+#include "pnt3.hh"
 #include "sphere.hh"
 #include "tform4.hh"
 

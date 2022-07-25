@@ -1,4 +1,5 @@
 #include "mat4.hh"
+#include "vec4.hh"
 
 #include <gtest/gtest.h>
 

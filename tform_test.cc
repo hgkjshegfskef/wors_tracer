@@ -1,4 +1,5 @@
 #include "mat3.hh"
+#include "pnt3.hh"
 #include "tform4.hh"
 
 #include <gtest/gtest.h>

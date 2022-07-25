@@ -2,6 +2,8 @@
 
 #include "mat3.hh"
 
+#include "vec3.hh"
+
 #include <cmath> // cos, sin
 
 namespace wt {

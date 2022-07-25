@@ -1,6 +1,6 @@
 #pragma once
 
-#include "color.hh"
+//#include "color.hh"
 #include "string_fwd.hh" // string
 
 #include <fmt/core.h> // fwd
@@ -8,6 +8,8 @@
 #include <memory> // unique_ptr
 
 namespace wt {
+
+struct color;
 
 class canvas {
   public:
@@ -32,7 +34,7 @@ class canvas {
 
 } // namespace wt
 
-template <> struct fmt::formatter<wt::canvas> : fmt::formatter<wt::color> {
+template <> struct fmt::formatter<wt::canvas> {
     auto format(wt::canvas const& c, fmt::format_context& ctx) -> decltype(ctx.out());
 };
 

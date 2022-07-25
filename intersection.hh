@@ -1,10 +1,12 @@
 #pragma once
 
-#include "sphere.hh"
+//#include "sphere.hh"
 
 //#include <fmt/core.h>
 
 namespace wt {
+
+struct sphere;
 
 struct intersection {
     sphere const* s{};

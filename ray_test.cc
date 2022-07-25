@@ -1,4 +1,8 @@
+#include "intersection.hh"
+#include "mat3.hh"
 #include "ray.hh"
+#include "sphere.hh"
+#include "tform4.hh"
 
 #include <gtest/gtest.h>
 
@@ -44,4 +48,25 @@ TEST(RayTest, v2Intersect3) {
     std::sort(isections.begin(), isections.end());
     EXPECT_EQ(isections[0].t, -6.f);
     EXPECT_EQ(isections[1].t, -4.f);
+}
+
+TEST(RayTest, v2Hit2) {
+    ray r{{0, 0, -5}, {0, 0, 1}};
+    tform4 tform = scale(2, 2, 2);
+    sphere s{tform};
+
+    auto isections = v2::intersect(r, s);
+    std::sort(isections.begin(), isections.end());
+    intersection i = v2::hit(isections);
+    EXPECT_EQ(i.t, 3.f);
+}
+
+TEST(RayTest, v2Hit3) {
+    ray r{{0, 0, 5}, {0, 0, 1}};
+    sphere s;
+
+    auto isections = v2::intersect(r, s);
+    std::sort(isections.begin(), isections.end());
+    intersection i = v2::hit(isections);
+    EXPECT_TRUE(i.empty());
 }

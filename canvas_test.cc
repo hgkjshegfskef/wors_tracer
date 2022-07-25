@@ -1,4 +1,5 @@
 #include "canvas.hh"
+#include "color.hh"
 
 #include <gtest/gtest.h>
 
