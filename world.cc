@@ -1,18 +1,15 @@
 #include "world.hh"
 
+#include "intersection.hh"
 #include "mat3.hh"
 #include "ray.hh"
-#include "sphere.hh"
 
 #include <algorithm> // sort
-#include <utility>   // move
 
 namespace wt {
 
-world::world() noexcept = default;
-
-world::world(pnt_light light, std::vector<sphere> spheres) noexcept
-    : light{std::move(light)}, shapes{std::move(spheres)} {}
+world::world(pnt_light const& light, std::vector<sphere> const& spheres) noexcept
+    : light{light}, shapes{spheres} {}
 
 world world::make_default() noexcept {
     return world{
@@ -22,17 +19,14 @@ world world::make_default() noexcept {
                     sphere{tform4{scale(.5f, .5f, .5f)}}}};
 }
 
-std::vector<float> intersect(ray const& world_r, world const& w) noexcept {
-    std::vector<float> ts;
+std::vector<intersection> intersect(ray const& world_r, world const& w) noexcept {
+    std::vector<intersection> world_isecs;
+    world_isecs.reserve(w.shapes.size() * 2);
     for (auto const& s : w.shapes) {
-        tform4 const inv_tform = inverse(s.tform);
-        ray const object_r{inv_tform * world_r.origin, inv_tform * world_r.direction};
-        if (auto t = intersect_sphere(world_r)) {
-            ts.push_back(*t);
-        }
+        auto const isecs = v2::intersect(world_r, s);
+        world_isecs.insert(world_isecs.end(), isecs.begin(), isecs.end());
     }
-    std::sort(ts.begin(), ts.end());
-    return ts;
+    return world_isecs;
 }
 
 } // namespace wt
