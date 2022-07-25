@@ -16,7 +16,10 @@ struct ray {
     ray(pnt3 const& p, vec3 const& v) noexcept;
 };
 
+// Intersect ray from world space with a sphere
 std::optional<float> intersect(ray const& r, sphere const& s) noexcept;
+// Intersect ray from object space (already transformed) with a sphere
+std::optional<float> intersect_sphere(ray const& r) noexcept;
 
 pnt3 position(pnt3 const& origin, vec3 const& direction, float t) noexcept;
 

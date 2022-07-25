@@ -79,6 +79,40 @@ std::optional<float> intersect(ray const& r, sphere const& s) noexcept {
     return min_nonnegative(t1, t2);
 }
 
+std::optional<float> intersect_sphere(ray const& r) noexcept {
+    // Sphere equation: (x-c)⋅(x-c) = r²
+    // Ray equation: x = o + du
+    //
+    // x: intersection, a point on the sphere and on the ray
+    // c: center of the sphere (point)
+    pnt3 const c{0.f, 0.f, 0.f}; // sphere is at 0
+    // r: radius of the sphere
+    //  (for our sphere, radius is always 1)
+    // o: origin of the ray
+    pnt3 const& o = r.origin;
+    // d: distance from ray origin to intersection with sphere
+    //  (this is what needs to be found)
+    // u: ray direction vector (unit len)
+    vec3 const& u = r.direction;
+
+    // Solving the above for d:
+    //
+    // t₁₋₂ = -u⋅(o-c) ± √D
+    // D = [u⋅(o-c)]² - ((o-c)⋅(o-c) - 1)
+
+    vec3 const oc = o - c;
+    float const uoc = dot(u, oc);
+    float const D = std::pow(uoc, 2) - (dot(oc, oc) - 1);
+    if (D < 0) {
+        return {};
+    }
+    float const sqrt_D = std::sqrt(D);
+    float const t1 = -uoc + sqrt_D;
+    float const t2 = -uoc - sqrt_D;
+
+    return min_nonnegative(t1, t2);
+}
+
 float dist(pnt3 const& q, pnt3 const& p, vec3 const& v, bool v_is_normal) noexcept {
     vec3 const a = cross(q - p, v);
     if (v_is_normal) {
