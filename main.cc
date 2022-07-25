@@ -48,13 +48,13 @@ int main(int argc, char** argv) {
 
     canvas canvas{canvas_pixels, canvas_pixels};
     canvas.fill({0, 0, 0});
-//    color red{1, 0, 0};
+    //    color red{1, 0, 0};
 
     //    tform4 center{1.f, 0.f, 0.f, 1.f, //
     //                  0.f, 1.f, 0.f, 1.f, //
     //                  0.f, 0.f, 1.f, 0.f};
     sphere const s{tform4{}, {.col{1.f, 0.2f, 1.f}}};
-//    sphere const s;
+    //    sphere const s;
     pnt3 const s_center{0.f, 0.f, 0.f};
     tform4 const s_tform_inv = inverse(s.tform);
 
@@ -71,9 +71,9 @@ int main(int argc, char** argv) {
 
     // Start from higher Y to process the canvas memory sequentially.
     for (int y = canvas_pixels - 1; y >= 0; --y) {
-        wall_point.y = half - pixel_size * y;
-        for (unsigned x = 0; x < canvas_pixels; ++x) {
-            wall_point.x = half - pixel_size * x;
+        wall_point.y = -half + pixel_size * y;
+        for (unsigned x = 0; x < canvas_pixels - 1; ++x) {
+            wall_point.x = -half + pixel_size * x;
             world_r.direction = normalize(wall_point - ray_origin);
             object_r.direction = normalize(s_tform_inv * world_r.direction);
 
