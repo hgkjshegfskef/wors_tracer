@@ -13,6 +13,21 @@ set(${PROJECT_NAME}_logging_levels
 set_property(CACHE ${PROJECT_NAME}_LOGGING_LEVEL
              PROPERTY STRINGS "${${PROJECT_NAME}_logging_levels}")
 
+set(${PROJECT_NAME}_LTO
+    OFF
+    CACHE BOOL "Use link-time optimization. \
+      Set _CMAKE_TOOLCHAIN_PREFIX to gcc- or llvm- manually.")
+
+# To use this, first run CMake with =Generate, run the program, then with =Use
+set(${PROJECT_NAME}_PGO
+    "Off"
+    CACHE STRING "Use profile guided optimization. Use -j 1.")
+set_property(CACHE ${PROJECT_NAME}_PGO PROPERTY STRINGS "Off;Generate;Use")
+
+set(${PROJECT_NAME}_NATIVE
+    OFF
+    CACHE BOOL "Use -march=native")
+
 if(PROJECT_IS_TOP_LEVEL)
   set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -40,7 +55,7 @@ if(PROJECT_IS_TOP_LEVEL)
   endif()
 
   util_check_cxx_flag(FLAG -Og)
-  set(hasOg $<BOOL:${PROJECT_NAME}_SUPPORTS_FLAG_Og>)
+  set(hasOg $<BOOL:${${PROJECT_NAME}_SUPPORTS_FLAG_Og}>)
 
   set(isDebug $<CONFIG:Debug>)
   set(isRelease $<CONFIG:Release>)
@@ -51,6 +66,11 @@ if(PROJECT_IS_TOP_LEVEL)
   set(isGNU $<CXX_COMPILER_ID:GNU>)
   set(isClang $<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>)
   set(isGNUorClang $<OR:${isGNU},${isClang}>)
+
+  set(useLto $<BOOL:${${PROJECT_NAME}_LTO}>)
+  set(useNative $<BOOL:${${PROJECT_NAME}_NATIVE}>)
+  set(PgoGenerate $<STREQUAL:${${PROJECT_NAME}_PGO},Generate>)
+  set(PgoUse $<STREQUAL:${${PROJECT_NAME}_PGO},Use>)
 
   target_compile_options(
     ${PROJECT_NAME}_common_flags
@@ -69,7 +89,12 @@ if(PROJECT_IS_TOP_LEVEL)
       $<${isTesting}:$<${isGNUorClang}:$<${hasAsanUbsan}:-fno-omit-frame-pointer>>>
       $<${isFast}:$<${isGNUorClang}:-Ofast>>
       $<${isCoverage}:$<${isGNUorClang}:-ggdb3>>
-      $<${isCoverage}:$<${isGNUorClang}:-fno-omit-frame-pointer>>)
+      $<${isCoverage}:$<${isGNUorClang}:-fno-omit-frame-pointer>>
+      $<${useLto}:$<${isGNUorClang}:-flto=auto>>
+      $<${useNative}:$<${isGNUorClang}:-march=native>>
+      $<${PgoGenerate}:-fprofile-generate>
+      $<${PgoUse}:-fprofile-use>
+      $<${PgoUse}:-fprofile-correction>)
 
   target_compile_definitions(
     ${PROJECT_NAME}_common_flags
@@ -80,7 +105,15 @@ if(PROJECT_IS_TOP_LEVEL)
     INTERFACE
     $<${isClang}:-fuse-ld=lld>
     $<$<AND:${isTesting},${isGNUorClang},${hasAsanUbsan}>:-fsanitize=address,undefined>
-  )
+    $<${isDebug}:$<${isGNUorClang}:$<IF:${hasOg},-Og,>>>
+    $<${isRelease}:$<${isGNUorClang}:-O3>>
+    $<$<OR:${isRelWithDebInfo},${isTesting}>:$<${isGNUorClang}:-O2>>
+    $<${isFast}:$<${isGNUorClang}:-Ofast>>
+    $<${useLto}:$<${isGNUorClang}:-flto=auto>>
+    $<${useNative}:$<${isGNUorClang}:-march=native>>
+    $<${PgoGenerate}:-fprofile-generate>
+    $<${PgoUse}:-fprofile-use>
+    $<${PgoUse}:-fprofile-correction>)
 endif() # PROJECT_IS_TOPLEVEL
 
 include(FindPackageMessage)
@@ -104,7 +137,8 @@ add_library(
   color.cc
   util.cc
   sphere.cc
-  intersection.cc)
+  intersection.cc
+  lighting.cc)
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL)
 target_compile_features(lib${PROJECT_NAME} PUBLIC cxx_std_20)
@@ -162,6 +196,8 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
               pnt3_test.cc
               canvas_test.cc
               color_test.cc
+              normal_test.cc
+              tform_test.cc
               test_main.cc
               log.cc)
   target_compile_options(

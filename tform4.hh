@@ -2,15 +2,18 @@
 
 #pragma once
 
+#include "mat3.hh"
 #include "mat4.hh"
 #include "pnt3.hh"
 #include "vec3.hh"
+
+#include <fmt/core.h>
 
 namespace wt {
 
 class tform4 final : public mat4 {
   public:
-    tform4() noexcept = default;
+    tform4() noexcept;
 
     tform4(float n00, float n01, float n02, float n03, //
            float n10, float n11, float n12, float n13, //
@@ -18,13 +21,13 @@ class tform4 final : public mat4 {
 
     tform4(vec3 const& a, vec3 const& b, vec3 const& c, pnt3 const& p) noexcept;
 
+    tform4(mat3 const& M) noexcept;
+
     pnt3 const& get_translation() const noexcept;
     void set_translation(pnt3 const& p) noexcept;
 
     vec3& operator[](int j) noexcept;
     vec3 const& operator[](int j) const noexcept;
-
-    static tform4 identity() noexcept;
 };
 
 tform4 inverse(tform4 const& H) noexcept;
@@ -45,3 +48,9 @@ pnt3 operator*(tform4 const& H, pnt3 const& p) noexcept;
 vec3 operator*(vec3 const& n, tform4 const& H) noexcept;
 
 } // namespace wt
+
+template <> struct fmt::formatter<wt::tform4> : fmt::formatter<float> {
+    auto format(wt::tform4 const& mat, fmt::format_context& ctx) -> decltype(ctx.out());
+};
+
+extern template struct fmt::formatter<wt::tform4>;

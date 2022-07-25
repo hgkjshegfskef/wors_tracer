@@ -65,11 +65,11 @@ mat3 inverse(mat3 const& M) noexcept {
     vec3 const& b = M[1];
     vec3 const& c = M[2];
 
-    vec3 r0 = cross(b, c);
-    vec3 r1 = cross(c, a);
-    vec3 r2 = cross(a, b);
+    vec3 const r0 = cross(b, c);
+    vec3 const r1 = cross(c, a);
+    vec3 const r2 = cross(a, b);
 
-    float inv_det = 1.f / dot(r2, c);
+    float const inv_det = 1.f / dot(r2, c);
 
     return {r0.x * inv_det, r0.y * inv_det, r0.z * inv_det, //
             r1.x * inv_det, r1.y * inv_det, r1.z * inv_det, //
@@ -77,8 +77,8 @@ mat3 inverse(mat3 const& M) noexcept {
 }
 
 template <Axis a> mat3 rotation(float t) noexcept {
-    float c = std::cos(t);
-    float s = std::sin(t);
+    float const c = std::cos(t);
+    float const s = std::sin(t);
 
     if constexpr (a == Axis::X) {
         return {
@@ -126,12 +126,12 @@ mat3 rotation(float t, vec3 const& a) noexcept {
 }
 
 mat3 reflection(vec3 const& a) noexcept {
-    float x = a.x * -2.f;
-    float y = a.y * -2.f;
-    float z = a.z * -2.f;
-    float axay = x * a.y;
-    float axaz = x * a.z;
-    float ayaz = y * a.z;
+    float const x = a.x * -2.f;
+    float const y = a.y * -2.f;
+    float const z = a.z * -2.f;
+    float const axay = x * a.y;
+    float const axaz = x * a.z;
+    float const ayaz = y * a.z;
 
     return {
         x * a.x + 1.f, axay,          axaz,          //
@@ -141,12 +141,12 @@ mat3 reflection(vec3 const& a) noexcept {
 }
 
 mat3 involution(vec3 const& a) noexcept {
-    float x = a.x * 2.f;
-    float y = a.y * 2.f;
-    float z = a.z * 2.f;
-    float axay = x * a.y;
-    float axaz = x * a.z;
-    float ayaz = y * a.z;
+    float const x = a.x * 2.f;
+    float const y = a.y * 2.f;
+    float const z = a.z * 2.f;
+    float const axay = x * a.y;
+    float const axaz = x * a.z;
+    float const ayaz = y * a.z;
 
     return {
         x * a.x - 1.f, axay,          axaz,          //
@@ -165,12 +165,12 @@ mat3 scale(float sx, float sy, float sz) noexcept {
 
 mat3 scale(float s, vec3 const& a) noexcept {
     s -= 1.f;
-    float x = a.x * s;
-    float y = a.y * s;
-    float z = a.z * s;
-    float axay = x * a.y;
-    float axaz = x * a.z;
-    float ayaz = y * a.z;
+    float const x = a.x * s;
+    float const y = a.y * s;
+    float const z = a.z * s;
+    float const axay = x * a.y;
+    float const axaz = x * a.z;
+    float const ayaz = y * a.z;
 
     return {
         x * a.x + 1.f, axay,          axaz,          //
@@ -181,9 +181,9 @@ mat3 scale(float s, vec3 const& a) noexcept {
 
 mat3 skew(float t, vec3 const& a, vec3 const& b) noexcept {
     t = std::tan(t);
-    float x = a.x * t;
-    float y = a.y * t;
-    float z = a.z * t;
+    float const x = a.x * t;
+    float const y = a.y * t;
+    float const z = a.z * t;
 
     return {
         x * b.x + 1.f, x * b.y,       x * b.z,       //

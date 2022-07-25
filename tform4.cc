@@ -1,6 +1,13 @@
 #include "tform4.hh"
 
+#include <fmt/format.h>
+
 namespace wt {
+
+tform4::tform4() noexcept
+    : tform4(1.f, 0.f, 0.f, 0.f, //
+             0.f, 1.f, 0.f, 0.f, //
+             0.f, 0.f, 1.f, 0.f) {}
 
 tform4::tform4(float n00, float n01, float n02, float n03, //
                float n10, float n11, float n12, float n13, //
@@ -27,6 +34,8 @@ tform4::tform4(vec3 const& a, vec3 const& b, vec3 const& c, pnt3 const& p) noexc
     n[3][3] = 1.f;
 }
 
+tform4::tform4(mat3 const& M) noexcept : tform4(M[0], M[1], M[2], {0.f, 0.f, 0.f}) {}
+
 pnt3 const& tform4::get_translation() const noexcept {
     return *reinterpret_cast<pnt3 const*>(n[3]); // UB
 }
@@ -45,12 +54,6 @@ vec3 const& tform4::operator[](int j) const noexcept {
     return *reinterpret_cast<vec3 const*>(n[j]); // UB
 }
 
-tform4 tform4::identity() noexcept {
-    return {1.f, 0.f, 0.f, 0.f, //
-            0.f, 1.f, 0.f, 0.f, //
-            0.f, 0.f, 1.f, 0.f};
-}
-
 tform4 inverse(const tform4& H) noexcept {
     vec3 const& a = H[0];
     vec3 const& b = H[1];
@@ -60,14 +63,14 @@ tform4 inverse(const tform4& H) noexcept {
     vec3 s = cross(a, b);
     vec3 t = cross(c, d);
 
-    float inv_det = 1.f / dot(s, c);
+    float const inv_det = 1.f / dot(s, c);
 
     s *= inv_det;
     t *= inv_det;
-    vec3 v = c * inv_det;
+    vec3 const v = c * inv_det;
 
-    vec3 r0 = cross(b, v);
-    vec3 r1 = cross(v, a);
+    vec3 const r0 = cross(b, v);
+    vec3 const r1 = cross(v, a);
 
     return {r0.x, r0.y, r0.z, -dot(b, t), //
             r1.x, r1.y, r1.z, dot(a, t),  //
@@ -108,3 +111,15 @@ vec3 operator*(const vec3& n, const tform4& H) noexcept {
 }
 
 } // namespace wt
+
+auto fmt::formatter<wt::tform4>::format(const wt::tform4& mat, fmt::format_context& ctx)
+    -> decltype(ctx.out()) {
+    auto&& out = ctx.out();
+    fmt::format_to(out, "｢{}, {}, {}, {}|\n", mat(0, 0), mat(0, 1), mat(0, 2), mat(0, 3));
+    fmt::format_to(out, "|{}, {}, {}, {}|\n", mat(1, 0), mat(1, 1), mat(1, 2), mat(1, 3));
+    fmt::format_to(out, "|{}, {}, {}, {}|\n", mat(2, 0), mat(2, 1), mat(2, 2), mat(2, 3));
+    fmt::format_to(out, "|{}, {}, {}, {}｣", mat(3, 0), mat(3, 1), mat(3, 2), mat(3, 3));
+    return out;
+}
+
+template struct fmt::formatter<wt::tform4>;

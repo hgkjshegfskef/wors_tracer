@@ -43,26 +43,26 @@ mat4 inverse(const mat4& M) noexcept {
     vec3 const& c = reinterpret_cast<const vec3&>(M[2]); // UB
     vec3 const& d = reinterpret_cast<const vec3&>(M[3]); // UB
 
-    const float& x = M(3, 0);
-    const float& y = M(3, 1);
-    const float& z = M(3, 2);
-    const float& w = M(3, 3);
+    float const& x = M(3, 0);
+    float const& y = M(3, 1);
+    float const& z = M(3, 2);
+    float const& w = M(3, 3);
 
     vec3 s = cross(a, b);
     vec3 t = cross(c, d);
     vec3 u = a * y - b * x;
     vec3 v = c * w - d * z;
 
-    float inv_det = 1.f / (dot(s, v) + dot(t, u));
+    float const inv_det = 1.f / (dot(s, v) + dot(t, u));
     s *= inv_det;
     t *= inv_det;
     u *= inv_det;
     v *= inv_det;
 
-    vec3 r0 = cross(b, v) + t * y;
-    vec3 r1 = cross(v, a) - t * x;
-    vec3 r2 = cross(d, u) + s * w;
-    vec3 r3 = cross(u, c) - s * z;
+    vec3 const r0 = cross(b, v) + t * y;
+    vec3 const r1 = cross(v, a) - t * x;
+    vec3 const r2 = cross(d, u) + s * w;
+    vec3 const r3 = cross(u, c) - s * z;
 
     return {r0.x, r0.y, r0.z, -dot(b, t), //
             r1.x, r1.y, r1.z, dot(a, t),  //
