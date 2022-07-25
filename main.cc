@@ -36,25 +36,27 @@ int main(int argc, char** argv) {
     SPDLOG_DEBUG("Wall size: {}", wall_size);
 
     // How large canvas is in pixels.
-    unsigned canvas_pixels = 1000;
-    SPDLOG_TRACE("canvas size: {}x{} pixels", canvas_pixels, canvas_pixels);
+    unsigned canvas_w = 1000;
+    unsigned canvas_h = 1000;
+    SPDLOG_TRACE("canvas size: {}x{} pixels", canvas_w, canvas_h);
 
     // Size of single pixel (in world space units).
-    float pixel_size = wall_size / canvas_pixels;
+    float pixel_size = wall_size / canvas_w;
     SPDLOG_TRACE("pixel size: {}", pixel_size);
 
     // Half of the wall, which describes minimum and maximum x and y coordinates of the wall.
     float half = wall_size / 2.;
 
-    canvas canvas{canvas_pixels, canvas_pixels};
+    canvas canvas{canvas_w, canvas_h};
     canvas.fill({0, 0, 0});
-    //    color red{1, 0, 0};
+    color const red{1, 0, 0};
 
-    //    tform4 center{1.f, 0.f, 0.f, 1.f, //
-    //                  0.f, 1.f, 0.f, 1.f, //
-    //                  0.f, 0.f, 1.f, 0.f};
-    sphere const s{tform4{}, {.col{1.f, 0.2f, 1.f}}};
-    //    sphere const s;
+    sphere s{tform4{}, {.col{1.f, 1.f, 1.f}}};
+
+    //    s.tform = tform4(scale(.5f, .5f, .5f)) *
+    //              tform4(rotation<Axis::Z>(std::numbers::pi_v<float> / 2.f)) *
+    //              tform4().set_translation({1.f, 1.f, 0.f});
+
     pnt3 const s_center{0.f, 0.f, 0.f};
     tform4 const s_tform_inv = inverse(s.tform);
 
@@ -70,9 +72,9 @@ int main(int argc, char** argv) {
     auto const start = std::chrono::steady_clock::now();
 
     // Start from higher Y to process the canvas memory sequentially.
-    for (int y = canvas_pixels - 1; y >= 0; --y) {
+    for (int y = canvas_h - 1; y >= 0; --y) {
         wall_point.y = -half + pixel_size * y;
-        for (unsigned x = 0; x < canvas_pixels - 1; ++x) {
+        for (unsigned x = 0; x < canvas_w - 1; ++x) {
             wall_point.x = -half + pixel_size * x;
             world_r.direction = normalize(wall_point - ray_origin);
             object_r.direction = normalize(s_tform_inv * world_r.direction);
@@ -84,13 +86,14 @@ int main(int argc, char** argv) {
                 canvas(x, y) =
                     lighting(s.mat, light, pos_on_world_r, -world_r.direction,
                              normalize(normalize(pos_on_object_r - s_center) * s_tform_inv));
+                //                    red;
             }
         }
     }
 
     auto const stop = std::chrono::steady_clock::now();
     std::chrono::duration<double> const time_s = stop - start;
-    SPDLOG_INFO("Raytracing {}x{} pixels took {} ({})", canvas_pixels, canvas_pixels,
+    SPDLOG_INFO("Raytracing {}x{} pixels took {} ({})", canvas_w, canvas_h,
                 std::chrono::duration<double>(time_s),
                 std::chrono::duration<double, std::milli>(time_s));
 

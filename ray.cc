@@ -2,8 +2,6 @@
 
 #include "sphere.hh"
 
-#include <spdlog/spdlog.h>
-
 #include <cmath> // abs, sqrt, pow
 
 namespace {
@@ -112,6 +110,53 @@ std::optional<float> intersect_sphere(ray const& r) noexcept {
 
     return min_nonnegative(t1, t2);
 }
+
+namespace v2 {
+
+std::array<intersection, 2> intersect(ray const& world_r, sphere const& s) noexcept {
+    tform4 const inv_tform = inverse(s.tform);
+    ray const& object_r{
+        inv_tform * world_r.origin,
+        // do not normalize the result, so we get the t straight for the world space
+        // without the need to convert it first from the object space (why convert? because the t we
+        // get is for the transformed ray, not for the world space ray). this results in u (see
+        // below) not being a unit vector, which results in more calculation. but it is worth it
+        inv_tform * world_r.direction};
+
+    // Sphere equation: (x-c)⋅(x-c) = r²
+    // Ray equation: x = o + du
+    //
+    // x: intersection, a point on the sphere and on the ray
+    // c: center of the sphere (point)
+    pnt3 const c{0.f, 0.f, 0.f}; // sphere is at 0
+    // r: radius of the sphere
+    //  (for our sphere, radius is always 1)
+    // o: origin of the ray
+    pnt3 const& o = object_r.origin;
+    // d: distance from ray origin to intersection with sphere
+    //  (this is what needs to be found)
+    // u: ray direction vector (NOT unit len)
+    vec3 const& u = object_r.direction;
+
+    vec3 const oc = o - c;
+    float const uoc = dot(u, oc);
+    float const quad_a = dot(u, u);
+    float const quad_b = 2.f * uoc;
+    float const quad_c = dot(oc, oc) - 1.f;
+
+    float const quad_D = std::pow(quad_b, 2.f) - 4.f * quad_a * quad_c;
+    if (quad_D < 0) {
+        return {};
+    }
+    float const sqrt_quad_D = std::sqrt(quad_D);
+    float const two_quad_a = 2.f * quad_a;
+    return std::array{intersection{&s, (-quad_b + sqrt_quad_D) / two_quad_a},
+                      intersection{&s, (-quad_b - sqrt_quad_D) / two_quad_a}};
+}
+
+// std::optional<float> hit()
+
+} // namespace v2
 
 float dist(pnt3 const& q, pnt3 const& p, vec3 const& v, bool v_is_normal) noexcept {
     vec3 const a = cross(q - p, v);

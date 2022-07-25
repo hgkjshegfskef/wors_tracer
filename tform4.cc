@@ -40,10 +40,11 @@ pnt3 const& tform4::get_translation() const noexcept {
     return *reinterpret_cast<pnt3 const*>(n[3]); // UB
 }
 
-void tform4::set_translation(const pnt3& p) noexcept {
+tform4 const& tform4::set_translation(const pnt3& p) noexcept {
     n[3][0] = p.x;
     n[3][1] = p.y;
     n[3][2] = p.z;
+    return *this;
 }
 
 vec3& tform4::operator[](int j) noexcept {
