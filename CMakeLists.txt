@@ -139,7 +139,8 @@ add_library(
   sphere.cc
   intersection.cc
   lighting.cc
-  world.cc)
+  world.cc
+  shading.cc)
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL)
 target_compile_features(lib${PROJECT_NAME} PUBLIC cxx_std_20)
@@ -200,6 +201,7 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
               normal_test.cc
               tform_test.cc
               world_test.cc
+              shading_test.cc
               test_main.cc
               log.cc)
   target_compile_options(

@@ -9,6 +9,8 @@ namespace wt {
 
 struct ray;
 struct intersection;
+struct shading;
+struct color;
 
 struct world {
     pnt_light light;
@@ -22,5 +24,9 @@ struct world {
 
 // Intersect ray from world space with the world
 std::vector<intersection> intersect(ray const& world_r, world const& w) noexcept;
+
+color shade_hit(world const& w, shading const& sh) noexcept;
+
+color color_at(world const& w, ray const& r) noexcept;
 
 } // namespace wt

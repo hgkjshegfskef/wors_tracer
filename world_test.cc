@@ -1,5 +1,6 @@
 #include "intersection.hh"
 #include "ray.hh"
+#include "shading.hh"
 #include "world.hh"
 
 #include <gtest/gtest.h>
@@ -11,6 +12,7 @@ using namespace wt;
 TEST(WorldTest, Default) {
     world w = world::make_default();
     ray world_r{pnt3{0, 0, -5}, vec3{0, 0, 1}};
+
     auto isecs = intersect(world_r, w);
     std::sort(isecs.begin(), isecs.end());
     EXPECT_EQ(isecs.size(), 4);
@@ -22,4 +24,64 @@ TEST(WorldTest, Default) {
     EXPECT_NEAR(isecs[1].t, 4.5f, 1e-6);
     EXPECT_NEAR(isecs[2].t, 5.5f, 1e-6);
     EXPECT_NEAR(isecs[3].t, 6.f, 1e-6);
+}
+
+TEST(WorldTest, ShadingIntersection) {
+    world w = world::make_default();
+    ray r{pnt3{0, 0, -5}, vec3{0, 0, 1}};
+    sphere const& s = w.shapes[0];
+    intersection isec{&s, 4};
+    shading sh{isec, r};
+
+    color c = shade_hit(w, sh);
+    EXPECT_NEAR(c.r, .38066f, 1e-5f);
+    EXPECT_NEAR(c.g, .47583f, 1e-5f);
+    EXPECT_NEAR(c.b, .2855f, 1e-5f);
+}
+
+TEST(WorldTest, ShadingIntersectionFromInside) {
+    world w = world::make_default();
+    w.light = pnt_light{pnt3{0.f, .25f, 0.f}, color{1.f, 1.f, 1.f}};
+    ray r{pnt3{0, 0, 0}, vec3{0, 0, 1}};
+    sphere const& s = w.shapes[1];
+    intersection isec{&s, .5f};
+    shading sh{isec, r};
+
+    color c = shade_hit(w, sh);
+    EXPECT_NEAR(c.r, .90498f, 1e-5f);
+    EXPECT_NEAR(c.g, .90498f, 1e-5f);
+    EXPECT_NEAR(c.b, .90498f, 1e-5f);
+}
+
+TEST(WorldTest, ColorAtRayMiss) {
+    world w = world::make_default();
+    ray r{pnt3{0, 0, -5}, vec3{0, 1, 0}};
+    color c = color_at(w, r);
+    EXPECT_EQ(c.r, 0);
+    EXPECT_EQ(c.g, 0);
+    EXPECT_EQ(c.b, 0);
+}
+
+TEST(WorldTest, ColorAtRayHit) {
+    world w = world::make_default();
+    ray r{pnt3{0, 0, -5}, vec3{0, 0, 1}};
+    color c = color_at(w, r);
+    EXPECT_NEAR(c.r, .38066f, 1e-5);
+    EXPECT_NEAR(c.g, .47583f, 1e-5);
+    EXPECT_NEAR(c.b, .2855f, 1e-5);
+}
+
+TEST(WorldTest, ColorAtBetweenSpheres) {
+    world w = world::make_default();
+    sphere& outer = w.shapes[0];
+    sphere& inner = w.shapes[1];
+    outer.mat.ambient = 1.f;
+    inner.mat.ambient = 1.f;
+    // Ray is inside the outer sphere, but outside the inner sphere, hitting the inner sphere.
+    ray r{pnt3{0, 0, .75f}, vec3{0, 0, -1}};
+
+    color c = color_at(w, r);
+    EXPECT_EQ(c.r, inner.mat.col.r);
+    EXPECT_EQ(c.g, inner.mat.col.g);
+    EXPECT_EQ(c.b, inner.mat.col.b);
 }

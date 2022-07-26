@@ -1,8 +1,11 @@
 #include "world.hh"
 
+#include "color.hh"
 #include "intersection.hh"
+#include "lighting.hh"
 #include "mat3.hh"
 #include "ray.hh"
+#include "shading.hh"
 
 #include <algorithm> // sort
 
@@ -27,6 +30,22 @@ std::vector<intersection> intersect(ray const& world_r, world const& w) noexcept
         world_isecs.insert(world_isecs.end(), isecs.begin(), isecs.end());
     }
     return world_isecs;
+}
+
+color shade_hit(world const& w, shading const& sh) noexcept {
+    return lighting(sh.isec.s->mat, w.light, sh.isec_pnt, sh.eye, sh.normal);
+}
+
+color color_at(world const& w, ray const& r) noexcept {
+    auto isecs = intersect(r, w);
+    std::sort(isecs.begin(), isecs.end());
+    auto isec_it =
+        std::find_if(isecs.begin(), isecs.end(), [](auto const& isec) { return isec.t > 0; });
+    if (isec_it != isecs.end()) {
+        shading sh{*isec_it, r};
+        return shade_hit(w, sh);
+    }
+    return color{0, 0, 0};
 }
 
 } // namespace wt

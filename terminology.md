@@ -24,4 +24,3 @@ See also: https://www.scratchapixel.com/lessons/3d-basic-rendering/3d-viewing-pi
 
 
 * _perspective projection_:
-
