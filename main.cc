@@ -1,101 +1,59 @@
+#include "camera.hh"
 #include "canvas.hh"
-#include "lighting.hh"
 #include "log.hh"
-#include "pnt3.hh"
+#include "mat3.hh"
 #include "pnt_light.hh"
-#include "ray.hh"
-#include "sphere.hh"
-#include "util.hh" // lerp
+#include "render.hh"
+#include "util.hh" // write_ppm
+#include "world.hh"
 
 #include <fmt/chrono.h>
 #include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
-#include <chrono> // steady_clock
+#include <chrono>  // steady_clock
+#include <numbers> // pi_v
 
 using namespace wt;
+using namespace std::numbers;
 
 int main(int argc, char** argv) {
     (void)argc;
     setup_logging();
 
-    // Take a ray, and a sphere, and a canvas behind the sphere. Then penetrate sphere with the ray
-    // and cast its silhouette on the canvas.
+    tform4 rot_1{rotation<Axis::Y>(-pi_v<float> / 4)};
+    tform4 rot_2{rotation<Axis::Y>(pi_v<float> / 4)};
+    tform4 rot_3{rotation<Axis::X>(pi_v<float> / 2)};
+    tform4 scal{scale(10, .01f, 10)};
 
-    // Where ray starts.
-    pnt3 ray_origin{0, 0, -5};
+    sphere floor{scal, material{.col = {1, .9f, .9f}, .specular = 0}};
+    sphere left_wall{tform4::translate({0, 0, 5}) * rot_1 * rot_3 * scal, floor.mat};
+    sphere right_wall{tform4::translate({0, 0, 5}) * rot_2 * rot_3 * scal, floor.mat};
+    sphere middle{tform4::translate({-0.5f, 1, .5f}),
+                  material{.col = {.1f, 1, .5f}, .diffuse = .7f, .specular = .3f}};
+    sphere right{tform4::translate({1.5f, .5f, -0.5f}) * scale(.5f, .5f, .5f),
+                 material{.col = {.5f, 1, .1f}, .diffuse = .7f, .specular = .3f}};
+    sphere left{tform4::translate({-1.5f, .33f, -0.75f}) * scale(.33f, .33f, .33f),
+                material{.col = {1, .8f, .1f}, .diffuse = .7f, .specular = .3f}};
 
-    // Where canvas is positioned.
-    float wall_z = 10;
+    world w{pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}},
+            std::vector{floor, left_wall, right_wall, middle, right, left}};
 
-    // How large the wall will be. Because we are using unit spheres, the max y value will be 1. To
-    // find out the value, we take the ray origin and the highest point on the sphere and
-    // extrapolate between them. Then, we need a value twice as big as the result (for +y and -y
-    // values), plus some small margin.
-    float wall_size = lerp(wall_z, {ray_origin.z, ray_origin.y}, {0., 1.}) * 2 + 1;
-    SPDLOG_DEBUG("Wall size: {}", wall_size);
-
-    // How large canvas is in pixels.
-    unsigned canvas_w = 1000;
-    unsigned canvas_h = 1000;
-    SPDLOG_TRACE("canvas size: {}x{} pixels", canvas_w, canvas_h);
-
-    // Size of single pixel (in world space units).
-    float pixel_size = wall_size / canvas_w;
-    SPDLOG_TRACE("pixel size: {}", pixel_size);
-
-    // Half of the wall, which describes minimum and maximum x and y coordinates of the wall.
-    float half = wall_size / 2.;
-
-    canvas canvas{canvas_w, canvas_h};
-    canvas.fill({0, 0, 0});
-    color const red{1, 0, 0};
-
-    sphere s{tform4{}, {.col{1.f, 1.f, 1.f}}};
-
-    //    s.tform = tform4(scale(.5f, .5f, .5f)) *
-    //              tform4(rotation<Axis::Z>(std::numbers::pi_v<float> / 2.f)) *
-    //              tform4().set_translation({1.f, 1.f, 0.f});
-
-    pnt3 const s_center{0.f, 0.f, 0.f};
-    tform4 const s_tform_inv = inverse(s.tform);
-
-    // Light setup
-    pnt3 const light_position{-10.f, 10.f, -10.f}; // above and to the left of eye
-    color const light_intensity{1.f, 1.f, 1.f};
-    pnt_light const light{light_position, light_intensity};
-
-    pnt3 wall_point{{}, {}, wall_z};
-    ray world_r{ray_origin, {}};
-    ray object_r{s_tform_inv * world_r.origin, {}};
+    camera cam{1920, 1080, pi_v<float> / 3};
+    pnt3 from{0, 1.5f, -5};
+    pnt3 to{0, 1, 0};
+    vec3 up{0, 1, 0};
+    cam.tform = view(from, to, up);
 
     auto const start = std::chrono::steady_clock::now();
 
-    // Start from higher Y to process the canvas memory sequentially.
-    for (int y = canvas_h - 1; y >= 0; --y) {
-        wall_point.y = -half + pixel_size * y;
-        for (unsigned x = 0; x < canvas_w - 1; ++x) {
-            wall_point.x = -half + pixel_size * x;
-            world_r.direction = normalize(wall_point - ray_origin);
-            object_r.direction = normalize(s_tform_inv * world_r.direction);
-
-            if (auto const t = intersect_sphere(object_r)) {
-                SPDLOG_TRACE("Hit at ({},{})", x, y);
-                pnt3 const pos_on_object_r = position(object_r.origin, object_r.direction, *t);
-                pnt3 const pos_on_world_r = s.tform * pos_on_object_r;
-                canvas(x, y) =
-                    lighting(s.mat, light, pos_on_world_r, -world_r.direction,
-                             normalize(normalize(pos_on_object_r - s_center) * s_tform_inv));
-                //                    red;
-            }
-        }
-    }
+    canvas image = render(cam, w);
 
     auto const stop = std::chrono::steady_clock::now();
     std::chrono::duration<double> const time_s = stop - start;
-    SPDLOG_INFO("Raytracing {}x{} pixels took {} ({})", canvas_w, canvas_h,
+    SPDLOG_INFO("Raytracing {}x{} pixels took {} ({})", cam.hsize, cam.vsize,
                 std::chrono::duration<double>(time_s),
                 std::chrono::duration<double, std::milli>(time_s));
 
-    write_ppm(argv[1], canvas.as_ppm());
+    write_ppm(argv[1], image.as_ppm());
 }

@@ -38,14 +38,19 @@ color shade_hit(world const& w, shading const& sh) noexcept {
 
 color color_at(world const& w, ray const& r) noexcept {
     auto isecs = intersect(r, w);
-    std::sort(isecs.begin(), isecs.end());
-    auto isec_it =
-        std::find_if(isecs.begin(), isecs.end(), [](auto const& isec) { return isec.t > 0; });
-    if (isec_it != isecs.end()) {
-        shading sh{*isec_it, r};
-        return shade_hit(w, sh);
+    //    std::sort(isecs.begin(), isecs.end());
+    //    auto isec_it =
+    //        std::find_if(isecs.begin(), isecs.end(), [](auto const& isec) { return isec.t > 0; });
+    //    if (isec_it != isecs.end()) {
+    //        shading sh{*isec_it, r};
+    //        return shade_hit(w, sh);
+    //    }
+    intersection const isec = v2::hit(isecs);
+    if (isec.empty()) {
+        return color{0, 0, 0};
     }
-    return color{0, 0, 0};
+    shading sh{isec, r};
+    return shade_hit(w, sh);
 }
 
 } // namespace wt

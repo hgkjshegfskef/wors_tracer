@@ -59,6 +59,12 @@ vec3 const& tform4::operator[](int j) const noexcept {
     return *reinterpret_cast<vec3 const*>(n[j]); // UB
 }
 
+tform4 tform4::translate(pnt3 const& p) noexcept {
+    tform4 t;
+    t.set_translation(p);
+    return t;
+}
+
 tform4 inverse(const tform4& H) noexcept {
     vec3 const& a = H[0];
     vec3 const& b = H[1];

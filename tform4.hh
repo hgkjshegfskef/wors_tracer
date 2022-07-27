@@ -29,6 +29,8 @@ class tform4 final : public mat4 {
 
     vec3& operator[](int j) noexcept;
     vec3 const& operator[](int j) const noexcept;
+
+    static tform4 translate(pnt3 const& p) noexcept;
 };
 
 tform4 inverse(tform4 const& H) noexcept;

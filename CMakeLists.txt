@@ -140,7 +140,10 @@ add_library(
   intersection.cc
   lighting.cc
   world.cc
-  shading.cc)
+  shading.cc
+  camera.cc
+  render.cc)
+
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL)
 target_compile_features(lib${PROJECT_NAME} PUBLIC cxx_std_20)
@@ -187,6 +190,7 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
                        "[${GTest_VERSION}]")
 
   add_library(${PROJECT_NAME}_test_base INTERFACE)
+
   target_sources(
     ${PROJECT_NAME}_test_base
     INTERFACE vec3_test.cc
@@ -202,8 +206,11 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
               tform_test.cc
               world_test.cc
               shading_test.cc
+              camera_test.cc
+              render_test.cc
               test_main.cc
               log.cc)
+
   target_compile_options(
     ${PROJECT_NAME}_test_base
     INTERFACE $<${isCoverage}:$<${isGNUorClang}:--coverage>>)
