@@ -24,6 +24,10 @@ struct ray;
 // Camera transformation matrix. up is unit len
 tform4 view(pnt3 const& from, pnt3 const& to, vec3 const& up) noexcept;
 
+namespace v2 {
+tform4 view(pnt3 const& from, pnt3 const& to, vec3 const& up) noexcept;
+} // namespace v2
+
 ray ray_for_pixel(camera const& cam, float px, float py) noexcept;
 
 } // namespace wt

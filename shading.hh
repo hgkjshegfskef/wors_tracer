@@ -12,6 +12,7 @@ struct shading {
     // everything is in world space
     intersection isec;
     pnt3 isec_pnt;
+    pnt3 over_pnt;
     vec3 eye;
     vec3 normal;
     bool inside;

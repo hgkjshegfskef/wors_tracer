@@ -26,16 +26,27 @@ camera::camera(unsigned hsize, unsigned vsize, float fov) noexcept
 
 tform4 view(pnt3 const& from, pnt3 const& to, vec3 const& up) noexcept {
     vec3 const forward = normalize(to - from);
-    vec3 const left = normalize(cross(forward, normalize(up)));
-    vec3 const true_up = normalize(cross(left, forward));
-//    vec3 const true_up = -normalize(cross(left, forward));
+    vec3 const left = cross(forward, normalize(up));
+    vec3 const true_up = cross(left, forward);
     tform4 orientation{left.x,     left.y,     left.z,     0, //
                        true_up.x,  true_up.y,  true_up.z,  0, //
                        -forward.x, -forward.y, -forward.z, 0};
-    tform4 translation;
-    translation.set_translation(pnt3{-from.x, -from.y, -from.z});
-    return orientation * translation;
+    return orientation * tform4::translate({-from.x, -from.y, -from.z});
 }
+
+namespace v2 {
+
+tform4 view(pnt3 const& from, pnt3 const& to, vec3 const& up) noexcept {
+    vec3 const forward = normalize(to - from);
+    vec3 const left = normalize(cross(forward, normalize(up)));
+    vec3 const true_up = -normalize(cross(left, forward));    // !!!
+    tform4 orientation{left.x,     left.y,     left.z,     0, //
+                       true_up.x,  true_up.y,  true_up.z,  0, //
+                       -forward.x, -forward.y, -forward.z, 0};
+    return orientation * tform4::translate({-from.x, -from.y, -from.z});
+}
+
+} // namespace v2
 
 ray ray_for_pixel(camera const& cam, float px, float py) noexcept {
     // offset from edge of canvas to pixel center

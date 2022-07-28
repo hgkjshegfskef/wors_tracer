@@ -4,6 +4,8 @@
 #include "mat3.hh"
 #include "pnt_light.hh"
 #include "render.hh"
+#include "shape.hh"
+#include "sphere.hh"
 #include "util.hh" // write_ppm
 #include "world.hh"
 
@@ -36,14 +38,21 @@ int main(int argc, char** argv) {
     sphere left{tform4::translate({-1.5f, .33f, -0.75f}) * scale(.33f, .33f, .33f),
                 material{.col = {1, .8f, .1f}, .diffuse = .7f, .specular = .3f}};
 
-    world w{pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}},
-            std::vector{floor, left_wall, right_wall, middle, right, left}};
+    std::vector<shape> shapes;
+    shapes.emplace_back(floor);
+    shapes.emplace_back(left_wall);
+    shapes.emplace_back(right_wall);
+    shapes.emplace_back(middle);
+    shapes.emplace_back(right);
+    shapes.emplace_back(left);
+
+    world w{pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}, shapes};
 
     camera cam{1920, 1080, pi_v<float> / 3};
     pnt3 from{0, 1.5f, -5};
     pnt3 to{0, 1, 0};
     vec3 up{0, 1, 0};
-    cam.tform = view(from, to, up);
+    cam.tform = v2::view(from, to, up);
 
     auto const start = std::chrono::steady_clock::now();
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "pnt_light.hh"
-#include "sphere.hh"
 
 #include <vector>
 
@@ -11,13 +10,14 @@ struct ray;
 struct intersection;
 struct shading;
 struct color;
+class shape;
 
 struct world {
     pnt_light light;
-    std::vector<sphere> shapes;
+    std::vector<shape> shapes;
 
     world() noexcept = default;
-    world(pnt_light const& light, std::vector<sphere> const& spheres) noexcept;
+    world(pnt_light const& light, std::vector<shape> const& shapes) noexcept;
 
     static world make_default() noexcept;
 };
@@ -28,5 +28,7 @@ std::vector<intersection> intersect(ray const& world_r, world const& w) noexcept
 color shade_hit(world const& w, shading const& sh) noexcept;
 
 color color_at(world const& w, ray const& r) noexcept;
+
+bool is_shadowed(world const& w, pnt3 const& p) noexcept;
 
 } // namespace wt

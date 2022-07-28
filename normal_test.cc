@@ -1,6 +1,6 @@
 #include "mat3.hh"
 #include "pnt3.hh"
-#include "sphere.hh"
+#include "shape.hh"
 #include "tform4.hh"
 
 #include <gtest/gtest.h>
@@ -12,7 +12,7 @@ using namespace wt;
 using namespace std::numbers;
 
 TEST(NormalTest, SphereNoTform) {
-    sphere s;
+    shape s;
     pnt3 const s_center{0.f, 0.f, 0.f};
     pnt3 const s_point{1.f, 0.f, 0.f};
 
@@ -23,7 +23,7 @@ TEST(NormalTest, SphereNoTform) {
 }
 
 TEST(NormalTest, SphereTranslated) {
-    sphere s;
+    shape s;
     s.tform.set_translation({0, 1, 0});
     pnt3 const s_center = s.tform * pnt3{0, 0, 0};
     EXPECT_NEAR(s_center.x, 0, 1e-6);
@@ -38,7 +38,7 @@ TEST(NormalTest, SphereTranslated) {
 }
 
 TEST(NormalTest, SphereScaledRotated) {
-    sphere s{scale(1.f, .5f, 1.f) * rotation<Axis::Z>(pi_v<float> / 5.f)};
+    shape s{scale(1.f, .5f, 1.f) * rotation<Axis::Z>(pi_v<float> / 5.f)};
     pnt3 const s_center{0.f, 0.f, 0.f};
     pnt3 const s_point{0.f, sqrt2_v<float> / 2.f, -sqrt2_v<float> / 2.f};
 
@@ -52,7 +52,7 @@ TEST(NormalTest, SphereScaledRotated) {
 }
 
 TEST(NormalTest, NormalAtNoTform) {
-    sphere s;
+    shape s;
     pnt3 const s_center{0.f, 0.f, 0.f};
     pnt3 const s_point{1.f, 0.f, 0.f};
 
@@ -63,7 +63,7 @@ TEST(NormalTest, NormalAtNoTform) {
 }
 
 TEST(NormalTest, NormalAtSphereTranslated) {
-    sphere s;
+    shape s;
     s.tform.set_translation({0, 1, 0});
     pnt3 const s_point{0, 1.70711f, -.70711f};
 
@@ -74,7 +74,7 @@ TEST(NormalTest, NormalAtSphereTranslated) {
 }
 
 TEST(NormalTest, NormalAtSphereScaledRotated) {
-    sphere s{scale(1.f, .5f, 1.f) * rotation<Axis::Z>(pi_v<float> / 5.f)};
+    shape s{scale(1.f, .5f, 1.f) * rotation<Axis::Z>(pi_v<float> / 5.f)};
     pnt3 const s_center{0.f, 0.f, 0.f};
     pnt3 const s_point{0.f, sqrt2_v<float> / 2.f, -sqrt2_v<float> / 2.f};
 

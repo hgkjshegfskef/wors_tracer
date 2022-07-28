@@ -1,6 +1,7 @@
 #include "camera.hh"
 #include "canvas.hh"
 #include "render.hh"
+#include "shape.hh"
 #include "world.hh"
 
 #include <gtest/gtest.h>

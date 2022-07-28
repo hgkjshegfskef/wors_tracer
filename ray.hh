@@ -10,7 +10,7 @@
 namespace wt {
 
 struct intersection;
-struct sphere;
+class shape;
 
 struct ray {
     pnt3 origin;
@@ -21,14 +21,18 @@ struct ray {
 };
 
 // Intersect ray from world space with a sphere
-std::optional<float> intersect(ray const& r, sphere const& s) noexcept;
+// std::optional<float> intersect(ray const& r, sphere const& s) noexcept;
 
 // Intersect ray from object space (already transformed) with a sphere
-std::optional<float> intersect_sphere(ray const& r) noexcept;
+// std::optional<float> intersect_sphere(ray const& r) noexcept;
 
-namespace v2 {
-// Intersect and produce t compatible with world space.
-std::array<intersection, 2> intersect(ray const& world_r, sphere const& s) noexcept;
+// namespace v2 {
+//// Intersect and produce t compatible with world space.
+// std::array<intersection, 2> intersect(ray const& world_r, sphere const& s) noexcept;
+//
+// } // namespace v2
+
+// std::array<intersection, 2> intersect(ray const& world_r, shape const& s) noexcept;
 
 // Find smallest positive intersection. Must check return value for empty().
 template <typename Container> intersection hit(Container const& isecs) noexcept;
@@ -37,7 +41,6 @@ extern template intersection
 hit<std::vector<intersection>>(std::vector<intersection> const&) noexcept;
 extern template intersection
 hit<std::array<intersection, 2>>(std::array<intersection, 2> const&) noexcept;
-} // namespace v2
 
 pnt3 position(pnt3 const& origin, vec3 const& direction, float t) noexcept;
 

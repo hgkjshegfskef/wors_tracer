@@ -142,7 +142,12 @@ add_library(
   world.cc
   shading.cc
   camera.cc
-  render.cc)
+  render.cc
+  shape.cc
+  shape_concept.cc
+  shape_model.cc
+  sphere.cc
+  sphere_operations.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL)
@@ -198,7 +203,7 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
               vec4_test.cc
               mat3_test.cc
               mat4_test.cc
-              sphere_test.cc
+              # sphere_test.cc
               pnt3_test.cc
               canvas_test.cc
               color_test.cc
@@ -208,6 +213,7 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
               shading_test.cc
               camera_test.cc
               render_test.cc
+              lighting_test.cc
               test_main.cc
               log.cc)
 

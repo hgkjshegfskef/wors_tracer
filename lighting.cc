@@ -10,7 +10,7 @@
 namespace wt {
 
 color lighting(material const& material, pnt_light const& light, pnt3 const& point,
-               vec3 const& eye_vector, vec3 const& normal_vector) noexcept {
+               vec3 const& eye_vector, vec3 const& normal_vector, bool in_shadow) noexcept {
     // combine the surface color with the light's color/intensity
     color effective_color = material.col * light.intensity;
 
@@ -19,6 +19,10 @@ color lighting(material const& material, pnt_light const& light, pnt3 const& poi
 
     // compute the ambient contribution
     color ambient = effective_color * material.ambient;
+
+    if (in_shadow) {
+        return ambient;
+    }
 
     // light_dot_normal represents the cosine of the angle between the light vector and the normal
     // vector. A negative number means the light is on the other side of the surface.

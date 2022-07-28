@@ -1,8 +1,10 @@
 #include "intersection.hh"
 
-//#include <fmt/format.h>
+#include "sphere.hh"
 
 namespace wt {
+
+intersection::intersection() noexcept : s{nullptr}, t{0.f} {}
 
 intersection::intersection(sphere const* s, float t) noexcept : s{s}, t{t} {}
 

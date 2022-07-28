@@ -1,9 +1,5 @@
 #pragma once
 
-//#include "sphere.hh"
-
-//#include <fmt/core.h>
-
 namespace wt {
 
 struct sphere;
@@ -12,10 +8,10 @@ struct intersection {
     sphere const* s{};
     float t{};
 
-    bool empty() const noexcept;
-
-    intersection() noexcept = default;
+    intersection() noexcept;
     intersection(sphere const* s, float t) noexcept;
+
+    bool empty() const noexcept;
 };
 
 bool operator<(intersection const& l, intersection const& r) noexcept;

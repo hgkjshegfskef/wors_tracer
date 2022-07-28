@@ -1,7 +1,7 @@
 #include "intersection.hh"
 #include "mat3.hh"
 #include "ray.hh"
-#include "sphere.hh"
+#include "shape.hh"
 #include "tform4.hh"
 
 #include <gtest/gtest.h>
@@ -14,9 +14,9 @@ TEST(RayTest, v2Intersect1) {
     ray r{{0, 0, -5}, {0, 0, 1}};
     tform4 tform;
     tform.set_translation({5, 0, 0});
-    sphere s{tform};
+    shape s{tform};
 
-    auto isections = v2::intersect(r, s);
+    auto isections = intersect(r, s);
     EXPECT_EQ(isections.size(), 2);
     EXPECT_TRUE(isections[0].empty());
     EXPECT_TRUE(isections[1].empty());
@@ -25,9 +25,9 @@ TEST(RayTest, v2Intersect1) {
 TEST(RayTest, v2Intersect2) {
     ray r{{0, 0, -5}, {0, 0, 1}};
     tform4 tform = scale(2, 2, 2);
-    sphere s{tform};
+    shape s{tform};
 
-    auto isections = v2::intersect(r, s);
+    auto isections = intersect(r, s);
     EXPECT_EQ(isections.size(), 2);
     std::sort(isections.begin(), isections.end());
     EXPECT_EQ(isections[0].t, 3.f);
@@ -41,9 +41,9 @@ TEST(RayTest, v2Intersect2) {
 
 TEST(RayTest, v2Intersect3) {
     ray r{{0, 0, 5}, {0, 0, 1}};
-    sphere s;
+    shape s;
 
-    auto isections = v2::intersect(r, s);
+    auto isections = intersect(r, s);
     EXPECT_EQ(isections.size(), 2);
     std::sort(isections.begin(), isections.end());
     EXPECT_EQ(isections[0].t, -6.f);
@@ -53,20 +53,20 @@ TEST(RayTest, v2Intersect3) {
 TEST(RayTest, v2Hit2) {
     ray r{{0, 0, -5}, {0, 0, 1}};
     tform4 tform = scale(2, 2, 2);
-    sphere s{tform};
+    shape s{tform};
 
-    auto isections = v2::intersect(r, s);
+    auto isections = intersect(r, s);
     std::sort(isections.begin(), isections.end());
-    intersection i = v2::hit(isections);
+    intersection i = hit(isections);
     EXPECT_EQ(i.t, 3.f);
 }
 
 TEST(RayTest, v2Hit3) {
     ray r{{0, 0, 5}, {0, 0, 1}};
-    sphere s;
+    shape s;
 
-    auto isections = v2::intersect(r, s);
+    auto isections = intersect(r, s);
     std::sort(isections.begin(), isections.end());
-    intersection i = v2::hit(isections);
+    intersection i = hit(isections);
     EXPECT_TRUE(i.empty());
 }

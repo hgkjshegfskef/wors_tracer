@@ -1,6 +1,6 @@
 #include "ray.hh"
 #include "shading.hh"
-#include "sphere.hh"
+#include "shape.hh"
 
 #include <gtest/gtest.h>
 
@@ -8,7 +8,7 @@ using namespace wt;
 
 TEST(ShadingTest, OutsideIntersection) {
     ray r{pnt3{0, 0, -5}, vec3{0, 0, 1}};
-    sphere s;
+    shape s;
     intersection isec{&s, 4};
     shading sh{isec, r};
 
@@ -17,7 +17,7 @@ TEST(ShadingTest, OutsideIntersection) {
 
 TEST(ShadingTest, InsideIntersection) {
     ray r{pnt3{0, 0, 0}, vec3{0, 0, 1}};
-    sphere s;
+    shape s;
     intersection isec{&s, 1};
     shading sh{isec, r};
 
@@ -31,4 +31,13 @@ TEST(ShadingTest, InsideIntersection) {
     EXPECT_EQ(sh.normal.x, 0);
     EXPECT_EQ(sh.normal.y, 0);
     EXPECT_EQ(sh.normal.z, -1);
+}
+
+TEST(ShadingTest, HitOffsetsPoint) {
+    ray r{pnt3{0, 0, -5}, vec3{0, 0, 1}};
+    shape s{tform4::translate({0, 0, 1})};
+    intersection isec{&s, 5};
+    shading sh{isec, r};
+    EXPECT_TRUE(sh.over_pnt.z < -1e-6f / 2);
+    EXPECT_TRUE(sh.isec_pnt.z > sh.over_pnt.z);
 }
