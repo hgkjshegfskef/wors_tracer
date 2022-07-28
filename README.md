@@ -1,1 +1,1 @@
-![](image.png)
+![foobar](./image.png)
