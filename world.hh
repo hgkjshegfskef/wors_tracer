@@ -23,12 +23,16 @@ struct world {
 };
 
 // Intersect ray from world space with the world
-std::vector<intersection> intersect(ray const& world_r, world const& w) noexcept;
+void intersect(world const& world, ray const& world_ray,
+               std::vector<intersection>& world_isecs) noexcept;
 
-color shade_hit(world const& w, shading const& sh) noexcept;
+color shade_hit(world const& world, shading const& shading_info,
+                std::vector<intersection>& world_isecs) noexcept;
 
-color color_at(world const& w, ray const& r) noexcept;
+color color_at(world const& world, ray const& world_ray,
+               std::vector<intersection>& world_isecs) noexcept;
 
-bool is_shadowed(world const& w, pnt3 const& p) noexcept;
+bool is_shadowed(world const& world, pnt3 const& world_point,
+                 std::vector<intersection>& world_isecs) noexcept;
 
 } // namespace wt

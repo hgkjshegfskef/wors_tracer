@@ -29,45 +29,42 @@ world world::make_default() noexcept {
                  std::move(shapes)};
 }
 
-std::vector<intersection> intersect(ray const& world_r, world const& w) noexcept {
-    std::vector<intersection> world_isecs;
-    world_isecs.reserve(w.shapes.size() * 2);
-    for (auto const& s : w.shapes) {
-        auto const isecs = intersect(s, world_r);
-        world_isecs.insert(world_isecs.end(), isecs.begin(), isecs.end());
+void intersect(world const& world, ray const& world_ray,
+               std::vector<intersection>& world_isecs) noexcept {
+    for (auto const& s : world.shapes) {
+        auto const isecs = intersect(s, world_ray);
+        world_isecs.insert(world_isecs.cend(), isecs.cbegin(), isecs.cend());
     }
-    return world_isecs;
 }
 
-color shade_hit(world const& w, shading const& sh) noexcept {
-    return lighting(get_mat(*sh.isec.s), w.light, sh.isec_pnt, sh.eye, sh.normal,
-                    is_shadowed(w, sh.over_pnt));
+color shade_hit(world const& world, shading const& shading_info,
+                std::vector<intersection>& world_isecs) noexcept {
+    return lighting(get_mat(*shading_info.isec.s), world.light, shading_info.isec_pnt,
+                    shading_info.eye, shading_info.normal,
+                    is_shadowed(world, shading_info.over_pnt, world_isecs));
 }
 
-color color_at(world const& w, ray const& r) noexcept {
-    auto isecs = intersect(r, w);
-    //    std::sort(isecs.begin(), isecs.end());
-    //    auto isec_it =
-    //        std::find_if(isecs.begin(), isecs.end(), [](auto const& isec) { return isec.t > 0; });
-    //    if (isec_it != isecs.end()) {
-    //        shading sh{*isec_it, r};
-    //        return shade_hit(w, sh);
-    //    }
-    intersection const isec = hit(isecs);
+color color_at(world const& world, ray const& world_ray,
+               std::vector<intersection>& world_isecs) noexcept {
+    world_isecs.clear();
+    intersect(world, world_ray, world_isecs);
+    intersection const isec = hit(world_isecs);
     if (isec.empty()) {
         return color{0, 0, 0};
     }
-    shading sh{isec, r};
-    return shade_hit(w, sh);
+    shading sh{isec, world_ray};
+    return shade_hit(world, sh, world_isecs);
 }
 
-bool is_shadowed(world const& w, pnt3 const& p) noexcept {
-    vec3 v = w.light.position - p;
-    float dist = magnitude(v);
-    vec3 direction = normalize(v);
-    ray r{p, direction};
-    auto isecs = intersect(r, w);
-    intersection isec = hit(isecs);
+bool is_shadowed(world const& world, pnt3 const& world_point,
+                 std::vector<intersection>& world_isecs) noexcept {
+    vec3 const v = world.light.position - world_point;
+    float const dist = magnitude(v);
+    vec3 const direction = normalize(v);
+    ray const r{world_point, direction};
+    world_isecs.clear();
+    intersect(world, r, world_isecs);
+    intersection isec = hit(world_isecs);
     if (!isec.empty() && isec.t < dist) {
         return true;
     }

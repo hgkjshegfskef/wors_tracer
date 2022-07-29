@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_LIST_DIR}/_deps")
+if(UNIX AND NOT APPLE)
+  list(APPEND CMAKE_PREFIX_PATH "/usr/lib/cmake")
+endif()
 
 project(wors_tracer LANGUAGES CXX)
 
@@ -37,7 +41,14 @@ if(PROJECT_IS_TOP_LEVEL)
 
   set(CMAKE_CXX_EXTENSIONS OFF)
 
-  set(buildTypes Debug Release RelWithDebInfo Testing Fast Coverage)
+  set(buildTypes
+      Debug
+      Release
+      RelWithDebInfo
+      Testing
+      Fast
+      Coverage
+      Profile)
 
   include(util)
   util_set_allowed_build_types(BUILD_TYPES ${buildTypes})
@@ -63,6 +74,7 @@ if(PROJECT_IS_TOP_LEVEL)
   set(isTesting $<CONFIG:Testing>)
   set(isFast $<CONFIG:Fast>)
   set(isCoverage $<CONFIG:Coverage>)
+  set(isProfile $<CONFIG:Profile>)
   set(isGNU $<CXX_COMPILER_ID:GNU>)
   set(isClang $<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>)
   set(isGNUorClang $<OR:${isGNU},${isClang}>)
@@ -87,6 +99,9 @@ if(PROJECT_IS_TOP_LEVEL)
       $<$<OR:${isRelWithDebInfo},${isTesting}>:$<${isGNUorClang}:-ggdb3>>
       $<${isTesting}:$<${isGNUorClang}:$<${hasAsanUbsan}:-fsanitize=address,undefined>>>
       $<${isTesting}:$<${isGNUorClang}:$<${hasAsanUbsan}:-fno-omit-frame-pointer>>>
+      $<${isProfile}:$<${isGNUorClang}:-O0>>
+      $<${isProfile}:$<${isGNUorClang}:-ggdb3>>
+      $<${isProfile}:$<${isGNUorClang}:-fno-omit-frame-pointer>>
       $<${isFast}:$<${isGNUorClang}:-Ofast>>
       $<${isCoverage}:$<${isGNUorClang}:-ggdb3>>
       $<${isCoverage}:$<${isGNUorClang}:-fno-omit-frame-pointer>>
