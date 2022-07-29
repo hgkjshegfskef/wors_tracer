@@ -137,6 +137,9 @@ find_package_message(fmt "Using fmt ${fmt_VERSION}" "[${fmt_VERSION}]")
 find_package(spdlog CONFIG REQUIRED)
 find_package_message(spdlog "Using spdlog ${spdlog_VERSION}"
                      "[${spdlog_VERSION}]")
+find_package(TBB CONFIG REQUIRED)
+find_package_message(TBB "Using TBB ${spdlog_VERSION}"
+                     "[${spdlog_VERSION}]")
 
 add_library(
   lib${PROJECT_NAME}
@@ -197,7 +200,7 @@ endif()
 target_link_libraries(
   lib${PROJECT_NAME}
   PUBLIC $<TARGET_NAME_IF_EXISTS:${PROJECT_NAME}_common_flags> m fmt::fmt
-         spdlog::spdlog)
+         spdlog::spdlog TBB::tbb)
 
 add_executable(${PROJECT_NAME} main.cc log.cc)
 target_link_libraries(${PROJECT_NAME} PRIVATE lib${PROJECT_NAME})

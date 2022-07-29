@@ -54,15 +54,15 @@ int main(int argc, char** argv) {
     vec3 up{0, 1, 0};
     cam.tform = v2::view(from, to, up);
 
-    auto const start = std::chrono::steady_clock::now();
-
-    canvas image = render(cam, w);
-
-    auto const stop = std::chrono::steady_clock::now();
-    std::chrono::duration<double> const time_s = stop - start;
-    SPDLOG_INFO("Raytracing {}x{} pixels took {} ({})", cam.hsize, cam.vsize,
-                std::chrono::duration<double>(time_s),
-                std::chrono::duration<double, std::milli>(time_s));
-
-    write_ppm(argv[1], image.as_ppm());
+    unsigned frames = 10;
+    for (unsigned frame = 0; frame < frames; ++frame) {
+        auto const start = std::chrono::steady_clock::now();
+        canvas image = render(cam, w);
+        auto const stop = std::chrono::steady_clock::now();
+        std::chrono::duration<double> const time_s = stop - start;
+        SPDLOG_INFO("Raytracing {}x{} pixels took {} ({}), frame#{}", cam.hsize, cam.vsize,
+                    std::chrono::duration<double>(time_s),
+                    std::chrono::duration<double, std::milli>(time_s), frame);
+//        write_ppm(argv[1], image.as_ppm());
+    }
 }

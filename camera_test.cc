@@ -99,7 +99,7 @@ TEST(CameraTest, VerticalCanvas) {
 TEST(CameraTest, RayThroughCanvasCenter) {
     camera cam{201, 101, pi_v<float> / 2};
 
-    ray r = ray_for_pixel(cam, 100, 50);
+    ray r = ray_for_pixel(cam, <#initializer #>, 100, 50);
 
     EXPECT_EQ(r.origin.x, 0);
     EXPECT_EQ(r.origin.y, 0);
@@ -112,7 +112,7 @@ TEST(CameraTest, RayThroughCanvasCenter) {
 TEST(CameraTest, RayThroughCanvasCorner) {
     camera cam{201, 101, pi_v<float> / 2};
 
-    ray r = ray_for_pixel(cam, 0, 0);
+    ray r = ray_for_pixel(cam, <#initializer #>, 0, 0);
 
     EXPECT_EQ(r.origin.x, 0);
     EXPECT_EQ(r.origin.y, 0);
@@ -129,7 +129,7 @@ TEST(CameraTest, RayThroughTransformedCamera) {
     tform4 rot{rotation<Axis::Y>(pi_v<float> / 4)};
     cam.tform = rot * tran;
 
-    ray r = ray_for_pixel(cam, 100, 50);
+    ray r = ray_for_pixel(cam, <#initializer #>, 100, 50);
 
     EXPECT_NEAR(r.origin.x, 0.f, 1e-5f);
     EXPECT_NEAR(r.origin.y, 2.f, 1e-5f);

@@ -48,7 +48,7 @@ tform4 view(pnt3 const& from, pnt3 const& to, vec3 const& up) noexcept {
 
 } // namespace v2
 
-ray ray_for_pixel(camera const& cam, float px, float py) noexcept {
+ray ray_for_pixel(camera const& cam, tform4 const& inv_cam_tform, float px, float py) noexcept {
     // offset from edge of canvas to pixel center
     float const xoffset = (px + 0.5f) * cam.pixel_size;
     float const yoffset = (py + 0.5f) * cam.pixel_size;
@@ -59,7 +59,6 @@ ray ray_for_pixel(camera const& cam, float px, float py) noexcept {
     assert(-1.f <= world_x && world_x <= 1.f);
     assert(-1.f <= world_y && world_y <= 1.f);
 
-    tform4 const inv_cam_tform = inverse(cam.tform);
     // canvas is at z=-1
     pnt3 const pixel = inv_cam_tform * pnt3{world_x, world_y, -1};
     pnt3 const origin = inv_cam_tform * pnt3{0, 0, 0};
