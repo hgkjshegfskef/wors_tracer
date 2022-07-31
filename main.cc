@@ -23,6 +23,9 @@ int main(int argc, char** argv) {
     (void)argc;
     setup_logging();
 
+    unsigned const hsize = 640;
+    unsigned const vsize = 480;
+
     tform4 rot_1{rotation<Axis::Y>(-pi_v<float> / 4)};
     tform4 rot_2{rotation<Axis::Y>(pi_v<float> / 4)};
     tform4 rot_3{rotation<Axis::X>(pi_v<float> / 2)};
@@ -39,30 +42,45 @@ int main(int argc, char** argv) {
                 material{.col = {1, .8f, .1f}, .diffuse = .7f, .specular = .3f}};
 
     std::vector<shape> shapes;
-    shapes.emplace_back(floor);
-    shapes.emplace_back(left_wall);
-    shapes.emplace_back(right_wall);
-    shapes.emplace_back(middle);
-    shapes.emplace_back(right);
-    shapes.emplace_back(left);
+    shapes.emplace_back(std::move(floor));
+    shapes.emplace_back(std::move(left_wall));
+    shapes.emplace_back(std::move(right_wall));
+    shapes.emplace_back(std::move(middle));
+    shapes.emplace_back(std::move(right));
+    shapes.emplace_back(std::move(left));
 
-    world w{pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}, shapes};
+    world const w{pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}, std::move(shapes)};
 
-    camera cam{1920, 1080, pi_v<float> / 3};
+    camera cam{hsize, vsize, pi_v<float> / 3};
     pnt3 from{0, 1.5f, -5};
     pnt3 to{0, 1, 0};
     vec3 up{0, 1, 0};
     cam.tform = v2::view(from, to, up);
 
-    unsigned frames = 10;
+    render_sdl(cam, w);
+
+#if 0
+    canvas image;
+    unsigned const frames = 1;
     for (unsigned frame = 0; frame < frames; ++frame) {
-        auto const start = std::chrono::steady_clock::now();
-        canvas image = render(cam, w);
-        auto const stop = std::chrono::steady_clock::now();
-        std::chrono::duration<double> const time_s = stop - start;
-        SPDLOG_INFO("Raytracing {}x{} pixels took {} ({}), frame#{}", cam.hsize, cam.vsize,
-                    std::chrono::duration<double>(time_s),
-                    std::chrono::duration<double, std::milli>(time_s), frame);
-//        write_ppm(argv[1], image.as_ppm());
+
+        //    auto start = std::chrono::steady_clock::now();
+        image = render(cam, w);
+        //    auto stop = std::chrono::steady_clock::now();
+        //    std::chrono::duration<double> time_s = stop - start;
+        //    SPDLOG_INFO("Raytracing {}x{} ({}) pixels took {} ({})", cam.hsize, cam.vsize,
+        //                cam.hsize * cam.vsize, std::chrono::duration<double>(time_s),
+        //                std::chrono::duration<double, std::milli>(time_s));
+
+        //        if (frame == frames - 1) {
+        //        }
     }
+
+    //    start = std::chrono::steady_clock::now();
+    write_ppm(argv[1], image.as_ppm());
+    //    stop = std::chrono::steady_clock::now();
+    //    time_s = stop - start;
+    //    SPDLOG_INFO("Dumping image took {} ({})", std::chrono::duration<double>(time_s),
+    //                std::chrono::duration<double, std::milli>(time_s));
+#endif
 }

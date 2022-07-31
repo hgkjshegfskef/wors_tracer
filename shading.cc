@@ -2,7 +2,7 @@
 
 #include "ray.hh"
 #include "shape.hh"
-#include "sphere_operations.hh"
+#include "sphere.hh"
 
 namespace wt {
 

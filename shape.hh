@@ -63,7 +63,7 @@ class shape {
     std::unique_ptr<shape_concept> pimpl_;
 };
 
-extern template shape::shape(sphere&);
+// extern template shape::shape(sphere&);
 extern template shape::shape(sphere&&);
 
 } // namespace wt

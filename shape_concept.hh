@@ -30,7 +30,7 @@ class shape::shape_concept {
     virtual std::array<intersection, 2> do_intersect(ray const& world_ray) const noexcept = 0;
 
     // Make shape_concept's children copyable through shape_concept pointer.
-    [[nodiscard]] virtual std::unique_ptr<shape_concept> clone() const = 0;
+    [[nodiscard]] virtual std::unique_ptr<shape_concept> clone() const noexcept = 0;
 
   protected:
     shape_concept() noexcept;

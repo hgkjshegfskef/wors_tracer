@@ -138,8 +138,13 @@ find_package(spdlog CONFIG REQUIRED)
 find_package_message(spdlog "Using spdlog ${spdlog_VERSION}"
                      "[${spdlog_VERSION}]")
 find_package(TBB CONFIG REQUIRED)
-find_package_message(TBB "Using TBB ${spdlog_VERSION}"
-                     "[${spdlog_VERSION}]")
+find_package_message(TBB "Using TBB ${TBB_VERSION}" "[${TBB_VERSION}]")
+find_package(SDL2 REQUIRED)
+find_package_message(SDL2 "Using SDL2 ${SDL2_VERSION}" "[${SDL2_VERSION}]")
+# find_package(glfw3 CONFIG REQUIRED) find_package_message(glfw3 "Using glfw3
+# ${glfw3_VERSION}" "[${glfw3_VERSION}]") find_package(OpenGL REQUIRED)
+# find_package_message(OpenGL "Using OpenGL ${OpenGL_VERSION}"
+# "[${OpenGL_VERSION}]")
 
 add_library(
   lib${PROJECT_NAME}
@@ -164,11 +169,11 @@ add_library(
   shape.cc
   shape_concept.cc
   shape_model.cc
-  sphere.cc
-  sphere_operations.cc)
+  sphere.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
-target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL)
+target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL
+                                                     TBB_USE_THREADING_TOOLS=1)
 target_compile_features(lib${PROJECT_NAME} PUBLIC cxx_std_20)
 if(${PROJECT_NAME}_LOGGING_LEVEL STREQUAL "Trace")
   target_compile_definitions(lib${PROJECT_NAME}
@@ -200,7 +205,8 @@ endif()
 target_link_libraries(
   lib${PROJECT_NAME}
   PUBLIC $<TARGET_NAME_IF_EXISTS:${PROJECT_NAME}_common_flags> m fmt::fmt
-         spdlog::spdlog TBB::tbb)
+         spdlog::spdlog TBB::tbb SDL2::SDL2 # glfw OpenGL::GL
+)
 
 add_executable(${PROJECT_NAME} main.cc log.cc)
 target_link_libraries(${PROJECT_NAME} PRIVATE lib${PROJECT_NAME})

@@ -1,11 +1,15 @@
 #include "util.hh"
 
+#include "color.hh"
+
 #include <fmt/core.h>
 
-#include <cerrno>  // errno
-#include <cstdio>  // FILE
-#include <cstring> // strerror
-#include <memory>  // unique_ptr
+#include <algorithm> // clamp
+#include <cerrno>    // errno
+#include <cstdio>    // FILE
+#include <cstring>   // strerror
+#include <memory>    // unique_ptr
+#include <utility>   // pair
 
 namespace wt {
 
@@ -41,6 +45,22 @@ void write_ppm(char const* fname, std::string_view contents) noexcept {
     //    }
     //
     //    image_file.write(contents.data(), long(contents.size()));
+}
+
+// Scale a number between two (possibly overlapping) ranges.
+// Use-case example: given a value in range [0;1], find out its respective value in range [0;255].
+// Further reading: https://gamedev.stackexchange.com/a/33445
+float scale(float value, std::pair<float, float> source_range,
+            std::pair<float, float> target_range) noexcept {
+    return lerp(value, {source_range.first, target_range.first},
+                {source_range.second, target_range.second});
+}
+
+float clamp_and_scale(color const& col, unsigned component_idx) noexcept {
+    // Clamp to the range of canvas color components' values.
+    auto const clamped = std::clamp(col[component_idx], 0.f, 1.f);
+    // Scale to the range of PPM color values.
+    return scale(std::move(clamped), {0.f, 1.f}, {0.f, 255.f});
 }
 
 } // namespace wt

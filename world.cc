@@ -9,7 +9,6 @@
 #include "shading.hh"
 #include "shape.hh"
 #include "sphere.hh"
-#include "sphere_operations.hh"
 #include "tform4.hh"
 
 #include <algorithm> // sort
