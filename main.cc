@@ -9,11 +9,8 @@
 #include "util.hh" // write_ppm
 #include "world.hh"
 
-#include <fmt/chrono.h>
-#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
-#include <chrono>  // steady_clock
 #include <numbers> // pi_v
 
 using namespace wt;
@@ -55,7 +52,7 @@ int main(int argc, char** argv) {
     pnt3 from{0, 1.5f, -5};
     pnt3 to{0, 1, 0};
     vec3 up{0, 1, 0};
-    cam.tform = v2::view(from, to, up);
+    cam.tform = view(from, to, up);
 
     render_sdl(cam, w);
 
