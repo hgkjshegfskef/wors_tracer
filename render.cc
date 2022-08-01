@@ -85,9 +85,10 @@ void render_sdl(camera const& camera, world const& world) noexcept {
             }
         }
 
+        SDL_memset(surface->pixels, 0, surface->h * surface->pitch);
+
         auto start = std::chrono::steady_clock::now();
 
-        // This doesn't work, the image is all fucked
         tbb::parallel_for(
             tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const range) {
                 std::vector<intersection> world_isecs;
@@ -98,25 +99,11 @@ void render_sdl(camera const& camera, world const& world) noexcept {
                         color const color = color_at(
                             world, ray_for_pixel(camera, inv_cam_tform, x, y), world_isecs);
                         pixels[y * camera.hsize + x] =
-                            SDL_MapRGBA(surface->format, clamp_and_scale(color, 0),
-                                        clamp_and_scale(color, 1), clamp_and_scale(color, 2), 255);
+                            SDL_MapRGB(surface->format, clamp_and_scale(color, 0),
+                                       clamp_and_scale(color, 1), clamp_and_scale(color, 2));
                     }
                 }
             });
-
-        // This works
-        std::vector<intersection> world_isecs;
-        world_isecs.reserve(world.shapes.size() * 2);
-        auto* pixels = reinterpret_cast<unsigned*>(surface->pixels);
-        for (unsigned y = 0; y != camera.vsize; ++y) {
-            for (unsigned x = 0; x != camera.hsize; ++x) {
-                color const color =
-                    color_at(world, ray_for_pixel(camera, inv_cam_tform, x, y), world_isecs);
-                pixels[y * camera.hsize + x] =
-                    SDL_MapRGBA(surface->format, clamp_and_scale(color, 0),
-                                clamp_and_scale(color, 1), clamp_and_scale(color, 2), 255);
-            }
-        }
 
         auto stop = std::chrono::steady_clock::now();
 
