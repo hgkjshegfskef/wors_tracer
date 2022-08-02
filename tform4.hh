@@ -24,11 +24,13 @@ class tform4 final : public mat4 {
 
     tform4(mat3 const& M) noexcept;
 
-    pnt3 const& get_translation() const noexcept;
+    //    pnt3 const& get_translation() const noexcept;
     tform4 const& set_translation(pnt3 const& p) noexcept;
 
-    vec3& operator[](int j) noexcept;
-    vec3 const& operator[](int j) const noexcept;
+    //    vec3& operator[](int j) noexcept;
+    //    vec3 const& operator[](int j) const noexcept;
+    vec3 operator[](int j) noexcept;
+    vec3 operator[](int j) const noexcept;
 
     static tform4 translate(pnt3 const& p) noexcept;
 };

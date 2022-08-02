@@ -141,6 +141,9 @@ find_package(TBB CONFIG REQUIRED)
 find_package_message(TBB "Using TBB ${TBB_VERSION}" "[${TBB_VERSION}]")
 find_package(SDL2 CONFIG REQUIRED)
 find_package_message(SDL2 "Using SDL2 ${SDL2_VERSION}" "[${SDL2_VERSION}]")
+find_package(blaze CONFIG REQUIRED)
+find_package_message(blaze "Using blaze ${blaze_VERSION}" "[${blaze_VERSION}]")
+
 # find_package(glfw3 CONFIG REQUIRED) find_package_message(glfw3 "Using glfw3
 # ${glfw3_VERSION}" "[${glfw3_VERSION}]") find_package(OpenGL REQUIRED)
 # find_package_message(OpenGL "Using OpenGL ${OpenGL_VERSION}"
@@ -212,7 +215,8 @@ target_link_libraries(
          spdlog::spdlog
          TBB::tbb
          SDL2::SDL2main
-         SDL2::SDL2 # glfw OpenGL::GL
+         SDL2::SDL2
+  # blaze::blaze
 )
 
 add_executable(${PROJECT_NAME} main.cc log.cc)

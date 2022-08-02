@@ -20,8 +20,10 @@ class mat4 {
     float& operator()(int i, int j) noexcept;
     const float& operator()(int i, int j) const noexcept;
 
-    vec4& operator[](int j) noexcept;
-    const vec4& operator[](int j) const noexcept;
+    //    vec4& operator[](int j) noexcept;
+    //    const vec4& operator[](int j) const noexcept;
+    vec4 operator[](int j) noexcept;
+    vec4 operator[](int j) const noexcept;
 
   protected:
     float n[4][4];

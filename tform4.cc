@@ -40,9 +40,9 @@ tform4::tform4(vec3 const& a, vec3 const& b, vec3 const& c, pnt3 const& p) noexc
 
 tform4::tform4(mat3 const& M) noexcept : tform4(M[0], M[1], M[2], {0.f, 0.f, 0.f}) {}
 
-pnt3 const& tform4::get_translation() const noexcept {
-    return *reinterpret_cast<pnt3 const*>(n[3]); // UB
-}
+// pnt3 const& tform4::get_translation() const noexcept {
+//     return *reinterpret_cast<pnt3 const*>(n[3]); // UB
+// }
 
 tform4 const& tform4::set_translation(const pnt3& p) noexcept {
     n[3][0] = p.x;
@@ -51,13 +51,17 @@ tform4 const& tform4::set_translation(const pnt3& p) noexcept {
     return *this;
 }
 
-vec3& tform4::operator[](int j) noexcept {
-    return *reinterpret_cast<vec3*>(n[j]); // UB
-}
+vec3 tform4::operator[](int j) noexcept { return vec3{n[j][0], n[j][1], n[j][2]}; }
 
-vec3 const& tform4::operator[](int j) const noexcept {
-    return *reinterpret_cast<vec3 const*>(n[j]); // UB
-}
+vec3 tform4::operator[](int j) const noexcept { return vec3{n[j][0], n[j][1], n[j][2]}; }
+
+// vec3& tform4::operator[](int j) noexcept {
+//     return *reinterpret_cast<vec3*>(n[j]); // UB
+// }
+//
+// vec3 const& tform4::operator[](int j) const noexcept {
+//     return *reinterpret_cast<vec3 const*>(n[j]); // UB
+// }
 
 tform4 tform4::translate(pnt3 const& p) noexcept {
     tform4 t;
@@ -66,10 +70,10 @@ tform4 tform4::translate(pnt3 const& p) noexcept {
 }
 
 tform4 inverse(const tform4& H) noexcept {
-    vec3 const& a = H[0];
-    vec3 const& b = H[1];
-    vec3 const& c = H[2];
-    vec3 const& d = H[3];
+    vec3 const a = H[0];
+    vec3 const b = H[1];
+    vec3 const c = H[2];
+    vec3 const d = H[3];
 
     vec3 s = cross(a, b);
     vec3 t = cross(c, d);

@@ -12,6 +12,11 @@
 #include <oneapi/tbb/blocked_range2d.h>
 #include <oneapi/tbb/parallel_for.h>
 
+#include <fmt/chrono.h>
+#include <spdlog/spdlog.h>
+
+#include <chrono>
+
 using namespace oneapi;
 
 namespace wt {
@@ -23,6 +28,8 @@ void render_ppm(camera const& camera, world const& world) noexcept {
 
     unsigned frames = 1;
     for (unsigned frame = 0; frame < frames; ++frame) {
+        auto start = std::chrono::steady_clock::now();
+
         tbb::parallel_for(
             tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const range) {
                 std::vector<intersection> world_isecs;
@@ -34,6 +41,11 @@ void render_ppm(camera const& camera, world const& world) noexcept {
                     }
                 }
             });
+
+        auto stop = std::chrono::steady_clock::now();
+
+        SPDLOG_INFO("Frame #{} drawn in {}", frame,
+                    std::chrono::duration<double, std::milli>(stop - start));
     }
 
     write_ppm("image.ppm", image.as_ppm());

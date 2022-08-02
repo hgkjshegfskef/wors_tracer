@@ -30,19 +30,28 @@ float& mat4::operator()(int i, int j) noexcept { return n[j][i]; }
 
 const float& mat4::operator()(int i, int j) const noexcept { return n[j][i]; }
 
-vec4& mat4::operator[](int j) noexcept {
-    return *reinterpret_cast<vec4*>(n[j]); // UB
+// vec4& mat4::operator[](int j) noexcept {
+vec4 mat4::operator[](int j) noexcept {
+    return vec4{n[j][0], n[j][1], n[j][2], n[j][3]};
+    //    return *reinterpret_cast<vec4*>(n[j]); // UB
 }
 
-const vec4& mat4::operator[](int j) const noexcept {
-    return *reinterpret_cast<vec4 const*>(n[j]); // UB
+// const vec4& mat4::operator[](int j) const noexcept {
+vec4 mat4::operator[](int j) const noexcept {
+    return vec4{n[j][0], n[j][1], n[j][2], n[j][3]};
+    //    return *reinterpret_cast<vec4 const*>(n[j]); // UB
 }
 
 mat4 inverse(const mat4& M) noexcept {
-    vec3 const& a = reinterpret_cast<const vec3&>(M[0]); // UB
-    vec3 const& b = reinterpret_cast<const vec3&>(M[1]); // UB
-    vec3 const& c = reinterpret_cast<const vec3&>(M[2]); // UB
-    vec3 const& d = reinterpret_cast<const vec3&>(M[3]); // UB
+    //    vec3 const a = reinterpret_cast<const vec3&>(M[0]); // UB
+    //    vec3 const b = reinterpret_cast<const vec3&>(M[1]); // UB
+    //    vec3 const c = reinterpret_cast<const vec3&>(M[2]); // UB
+    //    vec3 const d = reinterpret_cast<const vec3&>(M[3]); // UB
+
+    vec3 const a{M(0, 0), M(0, 1), M(0, 2)};
+    vec3 const b{M(1, 0), M(1, 1), M(1, 2)};
+    vec3 const c{M(2, 0), M(2, 1), M(2, 2)};
+    vec3 const d{M(3, 0), M(3, 1), M(3, 2)};
 
     float const& x = M(3, 0);
     float const& y = M(3, 1);
@@ -70,4 +79,5 @@ mat4 inverse(const mat4& M) noexcept {
             r2.x, r2.y, r2.z, -dot(d, s), //
             r3.x, r3.y, r3.z, dot(c, s)};
 }
+
 } // namespace wt

@@ -30,13 +30,17 @@ float& mat3::operator()(int i, int j) noexcept { return n[j][i]; }
 
 float const& mat3::operator()(int i, int j) const noexcept { return n[j][i]; }
 
-vec3& mat3::operator[](int j) noexcept {
-    return *reinterpret_cast<vec3*>(n[j]); // UB
-}
+vec3 mat3::operator[](int j) noexcept { return vec3{n[j][0], n[j][1], n[j][2]}; }
 
-vec3 const& mat3::operator[](int j) const noexcept {
-    return *reinterpret_cast<vec3 const*>(n[j]); // UB
-}
+vec3 mat3::operator[](int j) const noexcept { return vec3{n[j][0], n[j][1], n[j][2]}; }
+
+// vec3& mat3::operator[](int j) noexcept {
+//     return *reinterpret_cast<vec3*>(n[j]); // UB
+// }
+//
+// vec3 const& mat3::operator[](int j) const noexcept {
+//     return *reinterpret_cast<vec3 const*>(n[j]); // UB
+// }
 
 mat3 operator*(mat3 const& A, mat3 const& B) noexcept {
     return {A(0, 0) * B(0, 0) + A(0, 1) * B(1, 0) + A(0, 2) * B(2, 0),
@@ -63,9 +67,9 @@ float det(mat3 const& M) noexcept {
 }
 
 mat3 inverse(mat3 const& M) noexcept {
-    vec3 const& a = M[0];
-    vec3 const& b = M[1];
-    vec3 const& c = M[2];
+    vec3 const a{M(0, 0), M(0, 1), M(0, 2)};
+    vec3 const b{M(1, 0), M(1, 1), M(1, 2)};
+    vec3 const c{M(2, 0), M(2, 1), M(2, 2)};
 
     vec3 const r0 = cross(b, c);
     vec3 const r1 = cross(c, a);

@@ -9,6 +9,8 @@
 #include "util.hh" // write_ppm
 #include "world.hh"
 
+// #include <blaze/math/StaticVector.h>
+//
 #include <spdlog/spdlog.h>
 
 #include <numbers> // pi_v
@@ -56,6 +58,6 @@ int main(int argc, char** argv) {
     cam.tform = view(from, to, up);
     render_sdl(cam, w);
 
-//    cam.tform = v2::view(from, to, up);
-//    render_ppm(cam, w);
+    cam.tform = v2::view(from, to, up);
+    render_ppm(cam, w);
 }

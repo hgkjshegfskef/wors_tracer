@@ -19,8 +19,8 @@ class mat3 final {
     float& operator()(int i, int j) noexcept;
     float const& operator()(int i, int j) const noexcept;
 
-    vec3& operator[](int j) noexcept;
-    vec3 const& operator[](int j) const noexcept;
+    vec3 operator[](int j) noexcept;
+    vec3 operator[](int j) const noexcept;
 
   private:
     // Column-major
