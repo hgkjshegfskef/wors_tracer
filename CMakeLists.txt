@@ -139,7 +139,7 @@ find_package_message(spdlog "Using spdlog ${spdlog_VERSION}"
                      "[${spdlog_VERSION}]")
 find_package(TBB CONFIG REQUIRED)
 find_package_message(TBB "Using TBB ${TBB_VERSION}" "[${TBB_VERSION}]")
-find_package(SDL2 REQUIRED)
+find_package(SDL2 CONFIG REQUIRED)
 find_package_message(SDL2 "Using SDL2 ${SDL2_VERSION}" "[${SDL2_VERSION}]")
 # find_package(glfw3 CONFIG REQUIRED) find_package_message(glfw3 "Using glfw3
 # ${glfw3_VERSION}" "[${glfw3_VERSION}]") find_package(OpenGL REQUIRED)
@@ -204,8 +204,13 @@ else()
 endif()
 target_link_libraries(
   lib${PROJECT_NAME}
-  PUBLIC $<TARGET_NAME_IF_EXISTS:${PROJECT_NAME}_common_flags> m fmt::fmt
-         spdlog::spdlog TBB::tbb SDL2::SDL2 # glfw OpenGL::GL
+  PUBLIC $<TARGET_NAME_IF_EXISTS:${PROJECT_NAME}_common_flags>
+         m
+         fmt::fmt
+         spdlog::spdlog
+         TBB::tbb
+         SDL2::SDL2main
+         SDL2::SDL2 # glfw OpenGL::GL
 )
 
 add_executable(${PROJECT_NAME} main.cc log.cc)

@@ -17,7 +17,7 @@ TEST(RenderTest, DefaultWorld) {
     vec3 up{0, 1, 0};
     cam.tform = view(from, to, up);
 
-    canvas image = render(cam, w);
+    canvas image = render_ppm(cam, w, nullptr, 0);
 
     EXPECT_NEAR(image(5, 5).r, .38066f, 1e-5f);
     EXPECT_NEAR(image(5, 5).g, .47583f, 1e-5f);

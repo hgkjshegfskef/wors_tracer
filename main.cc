@@ -20,8 +20,8 @@ int main(int argc, char** argv) {
     (void)argc;
     setup_logging();
 
-    unsigned const hsize = 640;
-    unsigned const vsize = 480;
+    unsigned const hsize = 1920;
+    unsigned const vsize = 1080;
 
     tform4 rot_1{rotation<Axis::Y>(-pi_v<float> / 4)};
     tform4 rot_2{rotation<Axis::Y>(pi_v<float> / 4)};
@@ -60,9 +60,7 @@ int main(int argc, char** argv) {
     canvas image;
     unsigned const frames = 1;
     for (unsigned frame = 0; frame < frames; ++frame) {
-
         //    auto start = std::chrono::steady_clock::now();
-        image = render(cam, w);
         //    auto stop = std::chrono::steady_clock::now();
         //    std::chrono::duration<double> time_s = stop - start;
         //    SPDLOG_INFO("Raytracing {}x{} ({}) pixels took {} ({})", cam.hsize, cam.vsize,

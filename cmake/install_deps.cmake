@@ -1,5 +1,7 @@
 #!/usr/bin/env -S cmake -P
 
+# TODO: add tbb, sdl
+
 # This script installs external dependencies.
 
 cmake_minimum_required(VERSION 3.22)

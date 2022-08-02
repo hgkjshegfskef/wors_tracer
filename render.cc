@@ -24,22 +24,25 @@ using namespace oneapi;
 
 namespace wt {
 
-canvas render(camera const& camera, world const& world) noexcept {
+canvas render_ppm(camera const& camera, world const& world, char const* ppm_fname,
+                  unsigned frames) noexcept {
     canvas image{camera.hsize, camera.vsize};
     image.fill({0, 0, 0});
     tform4 const inv_cam_tform = inverse(camera.tform);
 
-    tbb::parallel_for(
-        tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const range) {
-            std::vector<intersection> world_isecs;
-            world_isecs.reserve(world.shapes.size() * 2);
-            for (int y = range.rows().begin(); y != range.rows().end(); ++y) {
-                for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
-                    image(x, y) =
-                        color_at(world, ray_for_pixel(camera, inv_cam_tform, x, y), world_isecs);
+    for (unsigned frame = 0; frame < frames; ++frame) {
+        tbb::parallel_for(
+            tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const range) {
+                std::vector<intersection> world_isecs;
+                world_isecs.reserve(world.shapes.size() * 2);
+                for (int y = range.rows().begin(); y != range.rows().end(); ++y) {
+                    for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
+                        image(x, y) = color_at(world, ray_for_pixel(camera, inv_cam_tform, x, y),
+                                               world_isecs);
+                    }
                 }
-            }
-        });
+            });
+    }
 
     return image;
 }
@@ -98,9 +101,9 @@ void render_sdl(camera const& camera, world const& world) noexcept {
                     for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
                         color const color = color_at(
                             world, ray_for_pixel(camera, inv_cam_tform, x, y), world_isecs);
-                        pixels[y * camera.hsize + x] =
-                            SDL_MapRGB(surface->format, clamp_and_scale(color, 0),
-                                       clamp_and_scale(color, 1), clamp_and_scale(color, 2));
+                        pixels[y * camera.hsize + x] = SDL_MapRGB(
+                            surface->format, clamp_and_scale(color, 0) + .5f,
+                            clamp_and_scale(color, 1) + .5f, clamp_and_scale(color, 2) + .5f);
                     }
                 }
             });
@@ -108,7 +111,13 @@ void render_sdl(camera const& camera, world const& world) noexcept {
         auto stop = std::chrono::steady_clock::now();
 
         SDL_UpdateWindowSurface(window.get());
-        SPDLOG_INFO("Frame #{} drawn in {}", ++frame_cnt, stop - start);
+
+        // This triggers UB:
+        //        SPDLOG_INFO("Frame #{} drawn in {}", ++frame_cnt,
+        //                    std::chrono::duration<double, std::milli>(stop - start));
+        // But this doesn't:
+        SPDLOG_INFO("Frame #{} drawn in {}", ++frame_cnt,
+                    std::chrono::duration_cast<std::chrono::milliseconds>(stop - start));
     }
 
     SDL_Quit();
