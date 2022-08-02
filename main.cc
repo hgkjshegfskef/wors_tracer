@@ -52,30 +52,10 @@ int main(int argc, char** argv) {
     pnt3 from{0, 1.5f, -5};
     pnt3 to{0, 1, 0};
     vec3 up{0, 1, 0};
-    cam.tform = view(from, to, up);
 
+    cam.tform = view(from, to, up);
     render_sdl(cam, w);
 
-#if 0
-    canvas image;
-    unsigned const frames = 1;
-    for (unsigned frame = 0; frame < frames; ++frame) {
-        //    auto start = std::chrono::steady_clock::now();
-        //    auto stop = std::chrono::steady_clock::now();
-        //    std::chrono::duration<double> time_s = stop - start;
-        //    SPDLOG_INFO("Raytracing {}x{} ({}) pixels took {} ({})", cam.hsize, cam.vsize,
-        //                cam.hsize * cam.vsize, std::chrono::duration<double>(time_s),
-        //                std::chrono::duration<double, std::milli>(time_s));
-
-        //        if (frame == frames - 1) {
-        //        }
-    }
-
-    //    start = std::chrono::steady_clock::now();
-    write_ppm(argv[1], image.as_ppm());
-    //    stop = std::chrono::steady_clock::now();
-    //    time_s = stop - start;
-    //    SPDLOG_INFO("Dumping image took {} ({})", std::chrono::duration<double>(time_s),
-    //                std::chrono::duration<double, std::milli>(time_s));
-#endif
+//    cam.tform = v2::view(from, to, up);
+//    render_ppm(cam, w);
 }
