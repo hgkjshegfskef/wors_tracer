@@ -141,11 +141,13 @@ find_package(TBB CONFIG REQUIRED)
 find_package_message(TBB "Using TBB ${TBB_VERSION}" "[${TBB_VERSION}]")
 find_package(SDL2 CONFIG REQUIRED)
 find_package_message(SDL2 "Using SDL2 ${SDL2_VERSION}" "[${SDL2_VERSION}]")
-find_package(blaze CONFIG REQUIRED)
-find_package_message(blaze "Using blaze ${blaze_VERSION}" "[${blaze_VERSION}]")
+find_package(CLI11 CONFIG REQUIRED)
+find_package_message(CLI11 "Using CLI11 ${CLI11_VERSION}" "[${CLI11_VERSION}]")
 
-# find_package(glfw3 CONFIG REQUIRED) find_package_message(glfw3 "Using glfw3
-# ${glfw3_VERSION}" "[${glfw3_VERSION}]") find_package(OpenGL REQUIRED)
+# find_package_message(blaze "Using blaze ${blaze_VERSION}"
+# "[${blaze_VERSION}]") find_package(CLI11 CONFIG REQUIRED) find_package(glfw3
+# CONFIG REQUIRED) find_package_message(glfw3 "Using glfw3 ${glfw3_VERSION}"
+# "[${glfw3_VERSION}]") find_package(OpenGL REQUIRED)
 # find_package_message(OpenGL "Using OpenGL ${OpenGL_VERSION}"
 # "[${OpenGL_VERSION}]")
 
@@ -173,7 +175,9 @@ add_library(
   shape.cc
   shape_concept.cc
   shape_model.cc
-  sphere.cc)
+  sphere.cc
+  scene.cc
+  scene_1.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(
@@ -214,8 +218,9 @@ target_link_libraries(
          fmt::fmt
          spdlog::spdlog
          TBB::tbb
-         SDL2::SDL2main
+         SDL2::SDL2main # order matters!
          SDL2::SDL2
+         CLI11::CLI11
   # blaze::blaze
 )
 

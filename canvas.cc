@@ -10,27 +10,6 @@
 #include <string>    // string
 #include <utility>   // pair
 
-namespace {
-
-// Scale a number between two (possibly overlapping) ranges.
-// Use-case example: given a value in range [0;1], find out its respective value in range [0;255].
-// Further reading: https://gamedev.stackexchange.com/a/33445
-float scale(float value, std::pair<float, float> source_range,
-            std::pair<float, float> target_range) noexcept {
-    return wt::lerp(value, {source_range.first, target_range.first},
-                    {source_range.second, target_range.second});
-}
-
-// template <std::floating_point T>
-float clamp_and_scale(wt::color const& col, unsigned component_idx) noexcept {
-    // Clamp to the range of canvas color components' values.
-    auto const clamped = std::clamp(col[component_idx], 0.f, 1.f);
-    // Scale to the range of PPM color values.
-    return scale(std::move(clamped), {0.f, 1.f}, {0.f, 255.f});
-}
-
-} // namespace
-
 namespace wt {
 
 canvas::canvas(unsigned int w, unsigned int h) noexcept
