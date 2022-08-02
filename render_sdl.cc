@@ -13,7 +13,8 @@
 #include <fmt/chrono.h>
 #include <spdlog/spdlog.h>
 
-#include <chrono>  // steady_clock
+#include <chrono> // steady_clock
+#include <cmath>
 #include <cstdlib> //atexit
 #include <vector>
 
@@ -21,7 +22,7 @@ using namespace oneapi;
 
 namespace wt {
 
-void render_sdl(camera const& camera, world const& world) noexcept {
+void render_sdl(camera& camera, world const& world) noexcept {
     if (std::atexit(SDL_Quit)) {
         SPDLOG_ERROR("atexit() registration failed");
     }
@@ -51,16 +52,55 @@ void render_sdl(camera const& camera, world const& world) noexcept {
 
     SPDLOG_INFO("Pixel format: {}", SDL_GetPixelFormatName(surface->format->format));
 
-    tform4 const inv_cam_tform = inverse(camera.tform);
     unsigned frame_cnt = 0;
 
+    pnt3 from{0, 1.5f, -5};
+    vec3 up{0, 1, 0};
+    vec3 forward{0, 0, 1};
+    vec3 back = -forward;
+    vec3 left = normalize(cross(forward, up));
+    vec3 right = -left;
+
+    Uint64 delta_time = 0;
+    Uint64 last_frame = 0;
+
     while (true) {
+        Uint64 const current_frame = SDL_GetTicks64();
+        delta_time = current_frame - last_frame;
+        last_frame = current_frame;
+        float const cam_speed = 0.0025f * delta_time;
+
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
+            switch (event.type) {
+            case SDL_QUIT:
                 return;
             }
         }
+
+        auto* state = SDL_GetKeyboardState(nullptr);
+        if (state[SDL_SCANCODE_ESCAPE]) {
+            return;
+        }
+        if (state[SDL_SCANCODE_W]) {
+            from = position(from, forward, cam_speed);
+        }
+        if (state[SDL_SCANCODE_S]) {
+            from = position(from, back, cam_speed);
+        }
+        if (state[SDL_SCANCODE_A]) {
+            from = position(from, left, cam_speed);
+        }
+        if (state[SDL_SCANCODE_D]) {
+            from = position(from, right, cam_speed);
+        }
+
+        //        float const radius = 3.f;
+        //        float cam_x = std::cos(SDL_GetTicks64() / 1000.f) * radius;
+        //        float cam_z = std::sin(SDL_GetTicks64() / 1000.f) * radius;
+
+        camera.tform = v3::view(from, forward, up);
+        tform4 const inv_cam_tform = inverse(camera.tform);
 
         //        SDL_memset(surface->pixels, 0, surface->h * surface->pitch);
 

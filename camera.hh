@@ -28,6 +28,10 @@ namespace v2 {
 tform4 view(pnt3 const& from, pnt3 const& to, vec3 const& up) noexcept;
 } // namespace v2
 
+namespace v3 {
+tform4 view(pnt3 const& from, vec3 const& forward, vec3 const& up) noexcept;
+} // namespace v3
+
 ray ray_for_pixel(camera const& cam, tform4 const& inv_cam_tform, float px, float py) noexcept;
 
 } // namespace wt

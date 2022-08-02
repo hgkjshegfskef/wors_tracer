@@ -20,8 +20,7 @@ scene scene_1(cli const& cli) noexcept {
     sphere floor{scal, material{.col = {1, .9f, .9f}, .specular = 0}};
     sphere left_wall{tform4::translate({0, 0, 5}) * rot_1 * rot_3 * scal, floor.mat};
     sphere right_wall{tform4::translate({0, 0, 5}) * rot_2 * rot_3 * scal, floor.mat};
-    sphere middle{tform4::translate({-0.5f, 1, .5f}),
-                  material{.col = {.1f, 1, .5f}, .diffuse = .7f, .specular = .3f}};
+    sphere middle{tform4::translate({-0.5f, 1, .5f})};
     sphere right{tform4::translate({1.5f, .5f, -0.5f}) * scale(.5f, .5f, .5f),
                  material{.col = {.5f, 1, .1f}, .diffuse = .7f, .specular = .3f}};
     sphere left{tform4::translate({-1.5f, .33f, -0.75f}) * scale(.33f, .33f, .33f),
