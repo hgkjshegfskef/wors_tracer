@@ -23,7 +23,7 @@ namespace wt {
 
 void render_ppm(camera const& camera, world const& world) noexcept {
     canvas image{camera.hsize, camera.vsize};
-    image.fill({0, 0, 0});
+    //    image.fill({0, 0, 0});
     tform4 const inv_cam_tform = inverse(camera.tform);
 
     unsigned frames = 1;
