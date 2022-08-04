@@ -32,19 +32,17 @@ void render_sdl(camera& camera, world const& world) noexcept {
         return;
     }
 
-    auto free_window = [](SDL_Window* w) { SDL_DestroyWindow(w); };
-    std::unique_ptr<SDL_Window, decltype(free_window)> window{
+    std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window{
         SDL_CreateWindow("worst racer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                          camera.hsize, camera.vsize, 0),
-        std::move(free_window)};
+        SDL_DestroyWindow};
     if (!window) {
         SPDLOG_ERROR("SDL_CreateWindow error: {}", SDL_GetError());
         return;
     }
 
-    auto free_surface = [](SDL_Surface* s) { SDL_FreeSurface(s); };
-    std::unique_ptr<SDL_Surface, decltype(free_surface)> surface{SDL_GetWindowSurface(window.get()),
-                                                                 std::move(free_surface)};
+    std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> surface{
+        SDL_GetWindowSurface(window.get()), SDL_FreeSurface};
     if (!surface) {
         SPDLOG_ERROR("SDL_GetWindowSurface error: {}", SDL_GetError());
         return;
