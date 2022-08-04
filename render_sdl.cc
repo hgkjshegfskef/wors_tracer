@@ -84,13 +84,19 @@ void render_sdl(camera& camera, world const& world) noexcept {
         }
 
         int rel_mouse_x, rel_mouse_y;
-        SDL_GetRelativeMouseState(&rel_mouse_x, &rel_mouse_y);
+        auto mouse_state = SDL_GetRelativeMouseState(&rel_mouse_x, &rel_mouse_y);
         if (rel_mouse_x) {
             yaw += rel_mouse_x * sensitivity;
         }
         if (rel_mouse_y) {
             pitch -= rel_mouse_y * sensitivity;
             pitch = std::clamp(pitch, -89.f, 89.f);
+        }
+        if (mouse_state & SDL_BUTTON(1)) {
+            if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0) {
+                SPDLOG_ERROR("SDL_SetRelativeMouseMode error: {}", SDL_GetError());
+                return;
+            }
         }
 
         vec3 forward{std::sin(deg_to_rad(yaw)) * std::cos(deg_to_rad(pitch)),
@@ -102,7 +108,10 @@ void render_sdl(camera& camera, world const& world) noexcept {
 
         auto* kb_state = SDL_GetKeyboardState(nullptr);
         if (kb_state[SDL_SCANCODE_ESCAPE]) {
-            return;
+            if (SDL_SetRelativeMouseMode(SDL_FALSE) < 0) {
+                SPDLOG_ERROR("SDL_SetRelativeMouseMode error: {}", SDL_GetError());
+                return;
+            }
         }
         if (kb_state[SDL_SCANCODE_W]) {
             from = position(from, forward, cam_speed);
