@@ -61,6 +61,10 @@ void render_sdl(camera& camera, world const& world) noexcept {
 
     pnt3 from{0, 1.5f, -5};
     vec3 up{0, 1, 0};
+    vec3 forward;
+    vec3 back;
+    vec3 left;
+    vec3 right;
 
     float yaw = 0.f;
     float pitch = 0.f;
@@ -99,12 +103,12 @@ void render_sdl(camera& camera, world const& world) noexcept {
             }
         }
 
-        vec3 forward{std::sin(deg_to_rad(yaw)) * std::cos(deg_to_rad(pitch)),
-                     std::sin(deg_to_rad(pitch)),
-                     std::cos(deg_to_rad(yaw)) * std::cos(deg_to_rad(pitch))};
-        vec3 const back = -forward;
-        vec3 const left = normalize(cross(forward, up));
-        vec3 const right = -left;
+        forward = {std::sin(deg_to_rad(yaw)) * std::cos(deg_to_rad(pitch)),
+                   std::sin(deg_to_rad(pitch)),
+                   std::cos(deg_to_rad(yaw)) * std::cos(deg_to_rad(pitch))};
+        back = -forward;
+        left = normalize(cross(forward, up));
+        right = -left;
 
         auto* kb_state = SDL_GetKeyboardState(nullptr);
         if (kb_state[SDL_SCANCODE_ESCAPE]) {
@@ -124,6 +128,9 @@ void render_sdl(camera& camera, world const& world) noexcept {
         }
         if (kb_state[SDL_SCANCODE_D]) {
             from = position(from, right, cam_speed);
+        }
+        if (kb_state[SDL_SCANCODE_SPACE]) {
+            from = position(from, up, cam_speed);
         }
 
         //        float const radius = 3.f;
