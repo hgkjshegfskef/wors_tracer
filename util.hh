@@ -19,4 +19,6 @@ float scale(float value, std::pair<float, float> source_range,
 
 float clamp_and_scale(color const& col, unsigned component_idx) noexcept;
 
+float deg_to_rad(float deg) noexcept;
+
 } // namespace wt

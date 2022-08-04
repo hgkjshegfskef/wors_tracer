@@ -9,7 +9,10 @@
 #include <cstdio>    // FILE
 #include <cstring>   // strerror
 #include <memory>    // unique_ptr
-#include <utility>   // pair
+#include <numbers>
+#include <utility> // pair
+
+using namespace std::numbers;
 
 namespace wt {
 
@@ -62,5 +65,7 @@ float clamp_and_scale(color const& col, unsigned component_idx) noexcept {
     // Scale to the range of PPM color values.
     return scale(std::move(clamped), {0.f, 1.f}, {0.f, 255.f});
 }
+
+float deg_to_rad(float deg) noexcept { return deg * pi_v<float> / 180.f; }
 
 } // namespace wt

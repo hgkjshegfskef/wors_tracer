@@ -50,16 +50,21 @@ void render_sdl(camera& camera, world const& world) noexcept {
         return;
     }
 
+    if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0) {
+        SPDLOG_ERROR("SDL_SetRelativeMouseMode error: {}", SDL_GetError());
+        return;
+    }
+
     SPDLOG_INFO("Pixel format: {}", SDL_GetPixelFormatName(surface->format->format));
 
     unsigned frame_cnt = 0;
 
     pnt3 from{0, 1.5f, -5};
     vec3 up{0, 1, 0};
-    vec3 forward{0, 0, 1};
-    vec3 back = -forward;
-    vec3 left = normalize(cross(forward, up));
-    vec3 right = -left;
+
+    float yaw = 0.f;
+    float pitch = 0.f;
+    float sensitivity = 0.05f;
 
     Uint64 delta_time = 0;
     Uint64 last_frame = 0;
@@ -78,20 +83,37 @@ void render_sdl(camera& camera, world const& world) noexcept {
             }
         }
 
-        auto* state = SDL_GetKeyboardState(nullptr);
-        if (state[SDL_SCANCODE_ESCAPE]) {
+        int rel_mouse_x, rel_mouse_y;
+        SDL_GetRelativeMouseState(&rel_mouse_x, &rel_mouse_y);
+        if (rel_mouse_x) {
+            yaw += rel_mouse_x * sensitivity;
+        }
+        if (rel_mouse_y) {
+            pitch -= rel_mouse_y * sensitivity;
+            pitch = std::clamp(pitch, -89.f, 89.f);
+        }
+
+        vec3 forward{std::sin(deg_to_rad(yaw)) * std::cos(deg_to_rad(pitch)),
+                     std::sin(deg_to_rad(pitch)),
+                     std::cos(deg_to_rad(yaw)) * std::cos(deg_to_rad(pitch))};
+        vec3 const back = -forward;
+        vec3 const left = normalize(cross(forward, up));
+        vec3 const right = -left;
+
+        auto* kb_state = SDL_GetKeyboardState(nullptr);
+        if (kb_state[SDL_SCANCODE_ESCAPE]) {
             return;
         }
-        if (state[SDL_SCANCODE_W]) {
+        if (kb_state[SDL_SCANCODE_W]) {
             from = position(from, forward, cam_speed);
         }
-        if (state[SDL_SCANCODE_S]) {
+        if (kb_state[SDL_SCANCODE_S]) {
             from = position(from, back, cam_speed);
         }
-        if (state[SDL_SCANCODE_A]) {
+        if (kb_state[SDL_SCANCODE_A]) {
             from = position(from, left, cam_speed);
         }
-        if (state[SDL_SCANCODE_D]) {
+        if (kb_state[SDL_SCANCODE_D]) {
             from = position(from, right, cam_speed);
         }
 
