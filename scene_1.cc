@@ -36,7 +36,7 @@ scene scene_1(cli const& cli) noexcept {
 
     world const world{pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}, std::move(shapes)};
 
-    camera camera{cli.width, cli.height, pi_v<float> / 3};
+    camera camera{cli.tex_width, cli.tex_height, pi_v<float> / 3};
     pnt3 from{0, 1.5f, -5};
     pnt3 to{0, 1, 0};
     vec3 up{0, 1, 0};

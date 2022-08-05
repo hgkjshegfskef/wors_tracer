@@ -5,11 +5,13 @@
 namespace wt {
 
 struct cli {
-    std::string render_backend{"sdl"};
-    unsigned width{1920};
-    unsigned height{1080};
-    unsigned scene{1};
-    std::string ppm_fname{"image.ppm"};
+    std::string render_backend;
+    unsigned win_width;
+    unsigned win_height;
+    unsigned tex_width;
+    unsigned tex_height;
+    unsigned scene;
+    std::string ppm_fname;
 };
 
 } // namespace wt

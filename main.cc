@@ -20,23 +20,38 @@ int main(int argc, char** argv) {
     cli cli;
 
     app.add_option("-r,--render-backend", cli.render_backend, "Where to dump the pixels")
-        ->check(CLI::IsMember{{"ppm", "sdl"}});
+        ->check(CLI::IsMember{{"ppm", "sdl"}})
+        ->default_val("sdl")
+        ->run_callback_for_default();
 
-    auto* opt_w = app.add_option("-w,--width", cli.width, "Canvas width");
-    auto* opt_h = app.add_option("-h,--height", cli.height, "Canvas height");
-    opt_w->needs(opt_h);
-    opt_h->needs(opt_w);
+    app.add_option("--win-width", cli.win_width, "SDL window width")
+        ->default_val(1920)
+        ->run_callback_for_default();
+    app.add_option("--win-height", cli.win_height, "SDL window height")
+        ->default_val(1080)
+        ->run_callback_for_default();
 
-    app.add_option("-s,--scene", cli.scene, "Scene number");
+    app.add_option("--tex-width", cli.tex_width, "SDL texture width")
+        ->default_val(960)
+        ->run_callback_for_default();
+    app.add_option("--tex-height", cli.tex_height, "SDL texture height")
+        ->default_val(540)
+        ->run_callback_for_default();
 
-    app.add_option("ppm-file", cli.ppm_fname, "PPM file name");
+    app.add_option("-s,--scene", cli.scene, "Scene number")
+        ->default_val(1)
+        ->run_callback_for_default();
+
+    app.add_option("ppm-file", cli.ppm_fname, "PPM file name")
+        ->default_val("image.ppm")
+        ->run_callback_for_default();
 
     CLI11_PARSE(app, argc, argv);
 
     scene scene = get_scene(cli.scene, cli);
 
     if (cli.render_backend == "sdl") {
-        render_sdl(scene.camera, scene.world);
+        render_sdl(scene.camera, scene.world, cli);
     } else if (cli.render_backend == "ppm") {
         render_ppm(scene.camera, scene.world);
     } else {
