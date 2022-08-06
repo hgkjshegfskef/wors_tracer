@@ -23,8 +23,8 @@ class shape::shape_concept {
     virtual tform4& do_get_tform() noexcept = 0;
     virtual tform4 const& do_get_tform() const noexcept = 0;
 
-    virtual material& do_get_mat() noexcept = 0;
-    virtual material const& do_get_mat() const noexcept = 0;
+    virtual material& do_get_material() noexcept = 0;
+    virtual material const& do_get_material() const noexcept = 0;
 
     virtual vec3 do_normal_at(pnt3 const& world_point) const noexcept = 0;
     virtual std::array<intersection, 2> do_intersect(ray const& world_ray) const noexcept = 0;

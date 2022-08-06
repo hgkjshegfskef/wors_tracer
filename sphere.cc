@@ -11,16 +11,16 @@ namespace wt {
 
 sphere::sphere() noexcept = default;
 
-sphere::sphere(tform4 const& tform) noexcept : tform{tform}, mat{} {}
+sphere::sphere(tform4 const& tform) noexcept : tform{tform}, material{} {}
 
 sphere::sphere(tform4 const& tform, struct material const& material) noexcept
-    : tform{tform}, mat{material} {}
+    : tform{tform}, material{material} {}
 
 tform4& get_tform(sphere& sphere) noexcept { return sphere.tform; }
 tform4 const& get_tform(sphere const& sphere) noexcept { return sphere.tform; }
 
-material& get_mat(sphere& sphere) noexcept { return sphere.mat; }
-material const& get_mat(sphere const& sphere) noexcept { return sphere.mat; }
+material& get_material(sphere& sphere) noexcept { return sphere.material; }
+material const& get_material(sphere const& sphere) noexcept { return sphere.material; }
 
 vec3 normal_at(sphere const& sphere, pnt3 const& world_point) noexcept {
     tform4 const inv_tform = inverse(sphere.tform);
@@ -60,7 +60,7 @@ std::array<intersection, 2> intersect(sphere const& s, ray const& world_ray) noe
     float const quad_b = 2.f * uoc;
     float const quad_c = dot(oc, oc) - 1.f;
 
-    float const quad_D = std::pow(quad_b, 2.f) - 4.f * quad_a * quad_c;
+    float const quad_D = quad_b * quad_b - 4.f * quad_a * quad_c;
     if (quad_D < 0) {
         return {};
     }

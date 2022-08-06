@@ -1,7 +1,6 @@
 #include "cli.hh"
 #include "mat3.hh"
 #include "scene.hh"
-#include "shape.hh"
 #include "sphere.hh"
 
 #include <numbers>
@@ -18,8 +17,8 @@ scene scene_1(cli const& cli) noexcept {
     tform4 scal{scale(10, .01f, 10)};
 
     sphere floor{scal, material{.col = {1, .9f, .9f}, .specular = 0}};
-    sphere left_wall{tform4::translate({0, 0, 5}) * rot_1 * rot_3 * scal, floor.mat};
-    sphere right_wall{tform4::translate({0, 0, 5}) * rot_2 * rot_3 * scal, floor.mat};
+    sphere left_wall{tform4::translate({0, 0, 5}) * rot_1 * rot_3 * scal, floor.material};
+    sphere right_wall{tform4::translate({0, 0, 5}) * rot_2 * rot_3 * scal, floor.material};
     sphere middle{tform4::translate({-0.5f, 1, .5f})};
     sphere right{tform4::translate({1.5f, .5f, -0.5f}) * scale(.5f, .5f, .5f),
                  material{.col = {.5f, 1, .1f}, .diffuse = .7f, .specular = .3f}};

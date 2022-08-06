@@ -25,8 +25,8 @@ template <typename ConcreteShape> class shape::shape_model final : public shape:
     tform4& do_get_tform() noexcept override;
     tform4 const& do_get_tform() const noexcept override;
 
-    material& do_get_mat() noexcept override;
-    material const& do_get_mat() const noexcept override;
+    material& do_get_material() noexcept override;
+    material const& do_get_material() const noexcept override;
 
     vec3 do_normal_at(pnt3 const& world_point) const noexcept override;
 

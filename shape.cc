@@ -13,8 +13,10 @@ namespace wt {
 tform4& get_tform(shape& shape) noexcept { return shape.pimpl_->do_get_tform(); }
 tform4 const& get_tform(shape const& shape) noexcept { return shape.pimpl_->do_get_tform(); }
 
-material& get_mat(shape& shape) noexcept { return shape.pimpl_->do_get_mat(); }
-material const& get_mat(shape const& shape) noexcept { return shape.pimpl_->do_get_mat(); }
+material& get_material(shape& shape) noexcept { return shape.pimpl_->do_get_material(); }
+material const& get_material(shape const& shape) noexcept {
+    return shape.pimpl_->do_get_material();
+}
 
 vec3 normal_at(shape const& shape, pnt3 const& world_point) noexcept {
     return shape.pimpl_->do_normal_at(world_point);

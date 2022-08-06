@@ -21,13 +21,13 @@ tform4 const& shape::shape_model<ConcreteShape>::do_get_tform() const noexcept {
 }
 
 template <typename ConcreteShape>
-material& shape::shape_model<ConcreteShape>::do_get_mat() noexcept {
-    return get_mat(object_);
+material& shape::shape_model<ConcreteShape>::do_get_material() noexcept {
+    return get_material(object_);
 }
 
 template <typename ConcreteShape>
-material const& shape::shape_model<ConcreteShape>::do_get_mat() const noexcept {
-    return get_mat(object_);
+material const& shape::shape_model<ConcreteShape>::do_get_material() const noexcept {
+    return get_material(object_);
 }
 
 template <typename ConcreteShape>

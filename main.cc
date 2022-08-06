@@ -3,7 +3,6 @@
 #include "log.hh"
 #include "render.hh"
 #include "scene.hh"
-#include "shape.hh"
 
 #include <CLI/CLI.hpp>
 

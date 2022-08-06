@@ -10,7 +10,6 @@
 namespace wt {
 
 struct intersection;
-class shape;
 
 struct ray {
     pnt3 origin;
@@ -39,8 +38,8 @@ template <typename Container> intersection hit(Container const& isecs) noexcept;
 
 extern template intersection
 hit<std::vector<intersection>>(std::vector<intersection> const&) noexcept;
-extern template intersection
-hit<std::array<intersection, 2>>(std::array<intersection, 2> const&) noexcept;
+//extern template intersection
+//hit<std::array<intersection, 2>>(std::array<intersection, 2> const&) noexcept;
 
 pnt3 position(pnt3 const& origin, vec3 const& direction, float t) noexcept;
 

@@ -3,7 +3,6 @@
 #include "intersection.hh"
 #include "ray.hh"
 #include "render.hh"
-#include "shape.hh"
 #include "util.hh"
 #include "world.hh"
 

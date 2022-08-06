@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pnt_light.hh"
+#include "shape.hh"
 
 #include <vector>
 

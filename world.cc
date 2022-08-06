@@ -38,7 +38,7 @@ void intersect(world const& world, ray const& world_ray,
 
 color shade_hit(world const& world, shading const& shading_info,
                 std::vector<intersection>& world_isecs) noexcept {
-    return lighting(get_mat(*shading_info.isec.s), world.light, shading_info.isec_pnt,
+    return lighting(get_material(*shading_info.isec.s), world.light, shading_info.isec_pnt,
                     shading_info.eye, shading_info.normal,
                     is_shadowed(world, shading_info.over_pnt, world_isecs));
 }
