@@ -9,7 +9,7 @@
 namespace wt {
 
 struct pnt3 final : vec3 {
-    pnt3() noexcept = default;
+    pnt3() noexcept;
     pnt3(float x, float y, float z) noexcept;
     pnt3(vec3 const& v) noexcept;
 

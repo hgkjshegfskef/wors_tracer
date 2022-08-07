@@ -3,12 +3,13 @@
 #include "ray.hh"
 #include "shape.hh"
 #include "sphere.hh"
+#include "world.hh"
 
 namespace wt {
 
-shading::shading(intersection const& isec, ray const& r) noexcept
+shading::shading(intersection const& isec, ray const& r, world const& w) noexcept
     : isec{isec}, isec_pnt{position(r.origin, r.direction, isec.t)}, over_pnt{}, eye{-r.direction},
-      normal{normal_at(*isec.s, isec_pnt)}, inside{false} {
+      normal{normal_at(isec.shape_id, isec_pnt, w)}, inside{false} {
     if (dot(normal, eye) < 0) {
         inside = true;
         normal = -normal;

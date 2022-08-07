@@ -175,8 +175,10 @@ add_library(
   shape.cc
   shape_concept.cc
   shape_model.cc
+  spheres.cc
   sphere.cc
   scene.cc
+  scene_0.cc
   scene_1.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)

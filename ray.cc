@@ -159,18 +159,23 @@ pnt3 position(pnt3 const& origin, vec3 const& direction, float t) noexcept {
 
 //} // namespace v2
 
-template <typename Container> intersection hit(Container const& isecs) noexcept {
-    intersection min_t{nullptr, std::numeric_limits<float>::max()};
-    for (auto const& isec : isecs) {
-        if (!isec.empty() && isec.t > 0 && isec.t < min_t.t) {
-            min_t = isec;
-        }
-    }
-    return min_t;
-}
+//long hit(std::vector<intersection> const& isecs) noexcept {
+//    float min_t{std::numeric_limits<float>::max()};
+//    for (size_t i = 0; i < isecs.size(); ++i) {
+//        if (isecs[i].t > 0 )
+//    }
+//
+//    for (auto const& isec : isecs) {
+//        if (!isec.empty() && isec.t > 0 && isec.t < min_t.t) {
+//            min_t = isec;
+//        }
+//    }
+//    return min_t;
+//}
 
-template intersection hit<std::vector<intersection>>(std::vector<intersection> const&) noexcept;
-template intersection hit<std::array<intersection, 2>>(std::array<intersection, 2> const&) noexcept;
+// template intersection hit<std::vector<intersection>>(std::vector<intersection> const&) noexcept;
+// template intersection hit<std::array<intersection, 2>>(std::array<intersection, 2> const&)
+// noexcept;
 
 float dist(pnt3 const& q, pnt3 const& p, vec3 const& v, bool v_is_normal) noexcept {
     vec3 const a = cross(q - p, v);

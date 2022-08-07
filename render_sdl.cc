@@ -162,7 +162,7 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
         tbb::parallel_for(
             tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const range) {
                 std::vector<intersection> world_isecs;
-                world_isecs.reserve(world.shapes.size() * 2);
+                world_isecs.reserve(world.spheres.size * 2);
                 for (int y = range.rows().begin(); y != range.rows().end(); ++y) {
                     for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
                         color const color = color_at(

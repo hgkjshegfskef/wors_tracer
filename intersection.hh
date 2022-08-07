@@ -1,20 +1,20 @@
 #pragma once
 
+#include <cstddef>
+
 namespace wt {
 
 struct sphere;
 
 struct intersection {
-    sphere const* s{};
-    float t{};
+    unsigned shape_id;
+    float t;
 
     intersection() noexcept;
-    intersection(sphere const* s, float t) noexcept;
-
-    bool empty() const noexcept;
+    intersection(unsigned shape_id, float t) noexcept;
 };
 
-bool operator<(intersection const& l, intersection const& r) noexcept;
+bool operator<(intersection const l, intersection const r) noexcept;
 
 } // namespace wt
 

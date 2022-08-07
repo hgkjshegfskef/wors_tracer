@@ -34,12 +34,12 @@ struct ray {
 // std::array<intersection, 2> intersect(ray const& world_r, shape const& s) noexcept;
 
 // Find smallest positive intersection. Must check return value for empty().
-template <typename Container> intersection hit(Container const& isecs) noexcept;
+//long hit(std::vector<intersection> const& isecs) noexcept;
 
-extern template intersection
-hit<std::vector<intersection>>(std::vector<intersection> const&) noexcept;
 //extern template intersection
-//hit<std::array<intersection, 2>>(std::array<intersection, 2> const&) noexcept;
+//hit<std::vector<intersection>>(std::vector<intersection> const&) noexcept;
+// extern template intersection
+// hit<std::array<intersection, 2>>(std::array<intersection, 2> const&) noexcept;
 
 pnt3 position(pnt3 const& origin, vec3 const& direction, float t) noexcept;
 

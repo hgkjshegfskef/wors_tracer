@@ -4,6 +4,7 @@
 #include "tform4.hh"
 
 #include <array>
+// #include <vector>
 
 namespace wt {
 
@@ -30,8 +31,15 @@ tform4 const& get_tform(sphere const& sphere) noexcept;
 material& get_material(sphere& sphere) noexcept;
 material const& get_material(sphere const& sphere) noexcept;
 
-vec3 normal_at(sphere const& sphere, pnt3 const& world_point) noexcept;
+// vec3 normal_at(sphere const& sphere, pnt3 const& world_point) noexcept;
 
-std::array<intersection, 2> intersect(sphere const& sphere, ray const& world_ray) noexcept;
+struct world;
+vec3 normal_at(unsigned shape_id, pnt3 const& world_point, world const& w) noexcept;
+
+// std::array<intersection, 2> intersect(sphere const& sphere, ray const& world_ray) noexcept;
+
+bool intersect_sphere(ray const& object_ray, std::array<float, 2>& out_isecs) noexcept;
+
+// bool intersect_sphere(ray const& object_ray, std::vector<intersection>& world_isecs) noexcept;
 
 } // namespace wt

@@ -14,6 +14,7 @@ struct cli;
 
 scene get_scene(unsigned num, cli const& cli) noexcept;
 
+scene scene_0(cli const& cli) noexcept;
 scene scene_1(cli const& cli) noexcept;
 
 } // namespace wt

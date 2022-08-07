@@ -3,6 +3,7 @@
 #include "scene.hh"
 #include "sphere.hh"
 
+#include <cassert>
 #include <numbers>
 #include <vector>
 
@@ -25,15 +26,25 @@ scene scene_1(cli const& cli) noexcept {
     sphere left{tform4::translate({-1.5f, .33f, -0.75f}) * scale(.33f, .33f, .33f),
                 material{.col = {1, .8f, .1f}, .diffuse = .7f, .specular = .3f}};
 
-    std::vector<shape> shapes;
-    shapes.emplace_back(std::move(floor));
-    shapes.emplace_back(std::move(left_wall));
-    shapes.emplace_back(std::move(right_wall));
-    shapes.emplace_back(std::move(middle));
-    shapes.emplace_back(std::move(right));
-    shapes.emplace_back(std::move(left));
+    //    std::vector<shape> shapes;
+    //    shapes.emplace_back(std::move(floor));
+    //    shapes.emplace_back(std::move(left_wall));
+    //    shapes.emplace_back(std::move(right_wall));
+    //    shapes.emplace_back(std::move(middle));
+    //    shapes.emplace_back(std::move(right));
+    //    shapes.emplace_back(std::move(left));
+    //
+    //    world const world{pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}, std::move(shapes)};
 
-    world const world{pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}, std::move(shapes)};
+    struct spheres spheres(10);
+    assert(spheres.add_sphere(std::move(floor)));
+    assert(spheres.add_sphere(std::move(left_wall)));
+    assert(spheres.add_sphere(std::move(right_wall)));
+    assert(spheres.add_sphere(std::move(middle)));
+    assert(spheres.add_sphere(std::move(right)));
+    assert(spheres.add_sphere(std::move(left)));
+
+    world world{std::move(spheres), pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}};
 
     camera camera{cli.tex_width, cli.tex_height, pi_v<float> / 3};
     pnt3 from{0, 1.5f, -5};
@@ -46,7 +57,7 @@ scene scene_1(cli const& cli) noexcept {
         camera.tform = view(from, to, up);
     }
 
-    return {world, camera};
+    return {std::move(world), std::move(camera)};
 }
 
 } // namespace wt

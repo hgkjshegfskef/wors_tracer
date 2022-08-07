@@ -4,6 +4,7 @@
 
 namespace wt {
 
+pnt3::pnt3() noexcept = default;
 pnt3::pnt3(float x, float y, float z) noexcept : vec3(x, y, z) {}
 pnt3::pnt3(const vec3& v) noexcept : vec3(v) {}
 

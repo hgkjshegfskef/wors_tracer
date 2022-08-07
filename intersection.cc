@@ -4,13 +4,12 @@
 
 namespace wt {
 
-intersection::intersection() noexcept : s{nullptr}, t{0.f} {}
+intersection::intersection() noexcept = default;
 
-intersection::intersection(sphere const* s, float t) noexcept : s{s}, t{t} {}
+intersection::intersection(unsigned shape_id, float t) noexcept
+    : shape_id{std::move(shape_id)}, t{std::move(t)} {}
 
-bool intersection::empty() const noexcept { return s == nullptr; }
-
-bool operator<(intersection const& l, intersection const& r) noexcept {
+bool operator<(intersection const l, intersection const r) noexcept {
     if (l.t < r.t) {
         return true;
     }

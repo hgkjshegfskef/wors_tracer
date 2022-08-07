@@ -30,7 +30,7 @@ TEST(WorldTest, Default) {
 TEST(WorldTest, ShadingIntersection) {
     world w = world::make_default();
     ray r{pnt3{0, 0, -5}, vec3{0, 0, 1}};
-    shape const& s = w.shapes[0];
+    shape const& s = w.spheres[0];
     intersection isec{&s, 4};
     shading sh{isec, r};
 
@@ -44,7 +44,7 @@ TEST(WorldTest, ShadingIntersectionFromInside) {
     world w = world::make_default();
     w.light = pnt_light{pnt3{0.f, .25f, 0.f}, color{1.f, 1.f, 1.f}};
     ray r{pnt3{0, 0, 0}, vec3{0, 0, 1}};
-    shape const& s = w.shapes[1];
+    shape const& s = w.spheres[1];
     intersection isec{&s, .5f};
     shading sh{isec, r};
 
@@ -74,8 +74,8 @@ TEST(WorldTest, ColorAtRayHit) {
 
 TEST(WorldTest, ColorAtBetweenSpheres) {
     world w = world::make_default();
-    shape& outer = w.shapes[0];
-    shape& inner = w.shapes[1];
+    shape& outer = w.spheres[0];
+    shape& inner = w.spheres[1];
     outer.mat.ambient = 1.f;
     inner.mat.ambient = 1.f;
     // Ray is inside the outer shape, but outside the inner shape, hitting the inner shape.
@@ -115,7 +115,7 @@ TEST(WorldTest, IsecInShadow) {
     world w{pnt_light{pnt3{0, 0, -10}, color{1, 1, 1}},
             std::vector{shape{}, shape{tform4::translate({0, 0, 10})}}};
     ray r{pnt3{0, 0, 5}, vec3{0, 0, 1}};
-    intersection isec{&w.shapes[1], 4};
+    intersection isec{&w.spheres[1], 4};
     shading sh{isec, r};
     color c = shade_hit(w, sh, <#initializer #>);
     EXPECT_EQ(c.r, .1f);

@@ -7,6 +7,7 @@
 namespace wt {
 
 struct ray;
+struct world;
 
 struct shading {
     // everything is in world space
@@ -18,7 +19,7 @@ struct shading {
     bool inside;
 
     shading() noexcept = default;
-    shading(intersection const& isec, ray const& r) noexcept;
+    shading(intersection const& isec, ray const& r, world const& w) noexcept;
 };
 
 } // namespace wt
