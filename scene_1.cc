@@ -28,7 +28,6 @@ scene scene_1(cli const& cli) noexcept {
                 material{.col = {1, .8f, .1f}, .diffuse = .7f, .specular = .3f}};
 
     struct spheres spheres(6);
-
     for (auto& sphere : {floor, left_wall, right_wall, middle, right, left}) {
         if (!spheres.add_sphere(std::move(sphere))) {
             SPDLOG_ERROR("Cannot add_sphere. Limit of {} spheres reached.", spheres.capacity);

@@ -35,7 +35,7 @@ world::world(struct spheres spheres, pnt_light light) noexcept
 std::vector<intersection>::const_iterator
 intersect(world const& world, ray const& world_ray,
           std::vector<intersection>& world_isecs) noexcept {
-    std::array<float, 2> isecs;
+    //    std::array<float, 2> isecs;
 
     for (unsigned sphere_idx = 0; sphere_idx < world.spheres.size; ++sphere_idx) {
         tform4 const inv_tform = inverse(world.spheres.tforms[sphere_idx]);
@@ -47,10 +47,13 @@ intersect(world const& world, ray const& world_ray,
             // not being a unit vector, which results in more calculation. but it is worth it
             inv_tform * world_ray.direction};
         // TODO: test performance without branching
-        if (intersect_sphere(object_ray, isecs)) {
-            world_isecs.emplace_back(shape_id_from_sphere(sphere_idx), isecs[0]);
-            world_isecs.emplace_back(shape_id_from_sphere(sphere_idx), isecs[1]);
-        }
+
+        intersect_sphere(object_ray, shape_id_from_sphere(sphere_idx), world_isecs);
+
+        //        if (intersect_sphere(object_ray, isecs)) {
+        //            world_isecs.emplace_back(shape_id_from_sphere(sphere_idx), isecs[0]);
+        //            world_isecs.emplace_back(shape_id_from_sphere(sphere_idx), isecs[1]);
+        //        }
     }
 
     // Find first smallest non-negative t, which represents closest intersection.

@@ -182,9 +182,8 @@ add_library(
   scene_1.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
-target_compile_definitions(
-  lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL # TBB_USE_THREADING_TOOLS=1
-)
+target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL
+                                                     TBB_USE_THREADING_TOOLS=1)
 target_compile_features(lib${PROJECT_NAME} PUBLIC cxx_std_20)
 if(${PROJECT_NAME}_LOGGING_LEVEL STREQUAL "Trace")
   target_compile_definitions(lib${PROJECT_NAME}

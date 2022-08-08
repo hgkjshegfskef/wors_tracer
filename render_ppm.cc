@@ -26,33 +26,31 @@ void render_ppm(camera const& camera, world const& world) noexcept {
     //    image.fill({0, 0, 0});
     tform4 const inv_cam_tform = inverse(camera.tform);
 
-    unsigned frames = 1;
+    unsigned frames = 100;
     for (unsigned frame = 0; frame < frames; ++frame) {
         auto start = std::chrono::steady_clock::now();
 
-        //        tbb::parallel_for(
-        //            tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const
-        //            range) {
-        //                std::vector<intersection> world_isecs;
-        //                world_isecs.reserve(world.spheres.size * 2);
-        //                for (int y = range.rows().begin(); y != range.rows().end(); ++y) {
-        //                    for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
-        //                        image(x, y) = color_at(world, ray_for_pixel(camera, inv_cam_tform,
-        //                        x, y),
-        //                                               world_isecs);
-        //                    }
-        //                }
-        //            });
+        tbb::parallel_for(
+            tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const range) {
+                std::vector<intersection> world_isecs;
+                world_isecs.reserve(world.spheres.size * 2);
+                for (int y = range.rows().begin(); y != range.rows().end(); ++y) {
+                    for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
+                        image(x, y) = color_at(world, ray_for_pixel(camera, inv_cam_tform, x, y),
+                                               world_isecs);
+                    }
+                }
+            });
 
-        std::vector<intersection> world_isecs;
-        SPDLOG_INFO("world.spheres.size: {}", world.spheres.size);
-        world_isecs.reserve(world.spheres.size * 2);
-        for (unsigned y = 0; y != camera.vsize; ++y) {
-            for (unsigned x = 0; x != camera.hsize; ++x) {
-                image(x, y) =
-                    color_at(world, ray_for_pixel(camera, inv_cam_tform, x, y), world_isecs);
-            }
-        }
+        //        std::vector<intersection> world_isecs;
+        //        world_isecs.reserve(world.spheres.size * 2);
+        //        for (unsigned y = 0; y != camera.vsize; ++y) {
+        //            for (unsigned x = 0; x != camera.hsize; ++x) {
+        //                image(x, y) =
+        //                    color_at(world, ray_for_pixel(camera, inv_cam_tform, x, y),
+        //                    world_isecs);
+        //            }
+        //        }
 
         auto stop = std::chrono::steady_clock::now();
 
