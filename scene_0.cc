@@ -3,7 +3,8 @@
 #include "scene.hh"
 #include "sphere.hh"
 
-#include <cassert>
+#include <spdlog/spdlog.h>
+
 #include <numbers>
 #include <vector>
 
@@ -15,7 +16,9 @@ scene scene_0(cli const& cli) noexcept {
     sphere s{};
 
     struct spheres spheres(1);
-    assert(spheres.add_sphere(std::move(s)));
+    if (!spheres.add_sphere(std::move(s))) {
+        SPDLOG_ERROR("Didn't add the sphere");
+    }
 
     world world{std::move(spheres), pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}};
 

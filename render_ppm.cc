@@ -45,6 +45,7 @@ void render_ppm(camera const& camera, world const& world) noexcept {
         //            });
 
         std::vector<intersection> world_isecs;
+        SPDLOG_INFO("world.spheres.size: {}", world.spheres.size);
         world_isecs.reserve(world.spheres.size * 2);
         for (unsigned y = 0; y != camera.vsize; ++y) {
             for (unsigned x = 0; x != camera.hsize; ++x) {

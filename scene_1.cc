@@ -3,7 +3,8 @@
 #include "scene.hh"
 #include "sphere.hh"
 
-#include <cassert>
+#include <spdlog/spdlog.h>
+
 #include <numbers>
 #include <vector>
 
@@ -26,23 +27,13 @@ scene scene_1(cli const& cli) noexcept {
     sphere left{tform4::translate({-1.5f, .33f, -0.75f}) * scale(.33f, .33f, .33f),
                 material{.col = {1, .8f, .1f}, .diffuse = .7f, .specular = .3f}};
 
-    //    std::vector<shape> shapes;
-    //    shapes.emplace_back(std::move(floor));
-    //    shapes.emplace_back(std::move(left_wall));
-    //    shapes.emplace_back(std::move(right_wall));
-    //    shapes.emplace_back(std::move(middle));
-    //    shapes.emplace_back(std::move(right));
-    //    shapes.emplace_back(std::move(left));
-    //
-    //    world const world{pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}, std::move(shapes)};
+    struct spheres spheres(6);
 
-    struct spheres spheres(10);
-    assert(spheres.add_sphere(std::move(floor)));
-    assert(spheres.add_sphere(std::move(left_wall)));
-    assert(spheres.add_sphere(std::move(right_wall)));
-    assert(spheres.add_sphere(std::move(middle)));
-    assert(spheres.add_sphere(std::move(right)));
-    assert(spheres.add_sphere(std::move(left)));
+    for (auto& sphere : {floor, left_wall, right_wall, middle, right, left}) {
+        if (!spheres.add_sphere(std::move(sphere))) {
+            SPDLOG_ERROR("Cannot add_sphere. Limit of {} spheres reached.", spheres.capacity);
+        }
+    }
 
     world world{std::move(spheres), pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}};
 
