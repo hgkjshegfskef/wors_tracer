@@ -9,6 +9,7 @@ spheres::spheres() noexcept = default;
 
 spheres::spheres(unsigned max_spheres) noexcept
     : tforms{std::make_unique_for_overwrite<tform4[]>(max_spheres)},
+      inv_tforms{std::make_unique_for_overwrite<tform4[]>(max_spheres)},
       materials{std::make_unique_for_overwrite<material[]>(max_spheres)}, size{0},
       capacity{max_spheres} {}
 
@@ -17,6 +18,7 @@ bool spheres::add_sphere(wt::sphere sphere) noexcept {
         return false;
     }
     tforms[size] = std::move(sphere.tform);
+    inv_tforms[size] = inverse(tforms[size]);
     materials[size] = std::move(sphere.material);
     ++size;
     return true;

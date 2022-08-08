@@ -38,22 +38,11 @@ intersect(world const& world, ray const& world_ray,
     //    std::array<float, 2> isecs;
 
     for (unsigned sphere_idx = 0; sphere_idx < world.spheres.size; ++sphere_idx) {
-        tform4 const inv_tform = inverse(world.spheres.tforms[sphere_idx]);
-        ray const object_ray{
-            inv_tform * world_ray.origin,
-            // do not normalize the result, so we get the t straight for the world space without the
-            // need to convert it first from the object space (why convert? because the t we get is
-            // for the transformed ray, not for the world space ray). this results in u (see below)
-            // not being a unit vector, which results in more calculation. but it is worth it
-            inv_tform * world_ray.direction};
-        // TODO: test performance without branching
-
+        ray const object_ray{world.spheres.inv_tforms[sphere_idx] * world_ray.origin,
+                             // do not normalize the result, so we get the t straight for the world
+                             // space without the need to convert it first from the object space
+                             world.spheres.inv_tforms[sphere_idx] * world_ray.direction};
         intersect_sphere(object_ray, shape_id_from_sphere(sphere_idx), world_isecs);
-
-        //        if (intersect_sphere(object_ray, isecs)) {
-        //            world_isecs.emplace_back(shape_id_from_sphere(sphere_idx), isecs[0]);
-        //            world_isecs.emplace_back(shape_id_from_sphere(sphere_idx), isecs[1]);
-        //        }
     }
 
     // Find first smallest non-negative t, which represents closest intersection.

@@ -11,6 +11,7 @@ struct material;
 
 struct spheres {
     std::unique_ptr<tform4[]> tforms;
+    std::unique_ptr<tform4[]> inv_tforms;
     std::unique_ptr<material[]> materials;
 
     unsigned size;
