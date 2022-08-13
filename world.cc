@@ -35,8 +35,6 @@ world::world(struct spheres spheres, pnt_light light) noexcept
 std::vector<intersection>::const_iterator
 intersect(world const& world, ray const& world_ray,
           std::vector<intersection>& world_isecs) noexcept {
-    //    std::array<float, 2> isecs;
-
     for (unsigned sphere_idx = 0; sphere_idx < world.spheres.size; ++sphere_idx) {
         ray const object_ray{world.spheres.inv_tforms[sphere_idx] * world_ray.origin,
                              // do not normalize the result, so we get the t straight for the world

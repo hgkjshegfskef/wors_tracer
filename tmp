@@ -1,0 +1,5 @@
+- try query texture
+- try different pixel format: https://gamedev.stackexchange.com/questions/87727/sdl-updatetexture-is-slow
+- use locktexture instead of updatetexture: https://wiki.libsdl.org/SDL_LockTexture https://cpp.hotexamples.com/examples/-/-/SDL_LockTexture/cpp-sdl_locktexture-function-examples.html
+- try rectangle
+- SDL_GetRendererInfo returns fastest pixel format

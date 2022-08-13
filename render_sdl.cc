@@ -51,23 +51,40 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
         return;
     }
 
+    SDL_RendererInfo renderer_info;
+    if (SDL_GetRendererInfo(renderer.get(), &renderer_info)) {
+        SPDLOG_ERROR("SDL_GetRendererInfo error: {}", SDL_GetError());
+        return;
+    }
+    if (renderer_info.num_texture_formats < 1) {
+        SPDLOG_ERROR("No supported texture formats");
+        return;
+    }
+    SPDLOG_DEBUG("Suggested pixel format: {}",
+                 SDL_GetPixelFormatName(renderer_info.texture_formats[1]));
+
     std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> screen_texture{
-        SDL_CreateTexture(renderer.get(), SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING,
-                          camera.hsize, camera.vsize),
+        SDL_CreateTexture(renderer.get(), renderer_info.texture_formats[1],
+                          SDL_TEXTUREACCESS_STREAMING, camera.hsize, camera.vsize),
         SDL_DestroyTexture};
     if (!screen_texture) {
         SPDLOG_ERROR("SDL_CreateTexture error: {}", SDL_GetError());
         return;
     }
 
+    unsigned pixel_format_enum;
+    if (SDL_QueryTexture(screen_texture.get(), &pixel_format_enum, nullptr, nullptr, nullptr) < 0) {
+        SPDLOG_ERROR("SDL_QueryTexture error: {}", SDL_GetError());
+        return;
+    }
+    SPDLOG_DEBUG("Actual pixel format: {}", SDL_GetPixelFormatName(pixel_format_enum));
+
     std::unique_ptr<SDL_PixelFormat, decltype(&SDL_FreeFormat)> pixel_format{
-        SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), SDL_FreeFormat};
+        SDL_AllocFormat(pixel_format_enum), SDL_FreeFormat};
     if (!pixel_format) {
         SPDLOG_ERROR("SDL_AllocFormat error: {}", SDL_GetError());
         return;
     }
-
-    auto pixels{std::make_unique<std::uint32_t[]>(camera.hsize * camera.vsize)};
 
     if (SDL_SetRelativeMouseMode(SDL_TRUE) < 0) {
         SPDLOG_ERROR("SDL_SetRelativeMouseMode error: {}", SDL_GetError());
@@ -159,6 +176,14 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
         camera.tform = v3::view(from, forward, up);
         tform4 const inv_cam_tform = inverse(camera.tform);
 
+        std::uint32_t* pixels;
+        int texture_width; // unused
+        if (SDL_LockTexture(screen_texture.get(), nullptr, reinterpret_cast<void**>(&pixels),
+                            &texture_width) < 0) {
+            SPDLOG_ERROR("SDL_LockTexture error: {}", SDL_GetError());
+            return;
+        }
+
         tbb::parallel_for(
             tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const range) {
                 std::vector<intersection> world_isecs;
@@ -174,11 +199,7 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
                 }
             });
 
-        if (SDL_UpdateTexture(screen_texture.get(), nullptr, pixels.get(),
-                              camera.hsize * sizeof *pixels.get()) < 0) {
-            SPDLOG_ERROR("SDL_UpdateTexture error: {}", SDL_GetError());
-            return;
-        }
+        SDL_UnlockTexture(screen_texture.get());
 
         if (SDL_RenderCopy(renderer.get(), screen_texture.get(), nullptr, nullptr) < 0) {
             SPDLOG_ERROR("SDL_RenderCopy error: {}", SDL_GetError());
