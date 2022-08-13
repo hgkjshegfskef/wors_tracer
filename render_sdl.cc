@@ -35,7 +35,7 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
 
     std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window{
         SDL_CreateWindow("worst racer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                         cli.win_width, cli.win_height, 0),
+                         cli.win_width, cli.win_height, SDL_WINDOW_ALLOW_HIGHDPI),
         SDL_DestroyWindow};
     if (!window) {
         SPDLOG_ERROR("SDL_CreateWindow error: {}", SDL_GetError());
