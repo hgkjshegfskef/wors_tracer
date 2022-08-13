@@ -16,10 +16,15 @@ using namespace std::numbers;
 
 namespace wt {
 
-float lerp(float x, std::pair<float, float> left_point,
-           std::pair<float, float> right_point) noexcept {
-    return left_point.second + (x - left_point.first) * (right_point.second - left_point.second) /
-                                   (right_point.first - left_point.first);
+// float lerp(float x, std::pair<float, float> left_point,
+//            std::pair<float, float> right_point) noexcept {
+//     return left_point.second + (x - left_point.first) * (right_point.second - left_point.second)
+//     /
+//                                    (right_point.first - left_point.first);
+// }
+
+float lerp(float x, float left_min, float left_max, float right_min, float right_max) noexcept {
+    return left_max + (x - left_min) * (right_max - left_max) / (right_min - left_min);
 }
 
 void write_ppm(char const* fname, std::string_view contents) noexcept {
@@ -53,19 +58,27 @@ void write_ppm(char const* fname, std::string_view contents) noexcept {
 // Scale a number between two (possibly overlapping) ranges.
 // Use-case example: given a value in range [0;1], find out its respective value in range [0;255].
 // Further reading: https://gamedev.stackexchange.com/a/33445
-float scale(float value, std::pair<float, float> source_range,
-            std::pair<float, float> target_range) noexcept {
-    return lerp(value, {source_range.first, target_range.first},
-                {source_range.second, target_range.second});
-}
+//float scale(float value, std::pair<float, float> source_range,
+//            std::pair<float, float> target_range) noexcept {
+//    //    return lerp(value, {source_range.first, target_range.first},
+//    //                {source_range.second, target_range.second});
+//}
 
-float clamp_and_scale(color const& col, unsigned component_idx) noexcept {
-    // Clamp to the range of canvas color components' values.
-    auto const clamped = std::clamp(col[component_idx], 0.f, 1.f);
-    // Scale to the range of PPM color values.
-    return scale(std::move(clamped), {0.f, 1.f}, {0.f, 255.f});
-}
+//float clamp_and_scale(float color_component, unsigned component_idx) noexcept {
+//    // Clamp to the range of canvas color components' values.
+//    // Scale to the range of PPM color values.
+//    //    return scale(std::move(clamped), {0.f, 1.f}, {0.f, 255.f});
+//    return lerp(std::clamp(color_component, 0.f, 1.f), 0.f, 0.f, 1.f, 255.f);
+//}
 
 float deg_to_rad(float deg) noexcept { return deg * pi_v<float> / 180.f; }
+
+float clamp(float x, float min, float max) noexcept {
+    if (x < min)
+        x = min;
+    if (x > max)
+        x = max;
+    return x;
+}
 
 } // namespace wt

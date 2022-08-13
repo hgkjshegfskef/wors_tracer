@@ -29,9 +29,10 @@ tform4::tform4(float n00, float n01, float n02, float n03, //
 
 tform4::tform4(vec3 const& a, vec3 const& b, vec3 const& c, pnt3 const& p) noexcept {
     // clang-format off
-    n[0][0] = a.x; n[0][1] = a.y; n[0][2] = a.z; n[1][0] = b.x;
-    n[1][1] = b.y; n[1][2] = b.z; n[2][0] = c.x; n[2][1] = c.y;
-    n[2][2] = c.z; n[3][0] = p.x; n[3][1] = p.y; n[3][2] = p.z;
+    n[0][0] = a.x; n[0][1] = a.y; n[0][2] = a.z;
+    n[1][0] = b.x; n[1][1] = b.y; n[1][2] = b.z;
+    n[2][0] = c.x; n[2][1] = c.y; n[2][2] = c.z;
+    n[3][0] = p.x; n[3][1] = p.y; n[3][2] = p.z;
     // clang-format on
 
     n[0][3] = n[1][3] = n[2][3] = 0.f;
@@ -43,6 +44,8 @@ tform4::tform4(mat3 const& M) noexcept : tform4(M[0], M[1], M[2], {0.f, 0.f, 0.f
 // pnt3 const& tform4::get_translation() const noexcept {
 //     return *reinterpret_cast<pnt3 const*>(n[3]); // UB
 // }
+
+pnt3 tform4::get_translation() const noexcept { return {n[3][0], n[3][1], n[3][2]}; }
 
 tform4 const& tform4::set_translation(const pnt3& p) noexcept {
     n[3][0] = p.x;

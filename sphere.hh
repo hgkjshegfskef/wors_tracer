@@ -33,8 +33,9 @@ material const& get_material(sphere const& sphere) noexcept;
 
 // vec3 normal_at(sphere const& sphere, pnt3 const& world_point) noexcept;
 
-struct world;
-vec3 normal_at(unsigned shape_id, pnt3 const& world_point, world const& w) noexcept;
+// struct world;
+// vec3 normal_at(unsigned shape_id, pnt3 const& world_point, world const& w) noexcept;
+vec3 normal_at(pnt3 const& world_point, tform4 const& inv_tform) noexcept;
 
 // std::array<intersection, 2> intersect(sphere const& sphere, ray const& world_ray) noexcept;
 

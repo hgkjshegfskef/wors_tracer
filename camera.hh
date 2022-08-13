@@ -7,11 +7,10 @@ namespace wt {
 struct camera {
     unsigned hsize; // in px;
     unsigned vsize; // in px;
-    float fov;
     float pixel_size;
     float half_width;
     float half_height;
-    tform4 tform;
+    tform4 inv_tform;
 
     camera() noexcept = default;
     camera(unsigned hsize, unsigned vsize, float fov) noexcept;
@@ -32,6 +31,6 @@ namespace v3 {
 tform4 view(pnt3 const& from, vec3 const& forward, vec3 const& up) noexcept;
 } // namespace v3
 
-ray ray_for_pixel(camera const& cam, tform4 const& inv_cam_tform, float px, float py) noexcept;
+ray ray_for_pixel(camera const& cam, float px, float py) noexcept;
 
 } // namespace wt

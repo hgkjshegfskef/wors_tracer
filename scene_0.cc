@@ -28,9 +28,9 @@ scene scene_0(cli const& cli) noexcept {
     vec3 up{0, 1, 0};
 
     if (cli.render_backend == "ppm") {
-        camera.tform = v2::view(from, to, up);
+        camera.inv_tform = inverse(v2::view(from, to, up));
     } else {
-        camera.tform = view(from, to, up);
+        camera.inv_tform = inverse(view(from, to, up));
     }
 
     return {std::move(world), std::move(camera)};

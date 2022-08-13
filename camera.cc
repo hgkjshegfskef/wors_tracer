@@ -11,7 +11,7 @@
 namespace wt {
 
 camera::camera(unsigned hsize, unsigned vsize, float fov) noexcept
-    : hsize{hsize}, vsize{vsize}, fov{fov}, tform{} {
+    : hsize{hsize}, vsize{vsize}, inv_tform{} {
     float half_view = std::tan(fov / 2.f);
     float aspect = float(hsize) / float(vsize);
     if (aspect >= 1.f) {
@@ -57,23 +57,19 @@ tform4 view(pnt3 const& from, vec3 const& forward, vec3 const& up) noexcept {
 }
 } // namespace v3
 
-ray ray_for_pixel(camera const& cam, tform4 const& inv_cam_tform, float px, float py) noexcept {
-    // offset from edge of canvas to pixel center
-    float const xoffset = (px + 0.5f) * cam.pixel_size;
-    float const yoffset = (py + 0.5f) * cam.pixel_size;
-
+ray ray_for_pixel(camera const& cam, float px, float py) noexcept {
     // cam looks towards -z, x is to the left
-    float const world_x = cam.half_width - xoffset;
-    float const world_y = cam.half_height - yoffset;
+    float const world_x = cam.half_width - (px + 0.5f) * cam.pixel_size;
+    float const world_y = cam.half_height - (py + 0.5f) * cam.pixel_size;
     assert(-1.f <= world_x && world_x <= 1.f);
     assert(-1.f <= world_y && world_y <= 1.f);
 
     // canvas is at z=-1
-    pnt3 const pixel = inv_cam_tform * pnt3{world_x, world_y, -1};
-    pnt3 const origin = inv_cam_tform * pnt3{0, 0, 0};
+    pnt3 const pixel = cam.inv_tform * pnt3{world_x, world_y, -1};
+    pnt3 const origin = cam.inv_tform.get_translation();
     vec3 const direction = normalize(pixel - origin);
 
-    return ray{origin, direction};
+    return ray{std::move(origin), std::move(direction)};
 }
 
 } // namespace wt

@@ -69,7 +69,6 @@ color color_at(world const& world, ray const& world_ray,
     if (hit == world_isecs.cend()) {
         return color{0, 0, 0};
     }
-
     shading sh{*hit, world_ray, world};
     return shade_hit(world, sh, world_isecs);
 }
@@ -78,15 +77,9 @@ bool is_shadowed(world const& world, pnt3 const& world_point,
                  std::vector<intersection>& world_isecs) noexcept {
     vec3 const v = world.light.position - world_point;
     float const dist = magnitude(v);
-    vec3 const direction = normalize(v);
-    ray const r{world_point, direction};
-
     world_isecs.clear();
-    auto hit = intersect(world, r, world_isecs);
-    if (hit != world_isecs.cend() && hit->t < dist) {
-        return true;
-    }
-    return false;
+    auto hit = intersect(world, {world_point, normalize(v)}, world_isecs);
+    return hit != world_isecs.cend() && hit->t < dist;
 }
 
 } // namespace wt

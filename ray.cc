@@ -35,7 +35,7 @@
 
 namespace wt {
 
-ray::ray(const pnt3& p, const vec3& v) noexcept : origin{p}, direction{v} {}
+ray::ray(pnt3 p, vec3 v) noexcept : origin{std::move(p)}, direction{std::move(v)} {}
 
 pnt3 position(pnt3 const& origin, vec3 const& direction, float t) noexcept {
     return origin + t * direction;
@@ -159,19 +159,19 @@ pnt3 position(pnt3 const& origin, vec3 const& direction, float t) noexcept {
 
 //} // namespace v2
 
-//long hit(std::vector<intersection> const& isecs) noexcept {
-//    float min_t{std::numeric_limits<float>::max()};
-//    for (size_t i = 0; i < isecs.size(); ++i) {
-//        if (isecs[i].t > 0 )
-//    }
+// long hit(std::vector<intersection> const& isecs) noexcept {
+//     float min_t{std::numeric_limits<float>::max()};
+//     for (size_t i = 0; i < isecs.size(); ++i) {
+//         if (isecs[i].t > 0 )
+//     }
 //
-//    for (auto const& isec : isecs) {
-//        if (!isec.empty() && isec.t > 0 && isec.t < min_t.t) {
-//            min_t = isec;
-//        }
-//    }
-//    return min_t;
-//}
+//     for (auto const& isec : isecs) {
+//         if (!isec.empty() && isec.t > 0 && isec.t < min_t.t) {
+//             min_t = isec;
+//         }
+//     }
+//     return min_t;
+// }
 
 // template intersection hit<std::vector<intersection>>(std::vector<intersection> const&) noexcept;
 // template intersection hit<std::array<intersection, 2>>(std::array<intersection, 2> const&)

@@ -24,12 +24,8 @@ tform4 const& get_tform(sphere const& sphere) noexcept { return sphere.tform; }
 material& get_material(sphere& sphere) noexcept { return sphere.material; }
 material const& get_material(sphere const& sphere) noexcept { return sphere.material; }
 
-// vec3 normal_at(sphere const& sphere, pnt3 const& world_point) noexcept {
-vec3 normal_at(unsigned shape_id, pnt3 const& world_point, world const& w) noexcept {
-    tform4 const inv_tform = inverse(w.spheres.tforms[shape_id]);
-    pnt3 const object_point = inv_tform * world_point;
-    vec3 const object_vector = normalize(object_point - pnt3{0, 0, 0});
-    return normalize(object_vector * inv_tform);
+vec3 normal_at(pnt3 const& world_point, tform4 const& inv_tform) noexcept {
+    return normalize((inv_tform * world_point) * inv_tform);
 }
 
 // bool intersect_sphere(ray const& object_ray, std::array<float, 2>& out_isecs) noexcept {

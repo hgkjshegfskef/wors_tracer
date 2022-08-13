@@ -173,8 +173,7 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
             from = position(from, up, cam_speed);
         }
 
-        camera.tform = v3::view(from, forward, up);
-        tform4 const inv_cam_tform = inverse(camera.tform);
+        camera.inv_tform = inverse(v3::view(from, forward, up));
 
         std::uint32_t* pixels;
         int texture_width; // unused
@@ -185,16 +184,19 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
         }
 
         tbb::parallel_for(
-            tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const range) {
+            tbb::blocked_range2d<unsigned>(0, camera.vsize, 0, camera.hsize),
+            [&](auto const& range) {
                 std::vector<intersection> world_isecs;
                 world_isecs.reserve(world.spheres.size * 2);
-                for (int y = range.rows().begin(); y != range.rows().end(); ++y) {
-                    for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
-                        color const color = color_at(
-                            world, ray_for_pixel(camera, inv_cam_tform, x, y), world_isecs);
-                        pixels[y * camera.hsize + x] = SDL_MapRGB(
-                            pixel_format.get(), clamp_and_scale(color, 0) + .5f,
-                            clamp_and_scale(color, 1) + .5f, clamp_and_scale(color, 2) + .5f);
+                for (unsigned y = range.rows().begin(); y != range.rows().end(); ++y) {
+                    for (unsigned x = range.cols().begin(); x != range.cols().end(); ++x) {
+                        color const color =
+                            color_at(world, ray_for_pixel(camera, x, y), world_isecs);
+                        pixels[y * camera.hsize + x] =
+                            SDL_MapRGB(pixel_format.get(),
+                                       lerp(clamp(color[0], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f) + .5f,
+                                       lerp(clamp(color[1], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f) + .5f,
+                                       lerp(clamp(color[2], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f) + .5f);
                     }
                 }
             });
