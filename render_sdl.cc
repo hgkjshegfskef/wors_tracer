@@ -45,7 +45,8 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
     SDL_SetWindowMinimumSize(window.get(), camera.hsize, camera.vsize);
 
     std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer{
-        SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED), SDL_DestroyRenderer};
+        SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC),
+        SDL_DestroyRenderer};
     if (!renderer) {
         SPDLOG_ERROR("SDL_CreateRenderer error: {}", SDL_GetError());
         return;
