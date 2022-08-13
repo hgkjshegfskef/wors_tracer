@@ -18,32 +18,28 @@ int main(int argc, char** argv) {
 
     cli cli;
 
+    cli.render_backend = "sdl";
     app.add_option("-r,--render-backend", cli.render_backend, "Where to dump the pixels")
-        ->check(CLI::IsMember{{"ppm", "sdl"}})
-        ->default_val("sdl")
-        ->run_callback_for_default();
+        ->check(CLI::IsMember{{"ppm", "sdl"}});
 
-    app.add_option("--win-width", cli.win_width, "SDL window width")
-        ->default_val(1920)
-        ->run_callback_for_default();
-    app.add_option("--win-height", cli.win_height, "SDL window height")
-        ->default_val(1080)
-        ->run_callback_for_default();
+    cli.win_width = 1920;
+    app.add_option("--win-width", cli.win_width, "SDL window width");
+    cli.win_height = 1080;
+    app.add_option("--win-height", cli.win_height, "SDL window height");
 
-    app.add_option("--tex-width", cli.tex_width, "SDL texture width")
-        ->default_val(960)
-        ->run_callback_for_default();
-    app.add_option("--tex-height", cli.tex_height, "SDL texture height")
-        ->default_val(540)
-        ->run_callback_for_default();
+    cli.tex_width = 960;
+    app.add_option("--tex-width", cli.tex_width, "SDL texture width");
+    cli.tex_height = 540;
+    app.add_option("--tex-height", cli.tex_height, "SDL texture height");
 
-    app.add_option("-s,--scene", cli.scene, "Scene number")
-        ->default_val(1)
-        ->run_callback_for_default();
+    cli.scene = 1;
+    app.add_option("-s,--scene", cli.scene, "Scene number");
 
-    app.add_option("ppm-file", cli.ppm_fname, "PPM file name")
-        ->default_val("image.ppm")
-        ->run_callback_for_default();
+    cli.ppm_fname = "image.ppm";
+    app.add_option("ppm-file", cli.ppm_fname, "PPM file name");
+
+    cli.vsync = false;
+    app.add_flag("--vsync,!--no-vsync", cli.vsync, "Use vertical synchronization");
 
     CLI11_PARSE(app, argc, argv);
 

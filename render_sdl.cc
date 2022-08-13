@@ -44,9 +44,13 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
 
     SDL_SetWindowMinimumSize(window.get(), camera.hsize, camera.vsize);
 
+    std::uint32_t renderer_flags = SDL_RENDERER_ACCELERATED;
+    if (cli.vsync) {
+        SPDLOG_ERROR("vsync enable");
+        renderer_flags |= SDL_RENDERER_PRESENTVSYNC;
+    }
     std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer{
-        SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC),
-        SDL_DestroyRenderer};
+        SDL_CreateRenderer(window.get(), -1, renderer_flags), SDL_DestroyRenderer};
     if (!renderer) {
         SPDLOG_ERROR("SDL_CreateRenderer error: {}", SDL_GetError());
         return;
@@ -63,6 +67,12 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
     }
     SPDLOG_DEBUG("Suggested pixel format: {}",
                  SDL_GetPixelFormatName(renderer_info.texture_formats[1]));
+
+    // linear filtering (anti-aliasing when scaling)
+    if (SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1") != SDL_TRUE) {
+        SPDLOG_ERROR("SDL_HINT_RENDER_SCALE_QUALITY was not set to 1");
+        return;
+    }
 
     std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> screen_texture{
         SDL_CreateTexture(renderer.get(), renderer_info.texture_formats[1],
