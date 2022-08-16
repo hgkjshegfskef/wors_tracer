@@ -172,9 +172,6 @@ add_library(
   camera.cc
   render_ppm.cc
   render_sdl.cc
-  shape.cc
-  shape_concept.cc
-  shape_model.cc
   spheres.cc
   sphere.cc
   scene.cc

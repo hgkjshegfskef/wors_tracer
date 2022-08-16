@@ -7,8 +7,6 @@
 #include "material.hh"
 #include "ray.hh"
 #include "shading.hh"
-#include "shape.hh"
-#include "sphere.hh"
 #include "tform4.hh"
 
 #include <algorithm> // sort
@@ -20,8 +18,8 @@ namespace wt {
 
 world::world() noexcept = default;
 
-world::world(struct spheres spheres, pnt_light light) noexcept
-    : spheres{std::move(spheres)}, light{std::move(light)} {}
+world::world(std::vector<shape> shapes, pnt_light light) noexcept
+    : shapes{std::move(shapes)}, light{std::move(light)} {}
 
 // world world::make_default() noexcept {
 //     std::vector<shape> shapes;
@@ -35,12 +33,12 @@ world::world(struct spheres spheres, pnt_light light) noexcept
 std::vector<intersection>::const_iterator
 intersect(world const& world, ray const& world_ray,
           std::vector<intersection>& world_isecs) noexcept {
-    for (unsigned sphere_idx = 0; sphere_idx < world.spheres.size; ++sphere_idx) {
-        ray const object_ray{world.spheres.inv_tforms[sphere_idx] * world_ray.origin,
+    for (auto shape = world.shapes.cbegin(); shape != world.shapes.cend(); ++shape) {
+        ray const object_ray{shape->get_inv_tform() * world_ray.origin,
                              // do not normalize the result, so we get the t straight for the world
                              // space without the need to convert it first from the object space
-                             world.spheres.inv_tforms[sphere_idx] * world_ray.direction};
-        intersect_sphere(object_ray, shape_id_from_sphere(sphere_idx), world_isecs);
+                             shape->get_inv_tform() * world_ray.direction};
+        shape->intersect(object_ray, std::distance(world.shapes.cbegin(), shape), world_isecs);
     }
 
     // Find first smallest non-negative t, which represents closest intersection.
@@ -50,14 +48,14 @@ intersect(world const& world, ray const& world_ray,
         [](float predicate, intersection const& isec) { return predicate <= isec.t; });
 }
 
-unsigned shape_id_from_sphere(unsigned sphere_idx) noexcept {
-    // Spheres are the first in the struct, so there is no offset
-    return sphere_idx;
-}
+// unsigned shape_id_from_sphere(unsigned sphere_idx) noexcept {
+//     // Spheres are the first in the struct, so there is no offset
+//     return sphere_idx;
+// }
 
 color shade_hit(world const& world, shading const& shading_info,
                 std::vector<intersection>& world_isecs) noexcept {
-    return lighting(world.spheres.materials[shading_info.isec.shape_id], world.light,
+    return lighting(world.shapes[shading_info.isec.shape_id].get_material(), world.light,
                     shading_info.isec_pnt, shading_info.eye, shading_info.normal,
                     is_shadowed(world, shading_info.over_pnt, world_isecs));
 }

@@ -31,7 +31,7 @@ void render_ppm(camera const& camera, world const& world) noexcept {
         tbb::parallel_for(
             tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const range) {
                 std::vector<intersection> world_isecs;
-                world_isecs.reserve(world.spheres.size * 2);
+                world_isecs.reserve(world.shapes.size() * 2);
                 for (int y = range.rows().begin(); y != range.rows().end(); ++y) {
                     for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
                         image(x, y) = color_at(world, ray_for_pixel(camera, x, y), world_isecs);

@@ -1,6 +1,7 @@
 #include "cli.hh"
 #include "mat3.hh"
 #include "scene.hh"
+#include "shape.hh"
 #include "sphere.hh"
 
 #include <spdlog/spdlog.h>
@@ -27,14 +28,13 @@ scene scene_1(cli const& cli) noexcept {
     sphere left{tform4::translate({-1.5f, .33f, -0.75f}) * scale(.33f, .33f, .33f),
                 material{.col = {1, .8f, .1f}, .diffuse = .7f, .specular = .3f}};
 
-    struct spheres spheres(6);
+    std::vector<shape> shapes;
+    shapes.reserve(6);
     for (auto& sphere : {floor, left_wall, right_wall, middle, right, left}) {
-        if (!spheres.add_sphere(std::move(sphere))) {
-            SPDLOG_ERROR("Cannot add_sphere. Limit of {} spheres reached.", spheres.capacity);
-        }
+        shapes.emplace_back(sphere);
     }
 
-    world world{std::move(spheres), pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}};
+    world world{std::move(shapes), pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}};
 
     camera camera{cli.tex_width, cli.tex_height, pi_v<float> / 3};
     pnt3 from{0, 1.5f, -5};

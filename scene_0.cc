@@ -1,6 +1,7 @@
 #include "cli.hh"
 #include "mat3.hh"
 #include "scene.hh"
+#include "shape.hh"
 #include "sphere.hh"
 
 #include <spdlog/spdlog.h>
@@ -13,14 +14,10 @@ using namespace std::numbers;
 namespace wt {
 
 scene scene_0(cli const& cli) noexcept {
-    sphere s{};
+    std::vector<shape> shapes;
+    shapes.emplace_back(sphere{});
 
-    struct spheres spheres(1);
-    if (!spheres.add_sphere(std::move(s))) {
-        SPDLOG_ERROR("Didn't add the sphere");
-    }
-
-    world world{std::move(spheres), pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}};
+    world world{std::move(shapes), pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}};
 
     camera camera{cli.tex_width, cli.tex_height, pi_v<float> / 3};
     pnt3 from{0, 0, -2};

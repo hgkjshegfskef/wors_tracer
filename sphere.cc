@@ -13,25 +13,13 @@ namespace wt {
 
 sphere::sphere() noexcept = default;
 
-sphere::sphere(tform4 const& tform) noexcept : tform{tform}, material{} {}
+sphere::sphere(tform4 const& tform) noexcept : sphere(tform, {}) {}
 
 sphere::sphere(tform4 const& tform, struct material const& material) noexcept
-    : tform{tform}, material{material} {}
+    : tform{tform}, inv_tform{inverse(tform)}, material{material} {}
 
-tform4& get_tform(sphere& sphere) noexcept { return sphere.tform; }
-tform4 const& get_tform(sphere const& sphere) noexcept { return sphere.tform; }
-
-material& get_material(sphere& sphere) noexcept { return sphere.material; }
-material const& get_material(sphere const& sphere) noexcept { return sphere.material; }
-
-vec3 normal_at(pnt3 const& world_point, tform4 const& inv_tform) noexcept {
-    return normalize((inv_tform * world_point) * inv_tform);
-}
-
-// bool intersect_sphere(ray const& object_ray, std::array<float, 2>& out_isecs) noexcept {
-
-void intersect_sphere(ray const& object_ray, unsigned shape_id,
-                      std::vector<intersection>& world_isecs) noexcept {
+void sphere::intersect(ray const& object_ray, unsigned shape_id,
+                       std::vector<intersection>& world_isecs) const noexcept {
     //  Sphere equation: (x-c)⋅(x-c) = r²
     //  Ray equation: x = o + du
     //
