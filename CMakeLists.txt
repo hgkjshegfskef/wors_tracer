@@ -237,11 +237,10 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
   target_sources(
     ${PROJECT_NAME}_test_base
     INTERFACE vec3_test.cc
-              ray_test.cc
               vec4_test.cc
               mat3_test.cc
               mat4_test.cc
-              # sphere_test.cc
+              sphere_test.cc
               pnt3_test.cc
               canvas_test.cc
               color_test.cc

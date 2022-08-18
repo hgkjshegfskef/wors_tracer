@@ -20,7 +20,7 @@ struct world {
     world() noexcept;
     world(std::vector<shape> shapes, pnt_light light) noexcept;
 
-    //    static world make_default() noexcept;
+    static world make_default() noexcept;
 };
 
 // unsigned shape_id_from_sphere(unsigned sphere_idx) noexcept;

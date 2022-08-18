@@ -7,6 +7,7 @@
 #include "material.hh"
 #include "ray.hh"
 #include "shading.hh"
+#include "sphere.hh"
 #include "tform4.hh"
 
 #include <algorithm> // sort
@@ -21,14 +22,14 @@ world::world() noexcept = default;
 world::world(std::vector<shape> shapes, pnt_light light) noexcept
     : shapes{std::move(shapes)}, light{std::move(light)} {}
 
-// world world::make_default() noexcept {
-//     std::vector<shape> shapes;
-//     shapes.emplace_back(
-//         sphere{tform4{}, material{.col = {.8f, 1.f, .6f}, .diffuse = .7f, .specular = .2f}});
-//     shapes.emplace_back(sphere{tform4{scale(.5f, .5f, .5f)}});
-//     return world{pnt_light{.position = {-10.f, 10.f, -10.f}, .intensity = {1.f, 1.f, 1.f}},
-//                  std::move(shapes)};
-// }
+world world::make_default() noexcept {
+    std::vector<shape> shapes;
+    shapes.emplace_back(
+        sphere{tform4{}, material{.col = {.8f, 1.f, .6f}, .diffuse = .7f, .specular = .2f}});
+    shapes.emplace_back(sphere{tform4{scale(.5f, .5f, .5f)}});
+    return world{std::move(shapes),
+                 pnt_light{.position = {-10.f, 10.f, -10.f}, .intensity = {1.f, 1.f, 1.f}}};
+}
 
 std::vector<intersection>::const_iterator
 intersect(world const& world, ray const& world_ray,
@@ -47,11 +48,6 @@ intersect(world const& world, ray const& world_ray,
         world_isecs.cbegin(), world_isecs.cend(), 0.f,
         [](float predicate, intersection const& isec) { return predicate <= isec.t; });
 }
-
-// unsigned shape_id_from_sphere(unsigned sphere_idx) noexcept {
-//     // Spheres are the first in the struct, so there is no offset
-//     return sphere_idx;
-// }
 
 color shade_hit(world const& world, shading const& shading_info,
                 std::vector<intersection>& world_isecs) noexcept {

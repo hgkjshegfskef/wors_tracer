@@ -1,70 +1,75 @@
+#include "intersection.hh"
+#include "mat3.hh"
 #include "ray.hh"
+#include "shape.hh"
 #include "sphere.hh"
+#include "tform4.hh"
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
+
 using namespace wt;
 
-namespace {
+TEST(RayTest, IntersectSphereMiss) {
+    ray r{{0, 0, -5}, {0, 0, 1}};
+    tform4 tform = tform4::translate({5, 0, 0});
+    shape s = sphere{tform};
+    std::vector<intersection> world_isecs;
+    ray object_ray{s.get_inv_tform() * r.origin, s.get_inv_tform() * r.direction};
 
-// this repeates some code in intersect(), since the returned t is the parameter of the transformed
-// ray, and to get the point coordinates in world space, we need to transform the coordinates back
-pnt3 point_in_world_space(const ray& r, const sphere& s, float t) {
-    tform4 const inv = inverse(s.tform);
-    ray const transformed{inv * r.origin, normalize(inv * r.direction)};
-    return s.tform * position(transformed.origin, transformed.direction, t);
+    s.intersect(object_ray, 0, world_isecs);
+    std::sort(world_isecs.begin(), world_isecs.end());
+
+    EXPECT_EQ(world_isecs.size(), 0);
 }
 
-} // namespace
+TEST(RayTest, IntersectSphereScaledHit) {
+    ray r{{0, 0, -5}, {0, 0, 1}};
+    tform4 tform = scale(2, 2, 2);
+    shape s = sphere{tform};
+    std::vector<intersection> world_isecs;
+    ray object_ray{s.get_inv_tform() * r.origin, s.get_inv_tform() * r.direction};
 
-TEST(SphereTest, Ctor) {
-    auto scale = tform4(vec3{2, 0, 0}, vec3{0, 2, 0}, vec3{0, 0, 2}, pnt3{0, 0, 0});
-    sphere s{std::move(scale)};
+    s.intersect(object_ray, 0, world_isecs);
+    std::sort(world_isecs.begin(), world_isecs.end());
+
+    EXPECT_EQ(world_isecs.size(), 2);
+    EXPECT_EQ(world_isecs[0].t, 3.f);
+    EXPECT_EQ(world_isecs[1].t, 7.f);
+
+    pnt3 pi1 = position(r.origin, r.direction, world_isecs[0].t);
+    pnt3 pi2 = position(r.origin, r.direction, world_isecs[1].t);
+
+    EXPECT_EQ(pi1, pnt3(0, 0, -2));
+    EXPECT_EQ(pi2, pnt3(0, 0, 2));
 }
 
-TEST(SphereTest, IntersectNoTransformation) {
-    pnt3 const ray_origin{-5.f, 0.f, 0.f};
-    pnt3 const sphere_origin{0.f, 0.f, 0.f};
-    ray r{ray_origin, normalize(sphere_origin - ray_origin)};
-    sphere s;
+TEST(RayTest, IntersectSphereDefaultHitBehind) {
+    ray r{{0, 0, 5}, {0, 0, 1}};
+    shape s = sphere{};
+    std::vector<intersection> world_isecs;
+    ray object_ray{s.get_inv_tform() * r.origin, s.get_inv_tform() * r.direction};
 
-    auto i = intersect(r, s);
-    EXPECT_TRUE(i);
+    s.intersect(object_ray, 0, world_isecs);
+    std::sort(world_isecs.begin(), world_isecs.end());
 
-    pnt3 p = position(r.origin, r.direction, *i);
-    EXPECT_NEAR(p.x, -1.f, 1e-6f);
-    EXPECT_NEAR(p.y, 0.f, 1e-6f);
-    EXPECT_NEAR(p.z, 0.f, 1e-6f);
+    EXPECT_EQ(world_isecs.size(), 2);
+    EXPECT_EQ(world_isecs[0].t, -6.f);
+    EXPECT_EQ(world_isecs[1].t, -4.f);
 }
 
-TEST(SphereTest, IntersectScale) {
-    pnt3 const ray_origin{-5.f, 0.f, 0.f};
-    pnt3 const sphere_origin{0.f, 0.f, 0.f};
-    ray r{ray_origin, normalize(sphere_origin - ray_origin)};
-    sphere s{tform4(2.f, 0.f, 0.f, 0.f, //
-                    0.f, 2.f, 0.f, 0.f, //
-                    0.f, 0.f, 2.f, 0.f)};
+TEST(RayTest, SphereOneHit) {
+    ray r{{0, 0, -5}, {0, 0, 1}};
+    tform4 tform = scale(2, 2, 2);
+    shape s = sphere{tform};
+    std::vector<intersection> world_isecs;
+    ray object_ray{s.get_inv_tform() * r.origin, s.get_inv_tform() * r.direction};
 
-    auto t = intersect(r, s);
-    EXPECT_TRUE(t);
-    pnt3 const p = point_in_world_space(r, s, *t);
-    EXPECT_NEAR(p.x, -2.f, 1e-6f);
-    EXPECT_NEAR(p.y, 0.f, 1e-6f);
-    EXPECT_NEAR(p.z, 0.f, 1e-6f);
-}
+    s.intersect(object_ray, 0, world_isecs);
+    std::sort(world_isecs.begin(), world_isecs.end());
 
-TEST(SphereTest, IntersectTranslate) {
-    pnt3 const ray_origin{-5.f, 0.f, 0.f};
-    pnt3 const sphere_origin{0.f, 0.f, 0.f};
-    ray r{ray_origin, normalize(sphere_origin - ray_origin)};
-    sphere s{tform4(1.f, 0.f, 0.f, 2.f, //
-                    0.f, 1.f, 0.f, 1.f, //
-                    0.f, 0.f, 1.f, 0.f)};
-
-    auto t = intersect(r, s);
-    EXPECT_TRUE(t);
-    pnt3 const p = point_in_world_space(r, s, *t);
-    EXPECT_NEAR(p.x, 2.f, 1e-6f);
-    EXPECT_NEAR(p.y, 0.f, 1e-6f);
-    EXPECT_NEAR(p.z, 0.f, 1e-6f);
+    EXPECT_EQ(world_isecs.size(), 2);
+    EXPECT_EQ(world_isecs[0].t, 3.f);
+    EXPECT_EQ(world_isecs[1].t, 3.f);
 }

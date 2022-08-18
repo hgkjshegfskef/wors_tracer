@@ -24,14 +24,17 @@ struct sphere {
     sphere(tform4 const& tform) noexcept;
     sphere(tform4 const& tform, struct material const& material) noexcept;
 
-    tform4& get_tform() noexcept { return tform; }
     tform4 const& get_tform() const noexcept { return tform; }
-
-    tform4& get_inv_tform() noexcept { return inv_tform; }
     tform4 const& get_inv_tform() const noexcept { return inv_tform; }
-
-    struct material& get_material() noexcept { return material; }
     struct material const& get_material() const noexcept { return material; }
+
+    tform4& get_tform() noexcept { return tform; }
+    tform4& get_inv_tform() noexcept { return inv_tform; }
+    struct material& get_material() noexcept { return material; }
+
+    //    void set_tform(tform4 t) noexcept { tform = std::move(t); }
+    //    void set_inv_tform(tform4 inv_t) noexcept { inv_tform = std::move(inv_t); }
+    //    void set_material(struct material m) noexcept { material = std::move(m); }
 
     void intersect(ray const& object_ray, unsigned shape_id,
                    std::vector<intersection>& world_isecs) const noexcept;
