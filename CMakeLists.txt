@@ -174,6 +174,7 @@ add_library(
   render_sdl.cc
   spheres.cc
   sphere.cc
+  sphere_operations.cc
   scene.cc
   scene_0.cc
   scene_1.cc)

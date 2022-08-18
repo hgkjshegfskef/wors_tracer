@@ -1,136 +1,103 @@
 #pragma once
 
-#include "material.hh"
-#include "tform4.hh"
+#include "sphere_operations.hh"
 
 #include <memory>      // unique_ptr
-#include <type_traits> // is_same_v, decay_t, remove_reference_t
-#include <vector>
+#include <type_traits> // enable_if, is_const
+#include <utility>     // forward
 
 namespace wt {
 
-struct vec3;
-struct pnt3;
-struct intersection;
-struct ray;
-class tform4;
-struct material;
-
 class shape {
-    class ShapeConcept {
-      public:
-        virtual ~ShapeConcept() noexcept = 0;
+    // Shape's interface is implemented as hidden friends.
 
-        // shape's interface declaration. The real functions containing implementations are named
+    template <typename S = shape>
+    friend std::enable_if_t<not std::is_const_v<S>, tform4&> tform(shape& s) noexcept {
+        return s.pimpl_->do_tform();
+    }
+    friend tform4 const& tform(shape const& s) noexcept { return s.pimpl_->do_tform(); }
+
+    //    template <typename S = shape>
+    //    friend std::enable_if_t<not std::is_const_v<S>, tform4&> inv_tform(shape& s) noexcept {
+    //        return s.pimpl_->do_inv_tform();
+    //    }
+    friend tform4 const& inv_tform(shape const& s) noexcept { return s.pimpl_->do_inv_tform(); }
+
+    template <typename S = shape>
+    friend std::enable_if_t<not std::is_const_v<S>, material&> mater(shape& s) noexcept {
+        return s.pimpl_->do_mater();
+    }
+    friend material const& mater(shape const& s) noexcept { return s.pimpl_->do_mater(); }
+
+    friend void intersect(shape const& s, ray const& object_ray, unsigned shape_id,
+                          std::vector<intersection>& world_isecs) noexcept {
+        s.pimpl_->do_intersect(object_ray, std::move(shape_id), world_isecs);
+    }
+
+    class shape_concept {
+      public:
+        virtual ~shape_concept() = 0;
+
+        // Shape's interface declaration. The real functions containing implementations are named
         // without the do_ prefix, but in order to facilitate ADL in finding the free functions
         // implementing the interface, the virtual interface functions must be named differently.
 
-        // XXX: cannot const propagate, that is, have non-const versions of functions
+        //        virtual tform4& do_tform() = 0;
+        [[nodiscard]] virtual tform4 const& do_tform() const noexcept = 0;
 
-        //        virtual tform4& get_tform() noexcept = 0;
-        //        virtual tform4& get_inv_tform() noexcept = 0;
-        //        virtual material& get_material() noexcept = 0;
+        //        virtual tform4& do_inv_tform() = 0;
+        [[nodiscard]] virtual tform4 const& do_inv_tform() const noexcept = 0;
 
-        virtual tform4 const& get_tform() const noexcept = 0;
-        virtual tform4 const& get_inv_tform() const noexcept = 0;
-        virtual material const& get_material() const noexcept = 0;
+        //        virtual material& do_mater() = 0;
+        [[nodiscard]] virtual material const& do_mater() const noexcept = 0;
 
-        //        virtual void set_tform(tform4 tform) noexcept = 0;
-        //        virtual void set_inv_tform(tform4 inv_tform) noexcept = 0;
-        //        virtual void set_material(material material) noexcept = 0;
+        virtual void do_intersect(ray const& object_ray, unsigned shape_id,
+                                  std::vector<intersection>& world_isecs) const noexcept = 0;
 
-        virtual void intersect(ray const& object_ray, unsigned shape_id,
-                               std::vector<intersection>& world_isecs) const noexcept = 0;
-
-        // Make shape_concept's children copyable through shape_concept pointer.
-        [[nodiscard]] virtual std::unique_ptr<ShapeConcept> clone() noexcept = 0;
+        // Make ShapeConcept's children copyable through ShapeConcept pointer.
+        [[nodiscard]] virtual std::unique_ptr<shape_concept> clone() const = 0;
 
       protected:
-        ShapeConcept() noexcept = default;
-        ShapeConcept(ShapeConcept const&) noexcept = default;
-        ShapeConcept(ShapeConcept&&) noexcept = default;
-        ShapeConcept& operator=(ShapeConcept const&) noexcept = default;
-        ShapeConcept& operator=(ShapeConcept&&) noexcept = default;
+        shape_concept() = default;
+        shape_concept(shape_concept const&) = default;
+        shape_concept(shape_concept&&) noexcept = default;
+        shape_concept& operator=(shape_concept&&) noexcept = default;
+        shape_concept& operator=(shape_concept const&) = default;
     };
 
-    //    class ConstShapeConcept {
-    //      public:
-    //        virtual ~ConstShapeConcept() noexcept = 0;
-    //
-    //        // shape's interface declaration. The real functions containing implementations are
-    //        named
-    //        // without the do_ prefix, but in order to facilitate ADL in finding the free
-    //        functions
-    //        // implementing the interface, the virtual interface functions must be named
-    //        differently.
-    //
-    //        // XXX: cannot const propagate, that is, have non-const versions of functions
-    //
-    //        virtual tform4 const& get_tform() const noexcept = 0;
-    //        virtual tform4 const& get_inv_tform() const noexcept = 0;
-    //        virtual material const& get_material() const noexcept = 0;
-    //
-    //        //        virtual void set_tform(tform4 tform) noexcept = 0;
-    //        //        virtual void set_inv_tform(tform4 inv_tform) noexcept = 0;
-    //        //        virtual void set_material(material material) noexcept = 0;
-    //        //
-    //        //        virtual void intersect(ray const& object_ray, unsigned shape_id,
-    //        //                               std::vector<intersection>& world_isecs) const
-    //        noexcept = 0;
-    //
-    //        //        // Make shape_concept's children copyable through shape_concept pointer.
-    //        //        [[nodiscard]] virtual std::unique_ptr<ConstShapeConcept> clone() noexcept =
-    //        0;
-    //
-    //      protected:
-    //        ConstShapeConcept() noexcept = default;
-    //        ConstShapeConcept(ConstShapeConcept const&) noexcept = default;
-    //        ConstShapeConcept(ConstShapeConcept&&) noexcept = default;
-    //        ConstShapeConcept& operator=(ConstShapeConcept const&) noexcept = default;
-    //        ConstShapeConcept& operator=(ConstShapeConcept&&) noexcept = default;
-    //    };
-
-    // Adapt ConcreteShape to the Concept
-    template <typename ConcreteShape> class Model final : public ShapeConcept {
+    template <typename ConcreteShape> class shape_model final : public shape_concept {
       public:
-        Model(ConcreteShape&& concrete_shape) noexcept
+        shape_model(ConcreteShape&& concrete_shape)
             // Copy-construct or move-construct the concrete type.
             : object_{std::forward<ConcreteShape>(concrete_shape)} {}
 
-        tform4 const& get_tform() const noexcept override { return object_.get_tform(); }
-        tform4 const& get_inv_tform() const noexcept override { return object_.get_inv_tform(); }
-        material const& get_material() const noexcept override { return object_.get_material(); }
+        template <typename C = ConcreteShape>
+        std::enable_if_t<!std::is_const_v<C>, tform4&> do_tform() noexcept {
+            return tform(object_);
+        }
+        [[nodiscard]] tform4 const& do_tform() const noexcept override { return tform(object_); }
 
-        template <typename CS = ConcreteShape>
-        std::enable_if_t<!std::is_const_v<CS>, tform4&> get_tform() noexcept {
-            return object_.get_tform();
+        template <typename C = ConcreteShape>
+        std::enable_if_t<!std::is_const_v<C>, tform4&> do_inv_tform() {
+            return inv_tform(object_);
+        }
+        [[nodiscard]] tform4 const& do_inv_tform() const noexcept override {
+            return inv_tform(object_);
         }
 
-        template <typename CS = ConcreteShape>
-        std::enable_if_t<!std::is_const_v<CS>, tform4&> get_inv_tform() noexcept {
-            return object_.get_inv_tform();
+        template <typename C = ConcreteShape>
+        std::enable_if_t<!std::is_const_v<C>, material&> do_mater() {
+            return mater(object_);
         }
-        template <typename CS = ConcreteShape>
-        std::enable_if_t<!std::is_const_v<CS>, material&> get_material() noexcept {
-            return object_.get_material();
-        }
+        [[nodiscard]] material const& do_mater() const noexcept override { return mater(object_); }
 
-        //        void set_tform(tform4 tform) noexcept override {
-        //        object_.set_tform(std::move(tform)); } void set_inv_tform(tform4 inv_tform)
-        //        noexcept override {
-        //            object_.set_inv_tform(std::move(inv_tform));
-        //        }
-        //        void set_material(material material) noexcept override {
-        //            object_.set_material(std::move(material));
-        //        }
-
-        void intersect(ray const& object_ray, unsigned shape_id,
-                       std::vector<intersection>& world_isecs) const noexcept override {
-            return object_.intersect(object_ray, std::move(shape_id), world_isecs);
+        void do_intersect(ray const& object_ray, unsigned shape_id,
+                          std::vector<intersection>& world_isecs) const noexcept override {
+            intersect(object_, object_ray, std::move(shape_id), world_isecs);
         }
 
-        std::unique_ptr<ShapeConcept> clone() noexcept override {
-            return std::make_unique<Model>(*this);
+        [[nodiscard]] std::unique_ptr<shape_concept> clone() const override {
+            return std::make_unique<shape_model>(*this);
         }
 
       private:
@@ -138,42 +105,21 @@ class shape {
     };
 
   public:
-    tform4 const& get_tform() const noexcept { return pimpl_->get_tform(); }
-    tform4 const& get_inv_tform() const noexcept { return pimpl_->get_inv_tform(); }
-    material const& get_material() const noexcept { return pimpl_->get_material(); }
-
-    template <typename T>
-    std::enable_if_t<!std::is_const_v<T>, tform4&> get_tform() noexcept {
-        return pimpl_->get_tform();
-    }
-    tform4& get_inv_tform() noexcept { return pimpl_->get_inv_tform(); }
-    material& get_material() noexcept { return pimpl_->get_material(); }
-
-    //    void set_tform(tform4 tform) noexcept { return pimpl_->set_tform(std::move(tform)); }
-    //    void set_inv_tform(tform4 inv_tform) noexcept {
-    //        return pimpl_->set_inv_tform(std::move(inv_tform));
-    //    }
-    //    void set_material(material material) noexcept {
-    //        return pimpl_->set_material(std::move(material));
-    //    }
-
-    void intersect(ray const& object_ray, unsigned shape_id,
-                   std::vector<intersection>& world_isecs) const noexcept {
-        return pimpl_->intersect(object_ray, std::move(shape_id), world_isecs);
-    }
-
     template <typename ConcreteShape,
-              std::enable_if_t<not std::is_same_v<shape, std::decay_t<ConcreteShape>>, bool> = true>
-    explicit shape(std::remove_cvref_t<ConcreteShape&&> concrete_shape)
+              // Make sure that templated forwarding constructor does not hide the copy constructor.
+              // Another very important thing is to decay the ConcreteShape before comparison,
+              // otherwise Shape& binds to this constructor.
+              std::enable_if_t<!std::is_same_v<shape, std::decay_t<ConcreteShape>>, bool> = true>
+    explicit shape(ConcreteShape&& concrete_shape)
         // Strip the reference, so that either a copy or a move occurs, but not reference binding.
-        : pimpl_{std::make_unique<Model<std::remove_cvref_t<ConcreteShape>>>(
-              std::forward<std::remove_cvref_t<ConcreteShape>>(concrete_shape))} {}
+        : pimpl_{std::make_unique<shape_model<std::remove_reference_t<ConcreteShape>>>(
+              std::forward<std::remove_reference_t<ConcreteShape>>(concrete_shape))} {}
 
     // Deep copy of the concrete shape object.
-    shape(const shape& other) noexcept : pimpl_{other.pimpl_->clone()} {}
+    shape(shape const& other) : pimpl_{other.pimpl_->clone()} {}
 
     // Deep copy of the concrete shape object.
-    shape& operator=(const shape& rhs) noexcept {
+    shape& operator=(shape const& rhs) {
         if (&rhs != this) {
             pimpl_ = rhs.pimpl_->clone();
         }
@@ -184,13 +130,13 @@ class shape {
     shape(shape&&) noexcept = default;
     shape& operator=(shape&&) noexcept = default;
 
-    // rule of 5.
-    ~shape() noexcept = default;
+    ~shape() = default;
 
   private:
-    std::unique_ptr<ShapeConcept> pimpl_;
+    // Pointer to a ShapeModel, which has a member object of the concrete type.
+    std::unique_ptr<shape_concept> pimpl_;
 };
 
-inline shape::ShapeConcept::~ShapeConcept() noexcept = default;
+inline shape::shape_concept::~shape_concept() = default;
 
 } // namespace wt

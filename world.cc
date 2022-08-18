@@ -35,11 +35,11 @@ std::vector<intersection>::const_iterator
 intersect(world const& world, ray const& world_ray,
           std::vector<intersection>& world_isecs) noexcept {
     for (auto shape = world.shapes.cbegin(); shape != world.shapes.cend(); ++shape) {
-        ray const object_ray{shape->get_inv_tform() * world_ray.origin,
+        ray const object_ray{inv_tform(*shape) * world_ray.origin,
                              // do not normalize the result, so we get the t straight for the world
                              // space without the need to convert it first from the object space
-                             shape->get_inv_tform() * world_ray.direction};
-        shape->intersect(object_ray, std::distance(world.shapes.cbegin(), shape), world_isecs);
+                             inv_tform(*shape) * world_ray.direction};
+        intersect(*shape, object_ray, std::distance(world.shapes.cbegin(), shape), world_isecs);
     }
 
     // Find first smallest non-negative t, which represents closest intersection.
@@ -51,7 +51,7 @@ intersect(world const& world, ray const& world_ray,
 
 color shade_hit(world const& world, shading const& shading_info,
                 std::vector<intersection>& world_isecs) noexcept {
-    return lighting(world.shapes[shading_info.isec.shape_id].get_material(), world.light,
+    return lighting(mater(world.shapes[shading_info.isec.shape_id]), world.light,
                     shading_info.isec_pnt, shading_info.eye, shading_info.normal,
                     is_shadowed(world, shading_info.over_pnt, world_isecs));
 }
