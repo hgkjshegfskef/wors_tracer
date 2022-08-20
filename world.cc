@@ -20,7 +20,10 @@ namespace wt {
 world::world() noexcept = default;
 
 world::world(std::vector<shape> shapes, pnt_light light) noexcept
-    : shapes{std::move(shapes)}, light{std::move(light)} {}
+    : // this bug was very difficult to fix. I usually use {}-init everywhere, but in c++11+ there
+      // is an idiotic rule that initializer_list is preferred even against copy and move ctors, so
+      // what it was doing was trying to init every shape with vector...
+      shapes(std::move(shapes)), light{std::move(light)} {}
 
 world world::make_default() noexcept {
     std::vector<shape> shapes;
@@ -63,7 +66,7 @@ color color_at(world const& world, ray const& world_ray,
     if (hit == world_isecs.cend()) {
         return color{0, 0, 0};
     }
-    shading sh{*hit, world_ray, world};
+    shading sh{*hit, world_ray, inv_tform(world.shapes[hit->shape_id])};
     return shade_hit(world, sh, world_isecs);
 }
 

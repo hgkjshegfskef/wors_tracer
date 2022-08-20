@@ -12,7 +12,7 @@ struct sphere {
     struct material material;
 
     sphere() noexcept;
-    sphere(tform4 const& tform) noexcept;
+    explicit sphere(tform4 const& tform) noexcept;
     sphere(tform4 const& tform, struct material const& material) noexcept;
 };
 

@@ -7,7 +7,7 @@
 namespace wt {
 
 struct ray;
-struct world;
+class tform4;
 
 struct shading {
     // everything is in world space
@@ -19,7 +19,7 @@ struct shading {
     bool inside;
 
     shading() noexcept = default;
-    shading(intersection const& isec, ray const& r, world const& w) noexcept;
+    shading(intersection const& isec, ray const& r, tform4 const& inv_tform) noexcept;
 };
 
 } // namespace wt

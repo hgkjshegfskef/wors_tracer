@@ -237,21 +237,22 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
 
   target_sources(
     ${PROJECT_NAME}_test_base
-    INTERFACE vec3_test.cc
-              vec4_test.cc
-              mat3_test.cc
-              mat4_test.cc
-              sphere_test.cc
-              pnt3_test.cc
-              canvas_test.cc
-              color_test.cc
-              normal_test.cc
-              tform_test.cc
-              world_test.cc
+    INTERFACE
+#    vec3_test.cc
+#              vec4_test.cc
+#              mat3_test.cc
+#              mat4_test.cc
+#              sphere_test.cc
+#              pnt3_test.cc
+#              canvas_test.cc
+#              color_test.cc
+#              normal_test.cc
+#              tform_test.cc
+#              world_test.cc
               shading_test.cc
-              camera_test.cc
-              render_test.cc
-              lighting_test.cc
+#              camera_test.cc
+#              render_test.cc
+#              lighting_test.cc
               test_main.cc
               log.cc)
 
