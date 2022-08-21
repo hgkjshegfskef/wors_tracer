@@ -1,4 +1,5 @@
 #include "camera.hh"
+#include "canvas.hh"
 #include "cli.hh"
 #include "log.hh"
 #include "render.hh"
@@ -48,7 +49,8 @@ int main(int argc, char** argv) {
     if (cli.render_backend == "sdl") {
         render_sdl(scene.camera, scene.world, cli);
     } else if (cli.render_backend == "ppm") {
-        render_ppm(scene.camera, scene.world);
+        canvas image{scene.camera.hsize, scene.camera.vsize};
+        render_ppm(scene.camera, scene.world, image, "image.ppm", 1);
     } else {
         SPDLOG_ERROR("Incorrect rendering backend: {}", cli.render_backend);
         return 1;

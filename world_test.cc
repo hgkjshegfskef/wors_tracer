@@ -17,7 +17,7 @@ TEST(WorldTest, Default) {
     ray world_r{pnt3{0, 0, -5}, vec3{0, 0, 1}};
     std::vector<intersection> world_isecs;
 
-    auto hit = intersect(w, world_r, world_isecs);
+    intersect(w, world_r, world_isecs);
     std::sort(world_isecs.begin(), world_isecs.end());
 
     EXPECT_EQ(world_isecs.size(), 4);
@@ -32,7 +32,7 @@ TEST(WorldTest, ShadingIntersection) {
     ray r{pnt3{0, 0, -5}, vec3{0, 0, 1}};
     shape const& s = w.shapes[0];
     intersection isec{0, 4};
-    shading sh{isec, r, w};
+    shading sh{isec, r, inv_tform(s)};
     std::vector<intersection> world_isecs;
 
     color c = shade_hit(w, sh, world_isecs);
@@ -48,7 +48,7 @@ TEST(WorldTest, ShadingIntersectionFromInside) {
     ray r{pnt3{0, 0, 0}, vec3{0, 0, 1}};
     shape const& s = w.shapes[1];
     intersection isec{1, .5f};
-    shading sh{isec, r, w};
+    shading sh{isec, r, inv_tform(s)};
     std::vector<intersection> world_isecs;
 
     color c = shade_hit(w, sh, world_isecs);
@@ -86,17 +86,17 @@ TEST(WorldTest, ColorAtBetweenSpheres) {
     world w = world::make_default();
     shape& outer = w.shapes[0];
     shape& inner = w.shapes[1];
-    outer.set_material({.ambient = 1.f});
-    inner.set_material({.ambient = 1.f});
+    mater(outer) = {.ambient = 1.f};
+    mater(inner) = {.ambient = 1.f};
     // Ray is inside the outer shape, but outside the inner shape, hitting the inner shape.
     ray r{pnt3{0, 0, .75f}, vec3{0, 0, -1}};
     std::vector<intersection> world_isecs;
 
     color c = color_at(w, r, world_isecs);
 
-    EXPECT_EQ(c.r, inner.get_material().col.r);
-    EXPECT_EQ(c.g, inner.get_material().col.g);
-    EXPECT_EQ(c.b, inner.get_material().col.b);
+    EXPECT_EQ(c.r, mater(inner).col.r);
+    EXPECT_EQ(c.g, mater(inner).col.g);
+    EXPECT_EQ(c.b, mater(inner).col.b);
 }
 
 TEST(WorldTest, PointLightShadow1) {
@@ -132,11 +132,11 @@ TEST(WorldTest, PointLightShadow4) {
 }
 
 TEST(WorldTest, IsecInShadow) {
-    world w{std::vector{shape{sphere{}}, shape{sphere{tform4::translate({0, 0, 10})}}},
+    world w{std::vector<shape>{sphere{}, sphere{tform4::translate({0, 0, 10})}},
             pnt_light{pnt3{0, 0, -10}, color{1, 1, 1}}};
     ray r{pnt3{0, 0, 5}, vec3{0, 0, 1}};
     intersection isec{1, 4};
-    shading sh{isec, r, w};
+    shading sh{isec, r, tform4{}};
     std::vector<intersection> world_isecs;
 
     color c = shade_hit(w, sh, world_isecs);

@@ -205,9 +205,9 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
                             color_at(world, ray_for_pixel(camera, x, y), world_isecs);
                         pixels[y * camera.hsize + x] =
                             SDL_MapRGB(pixel_format.get(),
-                                       lerp(clamp(color[0], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f) + .5f,
-                                       lerp(clamp(color[1], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f) + .5f,
-                                       lerp(clamp(color[2], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f) + .5f);
+                                       lerp(clamp(color[0], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f),
+                                       lerp(clamp(color[1], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f),
+                                       lerp(clamp(color[2], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f));
                     }
                 }
             });

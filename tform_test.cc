@@ -43,7 +43,7 @@ TEST(TformTest, Rotating2) {
     pnt3 p2 = t * p1;
     EXPECT_NEAR(p2.x, 0, 1e-6);
     EXPECT_NEAR(p2.y, sqrt2_v<float> / 2, 1e-6);
-    EXPECT_NEAR(p2.z, -sqrt2_v<float> / 2, 1e-6);
+    EXPECT_NEAR(p2.z, sqrt2_v<float> / 2, 1e-6);
 }
 
 TEST(TformTest, Shearing) {

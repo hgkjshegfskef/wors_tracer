@@ -50,13 +50,9 @@ std::string canvas::as_ppm() const noexcept {
         for (unsigned nth_color = 0; nth_color < batch_size; ++nth_color) {
             color col;
             for (unsigned component_idx = 0; component_idx < 3; ++component_idx) {
-                col[component_idx] =
-                    //                    clamp_and_scale(canvas_[nth_batch * batch_size +
-                    //                    nth_color], component_idx);
-                    lerp(
-                        std::clamp(canvas_[nth_batch * batch_size + nth_color][component_idx] + .5f,
-                                   0.f, 1.f),
-                        0.f, 0.f, 1.f, 255.f);
+                col[component_idx] = lerp(
+                    clamp(canvas_[nth_batch * batch_size + nth_color][component_idx], 0.f, 1.f),
+                    0.f, 0.f, 1.f, 255.f);
             }
             fmt::format_to(std::back_inserter(ss), "{:3.0f}", col);
             if (nth_color != batch_size - 1) {
@@ -72,9 +68,7 @@ std::string canvas::as_ppm() const noexcept {
             color col;
             for (int component_idx = 0; component_idx < 3; ++component_idx) {
                 col[component_idx] =
-                    //                    clamp_and_scale(canvas_[leftover], component_idx);
-                    lerp(std::clamp(canvas_[leftover][component_idx] + .5f, 0.f, 1.f), 0.f, 0.f,
-                         1.f, 255.f);
+                    lerp(clamp(canvas_[leftover][component_idx], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f);
             }
             fmt::format_to(std::back_inserter(ss), "{:3.0f}", col);
             if (leftover != size() - 1) {

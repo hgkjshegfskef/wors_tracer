@@ -6,6 +6,7 @@
 #include "tform4.hh"
 
 #include <gtest/gtest.h>
+#include <spdlog/spdlog.h>
 
 #include <algorithm>
 
@@ -13,12 +14,11 @@ using namespace wt;
 
 TEST(RayTest, IntersectSphereMiss) {
     ray r{{0, 0, -5}, {0, 0, 1}};
-    tform4 tform = tform4::translate({5, 0, 0});
-    shape s = sphere{tform};
+    shape s = sphere{tform4::translate({5, 0, 0})};
     std::vector<intersection> world_isecs;
-    ray object_ray{s.get_inv_tform() * r.origin, s.get_inv_tform() * r.direction};
+    ray object_ray{inv_tform(s) * r.origin, inv_tform(s) * r.direction};
 
-    s.intersect(object_ray, 0, world_isecs);
+    intersect(s, object_ray, 0, world_isecs);
     std::sort(world_isecs.begin(), world_isecs.end());
 
     EXPECT_EQ(world_isecs.size(), 0);
@@ -29,9 +29,9 @@ TEST(RayTest, IntersectSphereScaledHit) {
     tform4 tform = scale(2, 2, 2);
     shape s = sphere{tform};
     std::vector<intersection> world_isecs;
-    ray object_ray{s.get_inv_tform() * r.origin, s.get_inv_tform() * r.direction};
+    ray object_ray{inv_tform(s) * r.origin, inv_tform(s) * r.direction};
 
-    s.intersect(object_ray, 0, world_isecs);
+    intersect(s, object_ray, 0, world_isecs);
     std::sort(world_isecs.begin(), world_isecs.end());
 
     EXPECT_EQ(world_isecs.size(), 2);
@@ -49,9 +49,9 @@ TEST(RayTest, IntersectSphereDefaultHitBehind) {
     ray r{{0, 0, 5}, {0, 0, 1}};
     shape s = sphere{};
     std::vector<intersection> world_isecs;
-    ray object_ray{s.get_inv_tform() * r.origin, s.get_inv_tform() * r.direction};
+    ray object_ray{inv_tform(s) * r.origin, inv_tform(s) * r.direction};
 
-    s.intersect(object_ray, 0, world_isecs);
+    intersect(s, object_ray, 0, world_isecs);
     std::sort(world_isecs.begin(), world_isecs.end());
 
     EXPECT_EQ(world_isecs.size(), 2);
@@ -60,16 +60,19 @@ TEST(RayTest, IntersectSphereDefaultHitBehind) {
 }
 
 TEST(RayTest, SphereOneHit) {
-    ray r{{0, 0, -5}, {0, 0, 1}};
-    tform4 tform = scale(2, 2, 2);
-    shape s = sphere{tform};
+    ray r{{0, 2, -5}, {0, 0, 1}};
+    shape s = sphere{scale(2, 2, 2)};
     std::vector<intersection> world_isecs;
-    ray object_ray{s.get_inv_tform() * r.origin, s.get_inv_tform() * r.direction};
+    ray object_ray{inv_tform(s) * r.origin, inv_tform(s) * r.direction};
 
-    s.intersect(object_ray, 0, world_isecs);
+    intersect(s, object_ray, 0, world_isecs);
     std::sort(world_isecs.begin(), world_isecs.end());
 
     EXPECT_EQ(world_isecs.size(), 2);
-    EXPECT_EQ(world_isecs[0].t, 3.f);
-    EXPECT_EQ(world_isecs[1].t, 3.f);
+
+    pnt3 pi1 = position(r.origin, r.direction, world_isecs[0].t);
+    pnt3 pi2 = position(r.origin, r.direction, world_isecs[1].t);
+
+    EXPECT_EQ(pi1, pnt3(0, 2, 0));
+    EXPECT_EQ(pi2, pnt3(0, 2, 0));
 }

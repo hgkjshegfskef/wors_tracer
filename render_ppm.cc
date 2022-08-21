@@ -21,11 +21,9 @@ using namespace oneapi;
 
 namespace wt {
 
-void render_ppm(camera const& camera, world const& world) noexcept {
-    canvas image{camera.hsize, camera.vsize};
-
-    unsigned frames = 100;
-    for (unsigned frame = 0; frame < frames; ++frame) {
+void render_ppm(camera const& camera, world const& world, canvas& image, char const* file_name,
+                size_t frames) noexcept {
+    for (size_t frame = 0; frame < frames; ++frame) {
         auto start = std::chrono::steady_clock::now();
 
         tbb::parallel_for(
@@ -55,7 +53,7 @@ void render_ppm(camera const& camera, world const& world) noexcept {
                     std::chrono::duration<double, std::milli>(stop - start));
     }
 
-    write_ppm("image.ppm", image.as_ppm());
+    write_ppm(file_name, image.as_ppm());
 }
 
 } // namespace wt

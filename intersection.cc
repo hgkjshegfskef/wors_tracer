@@ -2,6 +2,8 @@
 
 #include "sphere.hh"
 
+#include <fmt/format.h>
+
 namespace wt {
 
 intersection::intersection() noexcept = default;
@@ -18,12 +20,11 @@ bool operator<(intersection const l, intersection const r) noexcept {
 
 } // namespace wt
 
-// auto fmt::formatter<wt::intersection>::format(const wt::intersection& i, fmt::format_context&
-// ctx)
-//     -> decltype(ctx.out()) {
-//     auto&& out = ctx.out();
-//     fmt::format_to(out, "{}, {}", i.t);
-//     return out;
-// }
-//
-// template struct fmt::formatter<wt::intersection>;
+auto fmt::formatter<wt::intersection>::format(const wt::intersection& i, fmt::format_context& ctx)
+    -> decltype(ctx.out()) {
+    auto&& out = ctx.out();
+    fmt::format_to(out, "{}, {}", i.shape_id, i.t);
+    return out;
+}
+
+template struct fmt::formatter<wt::intersection>;

@@ -15,9 +15,10 @@ TEST(RenderTest, DefaultWorld) {
     pnt3 from{0, 0, -5};
     pnt3 to{0, 0, 0};
     vec3 up{0, 1, 0};
-    cam.tform = view(from, to, up);
+    cam.inv_tform = inverse(view(from, to, up));
 
-    canvas image = render_ppm(cam, w, nullptr, 0);
+    canvas image{cam.hsize, cam.vsize};
+    render_ppm(cam, w, image, "image.ppm", 1);
 
     EXPECT_NEAR(image(5, 5).r, .38066f, 1e-5f);
     EXPECT_NEAR(image(5, 5).g, .47583f, 1e-5f);
