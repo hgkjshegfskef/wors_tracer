@@ -2,6 +2,7 @@
 
 #include "intersection.hh"
 #include "pnt3.hh"
+#include "shape.hh"
 #include "vec3.hh"
 
 namespace wt {
@@ -19,7 +20,7 @@ struct shading {
     bool inside;
 
     shading() noexcept = default;
-    shading(intersection const& isec, ray const& r, tform4 const& inv_tform) noexcept;
+    shading(intersection const& isec, ray const& r, shape const& s) noexcept;
 };
 
 } // namespace wt

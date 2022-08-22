@@ -7,6 +7,7 @@
 #include "material.hh"
 #include "ray.hh"
 #include "shading.hh"
+#include "shape.hh"
 #include "sphere.hh"
 #include "tform4.hh"
 
@@ -66,7 +67,7 @@ color color_at(world const& world, ray const& world_ray,
     if (hit == world_isecs.cend()) {
         return color{0, 0, 0};
     }
-    shading sh{*hit, world_ray, inv_tform(world.shapes[hit->shape_id])};
+    shading sh{*hit, world_ray, world.shapes[hit->shape_id]};
     return shade_hit(world, sh, world_isecs);
 }
 

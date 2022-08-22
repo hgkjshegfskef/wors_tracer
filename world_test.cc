@@ -32,7 +32,7 @@ TEST(WorldTest, ShadingIntersection) {
     ray r{pnt3{0, 0, -5}, vec3{0, 0, 1}};
     shape const& s = w.shapes[0];
     intersection isec{0, 4};
-    shading sh{isec, r, inv_tform(s)};
+    shading sh{isec, r, s};
     std::vector<intersection> world_isecs;
 
     color c = shade_hit(w, sh, world_isecs);
@@ -48,7 +48,7 @@ TEST(WorldTest, ShadingIntersectionFromInside) {
     ray r{pnt3{0, 0, 0}, vec3{0, 0, 1}};
     shape const& s = w.shapes[1];
     intersection isec{1, .5f};
-    shading sh{isec, r, inv_tform(s)};
+    shading sh{isec, r, s};
     std::vector<intersection> world_isecs;
 
     color c = shade_hit(w, sh, world_isecs);
@@ -136,7 +136,7 @@ TEST(WorldTest, IsecInShadow) {
             pnt_light{pnt3{0, 0, -10}, color{1, 1, 1}}};
     ray r{pnt3{0, 0, 5}, vec3{0, 0, 1}};
     intersection isec{1, 4};
-    shading sh{isec, r, tform4{}};
+    shading sh{isec, r, w.shapes[0]};
     std::vector<intersection> world_isecs;
 
     color c = shade_hit(w, sh, world_isecs);

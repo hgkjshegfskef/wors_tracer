@@ -2,6 +2,7 @@
 
 #include "plane_operations.hh"
 #include "sphere_operations.hh"
+#include "vec3.hh"
 
 #include <memory>      // unique_ptr
 #include <type_traits> // enable_if, is_const
@@ -24,6 +25,11 @@ class shape {
         s.pimpl_->do_intersect(object_ray, std::move(shape_id), world_isecs);
     }
 
+    friend vec3 normal_at(shape const& s, pnt3 const& world_point,
+                          tform4 const& inv_tform) noexcept {
+        return s.pimpl_->do_normal_at(world_point, inv_tform);
+    }
+
     class shape_concept {
       public:
         virtual ~shape_concept() = 0;
@@ -39,6 +45,9 @@ class shape {
 
         virtual void do_intersect(ray const& object_ray, unsigned shape_id,
                                   std::vector<intersection>& world_isecs) const noexcept = 0;
+
+        virtual vec3 do_normal_at(pnt3 const& world_point,
+                                  tform4 const& inv_tform) const noexcept = 0;
 
         virtual std::unique_ptr<shape_concept> clone() const = 0;
 
@@ -67,6 +76,11 @@ class shape {
         void do_intersect(ray const& object_ray, unsigned shape_id,
                           std::vector<intersection>& world_isecs) const noexcept override {
             intersect(object_, object_ray, std::move(shape_id), world_isecs);
+        }
+
+        vec3 do_normal_at(pnt3 const& world_point,
+                          tform4 const& inv_tform) const noexcept override {
+            return normal_at(object_, world_point, inv_tform);
         }
 
         std::unique_ptr<shape_concept> clone() const override {

@@ -53,8 +53,6 @@ pnt3 operator*(tform4 const& H, pnt3 const& p) noexcept;
 // Mn.
 vec3 operator*(vec3 const& n, tform4 const& H) noexcept;
 
-vec3 normal_at(pnt3 const& world_point, tform4 const& inv_tform) noexcept;
-
 } // namespace wt
 
 template <> struct fmt::formatter<wt::tform4> : fmt::formatter<float> {

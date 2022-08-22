@@ -1,4 +1,5 @@
 #include "mat3.hh"
+#include "plane.hh"
 #include "pnt3.hh"
 #include "shape.hh"
 #include "sphere.hh"
@@ -16,7 +17,7 @@ TEST(NormalTest, SphereNoTform) {
     shape s = sphere{};
     pnt3 const s_point{1.f, 0.f, 0.f};
 
-    vec3 normal = normal_at(s_point, tform4{});
+    vec3 normal = normal_at(s, s_point, inv_tform(s));
 
     EXPECT_NEAR(normal.x, 1.f, 1e-6);
     EXPECT_NEAR(normal.y, 0.f, 1e-6);
@@ -27,7 +28,7 @@ TEST(NormalTest, SphereTranslated) {
     shape s{sphere{tform4::translate({0, 1, 0})}};
     pnt3 const s_point{0, 1.70711f, -.70711f};
 
-    vec3 normal = normal_at(s_point, inv_tform(s));
+    vec3 normal = normal_at(s, s_point, inv_tform(s));
 
     EXPECT_NEAR(normal.x, 0, 1e-6);
     EXPECT_NEAR(normal.y, .70711f, 1e-5);
@@ -38,7 +39,7 @@ TEST(NormalTest, SphereScaledRotated) {
     shape s{sphere{scale(1.f, .5f, 1.f) * rotation<Axis::Z>(pi_v<float> / 5.f)}};
     pnt3 const s_point{0.f, sqrt2_v<float> / 2.f, -sqrt2_v<float> / 2.f};
 
-    vec3 normal = normal_at(s_point, inv_tform(s));
+    vec3 normal = normal_at(s, s_point, inv_tform(s));
 
     EXPECT_NEAR(normal.x, 0.f, 1e-6);
     EXPECT_NEAR(normal.y, .970142f, 1e-6);
@@ -49,7 +50,7 @@ TEST(NormalTest, NormalAtNoTform) {
     shape s{sphere{}};
     pnt3 const s_point{1.f, 0.f, 0.f};
 
-    vec3 normal = normal_at(s_point, inv_tform(s));
+    vec3 normal = normal_at(s, s_point, inv_tform(s));
 
     EXPECT_NEAR(normal.x, 1.f, 1e-6);
     EXPECT_NEAR(normal.y, 0.f, 1e-6);
@@ -60,7 +61,7 @@ TEST(NormalTest, NormalAtSphereTranslated) {
     shape s{sphere{tform4::translate({0, 1, 0})}};
     pnt3 const s_point{0, 1.70711f, -.70711f};
 
-    vec3 normal = normal_at(s_point, inv_tform(s));
+    vec3 normal = normal_at(s, s_point, inv_tform(s));
 
     EXPECT_NEAR(normal.x, 0, 1e-6);
     EXPECT_NEAR(normal.y, .70711f, 1e-5);
@@ -71,9 +72,39 @@ TEST(NormalTest, NormalAtSphereScaledRotated) {
     shape s{sphere{scale(1.f, .5f, 1.f) * rotation<Axis::Z>(pi_v<float> / 5.f)}};
     pnt3 const s_point{0.f, sqrt2_v<float> / 2.f, -sqrt2_v<float> / 2.f};
 
-    vec3 normal = normal_at(s_point, inv_tform(s));
+    vec3 normal = normal_at(s, s_point, inv_tform(s));
 
     EXPECT_NEAR(normal.x, 0.f, 1e-6);
     EXPECT_NEAR(normal.y, .970142f, 1e-6);
     EXPECT_NEAR(normal.z, -0.242535f, 1e-6);
+}
+
+TEST(NormalTest, NormalOfNonTransformedPlane1) {
+    shape s{plane{}};
+
+    vec3 normal = normal_at(s, {0, 0, 0}, inv_tform(s));
+
+    EXPECT_NEAR(normal.x, 0.f, 1e-6f);
+    EXPECT_NEAR(normal.y, 1.f, 1e-6f);
+    EXPECT_NEAR(normal.z, 0.f, 1e-6f);
+}
+
+TEST(NormalTest, NormalOfNonTransformedPlane2) {
+    shape s{plane{}};
+
+    vec3 normal = normal_at(s, {10, 0, -10}, inv_tform(s));
+
+    EXPECT_NEAR(normal.x, 0.f, 1e-6f);
+    EXPECT_NEAR(normal.y, 1.f, 1e-6f);
+    EXPECT_NEAR(normal.z, 0.f, 1e-6f);
+}
+
+TEST(NormalTest, NormalOfNonTransformedPlane3) {
+    shape s{plane{}};
+
+    vec3 normal = normal_at(s, {-5, 0, 150}, inv_tform(s));
+
+    EXPECT_NEAR(normal.x, 0.f, 1e-6f);
+    EXPECT_NEAR(normal.y, 1.f, 1e-6f);
+    EXPECT_NEAR(normal.z, 0.f, 1e-6f);
 }

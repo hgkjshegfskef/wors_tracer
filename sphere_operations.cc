@@ -52,4 +52,9 @@ void intersect(sphere const& /*unused*/, ray const& object_ray, unsigned shape_i
     world_isecs.emplace_back(shape_id, (-quad_b - sqrt_quad_D) / two_quad_a);
 }
 
+vec3 normal_at(sphere const& /*unused*/, pnt3 const& world_point,
+               tform4 const& inv_tform) noexcept {
+    return normalize((inv_tform * world_point) * inv_tform);
+}
+
 } // namespace wt

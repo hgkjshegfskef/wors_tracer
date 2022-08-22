@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
         render_sdl(scene.camera, scene.world, cli);
     } else if (cli.render_backend == "ppm") {
         canvas image{scene.camera.hsize, scene.camera.vsize};
-        render_ppm(scene.camera, scene.world, image, "image.ppm", 1);
+        render_ppm(scene.camera, scene.world, image);
     } else {
         SPDLOG_ERROR("Incorrect rendering backend: {}", cli.render_backend);
         return 1;

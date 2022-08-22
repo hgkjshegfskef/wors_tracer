@@ -128,10 +128,6 @@ vec3 operator*(const vec3& n, const tform4& H) noexcept {
             n.x * H(0, 2) + n.y * H(1, 2) + n.z * H(2, 2)};
 }
 
-vec3 normal_at(pnt3 const& world_point, tform4 const& inv_tform) noexcept {
-    return normalize((inv_tform * world_point) * inv_tform);
-}
-
 } // namespace wt
 
 auto fmt::formatter<wt::tform4>::format(const wt::tform4& mat, fmt::format_context& ctx)

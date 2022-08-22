@@ -26,4 +26,8 @@ void intersect(plane const& /*unused*/, ray const& object_ray, unsigned shape_id
     world_isecs.emplace_back(shape_id, -object_ray.origin.y / object_ray.direction.y);
 }
 
+vec3 normal_at(plane const& /*unused*/, pnt3 const& /*unused*/, tform4 const& inv_tform) noexcept {
+    return vec3{0, 1, 0} * inv_tform;
+}
+
 } // namespace wt
