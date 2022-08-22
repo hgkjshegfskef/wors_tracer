@@ -9,6 +9,11 @@
 
 #include <spdlog/spdlog.h>
 
+#include <functional>
+#include <vector>
+
+#define SCENE(n) scene_##n
+
 using namespace wt;
 
 int main(int argc, char** argv) {
@@ -44,7 +49,19 @@ int main(int argc, char** argv) {
 
     CLI11_PARSE(app, argc, argv);
 
-    scene scene = get_scene(cli.scene, cli);
+    std::vector<std::function<scene(struct cli const&)>> scenes{
+        SCENE(0),
+        SCENE(1),
+        SCENE(2),
+        SCENE(3),
+    };
+    struct scene scene;
+    try {
+        scene = scenes.at(cli.scene)(cli);
+    } catch (std::exception const& ex) {
+        SPDLOG_ERROR("Incorrect scene number.");
+        std::exit(1);
+    }
 
     if (cli.render_backend == "sdl") {
         render_sdl(scene.camera, scene.world, cli);

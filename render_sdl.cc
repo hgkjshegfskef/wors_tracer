@@ -112,7 +112,8 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
         return;
     }
 
-    pnt3 from{0, 1, -5};
+    // TODO: control per-scene starting position of camera
+    pnt3 from{0, 1, -2};
     vec3 up{0, 1, 0};
 
     float yaw = 0.f;
@@ -185,6 +186,7 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
         }
 
         camera.inv_tform = inverse(v3::view(from, forward, up));
+        SPDLOG_TRACE("from: {}, to: {}, up: {}", from, position(from, forward, 1), up);
 
         std::uint32_t* pixels;
         int texture_width; // unused

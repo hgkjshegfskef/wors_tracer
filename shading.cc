@@ -13,7 +13,8 @@ shading::shading(intersection const& isec, ray const& r, shape const& s) noexcep
         inside = true;
         normal = -normal;
     }
-    over_pnt = isec_pnt + normal * 1e-5f; // remove acne
+    // TODO: per-scene acne epsilon
+    over_pnt = isec_pnt + normal * 1e-3f; // remove acne
 }
 
 } // namespace wt

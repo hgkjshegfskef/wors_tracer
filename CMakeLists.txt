@@ -177,10 +177,10 @@ add_library(
   sphere_operations.cc
   plane.cc
   plane_operations.cc
-  scene.cc
   scene_0.cc
   scene_1.cc
-  scene_2.cc)
+  scene_2.cc
+  scene_3.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL
