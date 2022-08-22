@@ -112,7 +112,7 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
         return;
     }
 
-    pnt3 from{0, 1.5f, -5};
+    pnt3 from{0, 1, -5};
     vec3 up{0, 1, 0};
 
     float yaw = 0.f;

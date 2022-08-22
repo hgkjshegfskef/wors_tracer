@@ -5,7 +5,7 @@
 
 namespace wt {
 
-// Plane is infinitely extended in xz, passing through the world origin
+// Plane is infinitely extended in xz, passing through the world origin (0,0,0).
 struct plane {
     tform4 tform;
     tform4 inv_tform;
