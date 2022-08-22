@@ -1,5 +1,6 @@
 #pragma once
 
+#include "plane_operations.hh"
 #include "sphere_operations.hh"
 
 #include <memory>      // unique_ptr

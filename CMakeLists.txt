@@ -175,6 +175,8 @@ add_library(
   spheres.cc
   sphere.cc
   sphere_operations.cc
+  plane.cc
+  plane_operations.cc
   scene.cc
   scene_0.cc
   scene_1.cc)
@@ -242,6 +244,7 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
               mat3_test.cc
               mat4_test.cc
               sphere_test.cc
+              plane_test.cc
               pnt3_test.cc
               canvas_test.cc
               color_test.cc

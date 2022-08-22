@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 #include <spdlog/spdlog.h>
 
-#include <algorithm>
+#include <algorithm> // sort
 
 using namespace wt;
 
