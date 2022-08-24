@@ -4,6 +4,7 @@
 namespace wt {
 
 struct color;
+struct pnt3;
 
 // https://en.wikipedia.org/wiki/Linear_interpolation
 // If the two known points are given by the coordinates (x0,y0) and (x1,y1), the linear interpolant
@@ -13,6 +14,8 @@ struct color;
 //           std::pair<float, float> right_point) noexcept;
 
 float lerp(float x, float left_min, float left_max, float right_min, float right_max) noexcept;
+
+color blend(pnt3 const& point, color const& a, color const& b) noexcept;
 
 void write_ppm(char const* fname, std::string_view contents) noexcept;
 

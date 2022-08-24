@@ -1,6 +1,7 @@
 #pragma once
 
 #include "color.hh"
+#include "gradient_pattern_operations.hh"
 #include "stripe_pattern_operations.hh"
 
 #include <memory>      // unique_ptr
@@ -30,13 +31,13 @@ class pattern {
         return pattern.pimpl_->do_inv_tform();
     }
 
-    friend color stripe_at(pattern const& pattern, pnt3 const& world_point) noexcept {
-        return pattern.pimpl_->do_stripe_at(world_point);
+    friend color pattern_at(pattern const& pattern, pnt3 const& world_point) noexcept {
+        return pattern.pimpl_->do_pattern_at(world_point);
     }
 
-    friend color stripe_at(pattern const& pattern, shape const& shape,
-                           pnt3 const& world_point) noexcept {
-        return pattern.pimpl_->do_stripe_at(shape, world_point);
+    friend color pattern_at(pattern const& pattern, shape const& shape,
+                            pnt3 const& world_point) noexcept {
+        return pattern.pimpl_->do_pattern_at(shape, world_point);
     }
 
     class pattern_concept {
@@ -55,9 +56,9 @@ class pattern {
         virtual tform4& do_inv_tform() noexcept = 0;
         virtual tform4 const& do_inv_tform() const noexcept = 0;
 
-        virtual color do_stripe_at(pnt3 const& world_point) const noexcept = 0;
+        virtual color do_pattern_at(pnt3 const& world_point) const noexcept = 0;
 
-        virtual color do_stripe_at(shape const& shape, pnt3 const& world_point) const noexcept = 0;
+        virtual color do_pattern_at(shape const& shape, pnt3 const& world_point) const noexcept = 0;
 
         virtual std::unique_ptr<pattern_concept> clone() const = 0;
 
@@ -86,12 +87,12 @@ class pattern {
         tform4& do_inv_tform() noexcept override { return inv_tform(object_); }
         tform4 const& do_inv_tform() const noexcept override { return inv_tform(object_); }
 
-        color do_stripe_at(pnt3 const& world_point) const noexcept override {
-            return stripe_at(object_, world_point);
+        color do_pattern_at(pnt3 const& world_point) const noexcept override {
+            return pattern_at(object_, world_point);
         }
 
-        color do_stripe_at(shape const& shape, pnt3 const& world_point) const noexcept override {
-            return stripe_at(object_, shape, world_point);
+        color do_pattern_at(shape const& shape, pnt3 const& world_point) const noexcept override {
+            return pattern_at(object_, shape, world_point);
         }
 
         std::unique_ptr<pattern_concept> clone() const override {

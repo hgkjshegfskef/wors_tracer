@@ -1,11 +1,13 @@
 #include "util.hh"
 
 #include "color.hh"
+#include "pnt3.hh"
 
 #include <fmt/core.h>
 
 #include <algorithm> // clamp
 #include <cerrno>    // errno
+#include <cmath>     // floor
 #include <cstdio>    // FILE
 #include <cstring>   // strerror
 #include <memory>    // unique_ptr
@@ -25,6 +27,10 @@ namespace wt {
 
 float lerp(float x, float left_min, float left_max, float right_min, float right_max) noexcept {
     return left_max + (x - left_min) * (right_max - left_max) / (right_min - left_min);
+}
+
+color blend(pnt3 const& point, color const& a, color const& b) noexcept {
+    return a + (b - a) * (point.x - std::floor(point.x));
 }
 
 void write_ppm(char const* fname, std::string_view contents) noexcept {
@@ -58,18 +64,18 @@ void write_ppm(char const* fname, std::string_view contents) noexcept {
 // Scale a number between two (possibly overlapping) ranges.
 // Use-case example: given a value in range [0;1], find out its respective value in range [0;255].
 // Further reading: https://gamedev.stackexchange.com/a/33445
-//float scale(float value, std::pair<float, float> source_range,
+// float scale(float value, std::pair<float, float> source_range,
 //            std::pair<float, float> target_range) noexcept {
 //    //    return lerp(value, {source_range.first, target_range.first},
 //    //                {source_range.second, target_range.second});
 //}
 
-//float clamp_and_scale(float color_component, unsigned component_idx) noexcept {
-//    // Clamp to the range of canvas color components' values.
-//    // Scale to the range of PPM color values.
-//    //    return scale(std::move(clamped), {0.f, 1.f}, {0.f, 255.f});
-//    return lerp(std::clamp(color_component, 0.f, 1.f), 0.f, 0.f, 1.f, 255.f);
-//}
+// float clamp_and_scale(float color_component, unsigned component_idx) noexcept {
+//     // Clamp to the range of canvas color components' values.
+//     // Scale to the range of PPM color values.
+//     //    return scale(std::move(clamped), {0.f, 1.f}, {0.f, 255.f});
+//     return lerp(std::clamp(color_component, 0.f, 1.f), 0.f, 0.f, 1.f, 255.f);
+// }
 
 float deg_to_rad(float deg) noexcept { return deg * pi_v<float> / 180.f; }
 

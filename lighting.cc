@@ -15,7 +15,7 @@ color lighting(material const& material, shape const& shape, pnt_light const& li
                bool in_shadow) noexcept {
     color effective_color = material.col;
     if (material.pattern) {
-        effective_color = stripe_at(*material.pattern, shape, point);
+        effective_color = pattern_at(*material.pattern, shape, point);
     }
 
     // combine the surface color with the light's color/intensity
