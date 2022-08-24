@@ -39,6 +39,8 @@ color operator+(const color& a, const color& b) noexcept;
 color operator-(const color& a, const color& b) noexcept;
 color operator*(const color& a, const color& b) noexcept;
 
+bool operator==(color const& l, color const& r) noexcept;
+
 } // namespace wt
 
 template <> struct fmt::formatter<wt::color> : fmt::formatter<float> {

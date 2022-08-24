@@ -55,8 +55,9 @@ intersect(world const& world, ray const& world_ray,
 
 color shade_hit(world const& world, shading const& shading_info,
                 std::vector<intersection>& world_isecs) noexcept {
-    return lighting(mater(world.shapes[shading_info.isec.shape_id]), world.light,
-                    shading_info.isec_pnt, shading_info.eye, shading_info.normal,
+    return lighting(mater(world.shapes[shading_info.isec.shape_id]),
+                    world.shapes[shading_info.isec.shape_id], world.light, shading_info.isec_pnt,
+                    shading_info.eye, shading_info.normal,
                     is_shadowed(world, shading_info.over_pnt, world_isecs));
 }
 

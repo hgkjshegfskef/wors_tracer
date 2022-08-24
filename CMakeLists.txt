@@ -177,6 +177,7 @@ add_library(
   sphere_operations.cc
   plane.cc
   plane_operations.cc
+  stripe_pattern.cc
   scene_0.cc
   scene_1.cc
   scene_2.cc
@@ -256,6 +257,7 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
               camera_test.cc
               render_test.cc
               lighting_test.cc
+              pattern_test.cc
               test_main.cc
               log.cc)
 

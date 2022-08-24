@@ -3,16 +3,23 @@
 #include "mat3.hh"
 #include "material.hh"
 #include "pnt_light.hh"
+#include "shape.hh"
 #include "tform4.hh"
 
 #include <cmath> // pow
 
 namespace wt {
 
-color lighting(material const& material, pnt_light const& light, pnt3 const& point,
-               vec3 const& eye_vector, vec3 const& normal_vector, bool in_shadow) noexcept {
+color lighting(material const& material, shape const& shape, pnt_light const& light,
+               pnt3 const& point, vec3 const& eye_vector, vec3 const& normal_vector,
+               bool in_shadow) noexcept {
+    color effective_color = material.col;
+    if (material.pattern) {
+        effective_color = stripe_at(*material.pattern, shape, point);
+    }
+
     // combine the surface color with the light's color/intensity
-    color effective_color = material.col * light.intensity;
+    effective_color *= light.intensity;
 
     // find the direction of the light source
     vec3 light_vector = normalize(light.position - point);

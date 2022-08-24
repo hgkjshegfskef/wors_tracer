@@ -94,6 +94,10 @@ color operator*(const color& a, const color& b) noexcept {
     return {a.r * b.r, a.g * b.g, a.b * b.b};
 }
 
+bool operator==(color const& l, color const& r) noexcept {
+    return std::tie(l.r, l.g, l.b) == std::tie(r.r, r.g, r.b);
+}
+
 } // namespace wt
 
 auto fmt::formatter<wt::color>::format(const wt::color& c, fmt::format_context& ctx)
