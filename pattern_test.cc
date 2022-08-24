@@ -2,6 +2,7 @@
 #include "mat3.hh"
 #include "pattern.hh"
 #include "pnt3.hh"
+#include "ring_pattern.hh"
 #include "shape.hh"
 #include "sphere.hh"
 #include "stripe_pattern.hh"
@@ -83,4 +84,13 @@ TEST_F(PatternTest, Gradient) {
     EXPECT_EQ(pattern_at(pattern, {.25, 0, 0}), (color{.75, .75, .75}));
     EXPECT_EQ(pattern_at(pattern, {.5, 0, 0}), (color{.5, .5, .5}));
     EXPECT_EQ(pattern_at(pattern, {.75, 0, 0}), (color{.25, .25, .25}));
+}
+
+TEST_F(PatternTest, Ring) {
+    pattern pattern{ring_pattern{white, black}};
+
+    EXPECT_EQ(pattern_at(pattern, {0, 0, 0}), white);
+    EXPECT_EQ(pattern_at(pattern, {1, 0, 0}), black);
+    EXPECT_EQ(pattern_at(pattern, {0, 0, 1}), black);
+    EXPECT_EQ(pattern_at(pattern, {.708, 0, .708}), black); // > sqrt2_v / 2
 }

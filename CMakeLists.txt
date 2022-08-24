@@ -172,7 +172,6 @@ add_library(
   camera.cc
   render_ppm.cc
   render_sdl.cc
-  spheres.cc
   sphere.cc
   sphere_operations.cc
   plane.cc
@@ -181,6 +180,8 @@ add_library(
   stripe_pattern_operations.cc
   gradient_pattern.cc
   gradient_pattern_operations.cc
+  ring_pattern.cc
+  ring_pattern_operations.cc
   scene_0.cc
   scene_1.cc
   scene_2.cc
