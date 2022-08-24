@@ -1,3 +1,4 @@
+#include "checker_pattern.hh"
 #include "gradient_pattern.hh"
 #include "mat3.hh"
 #include "pattern.hh"
@@ -93,4 +94,20 @@ TEST_F(PatternTest, Ring) {
     EXPECT_EQ(pattern_at(pattern, {1, 0, 0}), black);
     EXPECT_EQ(pattern_at(pattern, {0, 0, 1}), black);
     EXPECT_EQ(pattern_at(pattern, {.708, 0, .708}), black); // > sqrt2_v / 2
+}
+
+TEST_F(PatternTest, Checker) {
+    pattern pattern{checker_pattern{white, black}};
+
+    EXPECT_EQ(pattern_at(pattern, {0, 0, 0}), white);
+    EXPECT_EQ(pattern_at(pattern, {.99, 0, 0}), white);
+    EXPECT_EQ(pattern_at(pattern, {1.01, 0, 0}), black);
+
+    EXPECT_EQ(pattern_at(pattern, {0, 0, 0}), white);
+    EXPECT_EQ(pattern_at(pattern, {0, .99, 0}), white);
+    EXPECT_EQ(pattern_at(pattern, {0, 1.01, 0}), black);
+
+    EXPECT_EQ(pattern_at(pattern, {0, 0, 0}), white);
+    EXPECT_EQ(pattern_at(pattern, {0, 0, .99}), white);
+    EXPECT_EQ(pattern_at(pattern, {0, 0, 1.01}), black);
 }
