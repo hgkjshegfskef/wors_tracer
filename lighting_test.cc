@@ -1,8 +1,10 @@
 #include "lighting.hh"
 #include "material.hh"
+#include "pattern.hh"
 #include "pnt_light.hh"
 #include "shape.hh"
 #include "sphere.hh"
+#include "stripe_pattern.hh"
 #include "vec3.hh"
 
 #include <gtest/gtest.h>
@@ -25,7 +27,7 @@ TEST(LightingTest, SurfaceInShadow) {
 }
 
 TEST(LightingTest, WithPattern) {
-    material mat{.pattern = stripe_pattern{{1, 1, 1}, {0, 0, 0}, {}, {}},
+    material mat{.pattern = pattern{stripe_pattern{{1, 1, 1}, {0, 0, 0}}},
                  .ambient = 1,
                  .diffuse = 0,
                  .specular = 0};

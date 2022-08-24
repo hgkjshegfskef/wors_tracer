@@ -178,6 +178,7 @@ add_library(
   plane.cc
   plane_operations.cc
   stripe_pattern.cc
+  stripe_pattern_operations.cc
   scene_0.cc
   scene_1.cc
   scene_2.cc
