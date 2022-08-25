@@ -183,8 +183,10 @@ add_library(
   gradient_pattern_operations.cc
   ring_pattern.cc
   ring_pattern_operations.cc
-  checker_pattern.cc
-  checker_pattern_operations.cc
+  checker2d_pattern.cc
+  checker2d_pattern_operations.cc
+  checker3d_pattern.cc
+  checker3d_pattern_operations.cc
   scene.cc
   scene_0.cc
   scene_1.cc

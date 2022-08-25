@@ -5,14 +5,14 @@
 
 namespace wt {
 
-struct checker_pattern {
+struct checker2d_pattern {
     color first;
     color second;
     tform4 tform;
     tform4 inv_tform;
 
-    checker_pattern(color first, color second) noexcept;
-    checker_pattern(color first, color second, tform4 tform) noexcept;
+    checker2d_pattern(color first, color second) noexcept;
+    checker2d_pattern(color first, color second, tform4 tform) noexcept;
 };
 
 } // namespace wt

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "checker_pattern_operations.hh"
+#include "checker2d_pattern_operations.hh"
+#include "checker3d_pattern_operations.hh"
 #include "color.hh"
 #include "gradient_pattern_operations.hh"
 #include "ring_pattern_operations.hh"
