@@ -190,13 +190,18 @@ add_library(
   checker2d_pattern_operations.cc
   checker3d_pattern.cc
   checker3d_pattern_operations.cc
+  nested_checker2d_pattern.cc
+  nested_checker2d_pattern_operations.cc
+  solid_pattern.cc
+  solid_pattern_operations.cc
   scene.cc
   scene_0.cc
   scene_1.cc
   scene_2.cc
   scene_3.cc
   scene_4.cc
-  scene_5.cc)
+  scene_5.cc
+  scene_6.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL
