@@ -25,6 +25,7 @@ void write_ppm(char const* fname, std::string_view contents) noexcept;
 // float clamp_and_scale(float color_component, unsigned component_idx) noexcept;
 
 float deg_to_rad(float deg) noexcept;
+float rad_to_deg(float rad) noexcept;
 
 float clamp(float x, float min, float max) noexcept;
 

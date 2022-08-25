@@ -170,6 +170,7 @@ add_library(
   world.cc
   shading.cc
   camera.cc
+  look_at.cc
   render_ppm.cc
   render_sdl.cc
   sphere.cc
@@ -184,10 +185,12 @@ add_library(
   ring_pattern_operations.cc
   checker_pattern.cc
   checker_pattern_operations.cc
+  scene.cc
   scene_0.cc
   scene_1.cc
   scene_2.cc
-  scene_3.cc)
+  scene_3.cc
+  scene_4.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL

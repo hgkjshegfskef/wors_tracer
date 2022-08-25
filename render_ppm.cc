@@ -1,13 +1,10 @@
-#include "camera.hh"
 #include "canvas.hh"
-#include "color.hh"
+#include "cli.hh"
 #include "intersection.hh"
 #include "ray.hh"
 #include "render.hh"
-#include "shape.hh"
-#include "tform4.hh"
+#include "scene.hh"
 #include "util.hh"
-#include "world.hh"
 
 #include <oneapi/tbb/blocked_range2d.h>
 #include <oneapi/tbb/parallel_for.h>
@@ -21,21 +18,22 @@ using namespace oneapi;
 
 namespace wt {
 
-void render_ppm(camera const& camera, world const& world, canvas& image, char const* file_name,
-                size_t frames) noexcept {
+void render_ppm(cli const& cli, scene const& scene, canvas& image, size_t frames) noexcept {
     for (size_t frame = 0; frame < frames; ++frame) {
         auto start = std::chrono::steady_clock::now();
 
-        tbb::parallel_for(
-            tbb::blocked_range2d<int>(0, camera.vsize, 0, camera.hsize), [&](auto const range) {
-                std::vector<intersection> world_isecs;
-                world_isecs.reserve(world.shapes.size() * 2);
-                for (int y = range.rows().begin(); y != range.rows().end(); ++y) {
-                    for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
-                        image(x, y) = color_at(world, ray_for_pixel(camera, x, y), world_isecs);
-                    }
-                }
-            });
+        tbb::parallel_for(tbb::blocked_range2d<int>(0, scene.camera.vsize, 0, scene.camera.hsize),
+                          [&](auto const range) {
+                              std::vector<intersection> world_isecs;
+                              world_isecs.reserve(scene.world.shapes.size() * 2);
+                              for (int y = range.rows().begin(); y != range.rows().end(); ++y) {
+                                  for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
+                                      image(x, y) =
+                                          color_at(scene.world, ray_for_pixel(scene.camera, x, y),
+                                                   world_isecs);
+                                  }
+                              }
+                          });
 
         //        std::vector<intersection> world_isecs;
         //        world_isecs.reserve(world.spheres.size * 2);
@@ -53,7 +51,7 @@ void render_ppm(camera const& camera, world const& world, canvas& image, char co
                     std::chrono::duration<double, std::milli>(stop - start));
     }
 
-    write_ppm(file_name, image.as_ppm());
+    write_ppm(cli.ppm_fname.c_str(), image.as_ppm());
 }
 
 } // namespace wt

@@ -1,8 +1,11 @@
 #pragma once
 
+#include "pnt3.hh"
 #include "tform4.hh"
 
 namespace wt {
+
+struct look_at;
 
 struct camera {
     unsigned hsize; // in px;
@@ -12,8 +15,10 @@ struct camera {
     float half_height;
     tform4 inv_tform;
 
-    camera() noexcept = default;
+    camera() noexcept;
     camera(unsigned hsize, unsigned vsize, float fov) noexcept;
+    camera(unsigned hsize, unsigned vsize, float fov, look_at const& look_at,
+           bool invert_y) noexcept;
 };
 
 struct vec3;

@@ -1,10 +1,9 @@
-#include "camera.hh"
 #include "cli.hh"
 #include "intersection.hh"
 #include "ray.hh"
 #include "render.hh"
+#include "scene.hh"
 #include "util.hh"
-#include "world.hh"
 
 #include <SDL2/SDL.h>
 #include <oneapi/tbb/blocked_range2d.h>
@@ -23,7 +22,8 @@ using namespace oneapi;
 
 namespace wt {
 
-void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
+void render_sdl(cli const& cli, world const& world, look_at const& look_at,
+                camera& camera) noexcept {
     if (std::atexit(SDL_Quit)) {
         SPDLOG_ERROR("atexit() registration failed");
     }
@@ -112,17 +112,15 @@ void render_sdl(camera& camera, world const& world, cli const& cli) noexcept {
         return;
     }
 
-    // TODO: control per-scene starting position of camera
-    pnt3 from{0, 1, -2};
-    vec3 up{0, 1, 0};
+    pnt3 from = look_at.from;
+    vec3 up = look_at.up;
+    vec3 forward = normalize(look_at.to - look_at.from);
 
-    float yaw = 0.f;
-    float pitch = 0.f;
-    float rad_yaw = yaw;
-    float rad_pitch = pitch;
+    float rad_yaw = std::atan2(forward.x, forward.z);
+    float rad_pitch = std::asin(forward.y);
+    float yaw = rad_to_deg(rad_yaw);
+    float pitch = rad_to_deg(rad_pitch);
     float sensitivity = 0.05f;
-    vec3 forward = {std::sin(rad_yaw) * std::cos(rad_pitch), std::sin(rad_pitch),
-                    std::cos(rad_yaw) * std::cos(rad_pitch)};
 
     unsigned frame_cnt = 0;
     std::chrono::duration<double> frame_delta{};

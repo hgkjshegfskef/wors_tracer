@@ -79,6 +79,8 @@ void write_ppm(char const* fname, std::string_view contents) noexcept {
 
 float deg_to_rad(float deg) noexcept { return deg * pi_v<float> / 180.f; }
 
+float rad_to_deg(float rad) noexcept { return rad * 180.f / pi_v<float>; }
+
 float clamp(float x, float min, float max) noexcept {
     if (x < min)
         x = min;

@@ -36,17 +36,17 @@ scene scene_3(cli const& cli) noexcept {
     }
 
     world world{std::move(shapes), pnt_light{pnt3{-5, 5, 0}, color{1, 1, 1}}};
+    look_at look_at{
+        {5.7053213, 20.258598, 0.012088779}, {5.3586664, 19.322538, -0.04810056}, {0, 1, 0}};
 
-    camera camera{cli.tex_width, cli.tex_height, pi_v<float> / 3};
-
+    camera camera;
     if (cli.render_backend == "ppm") {
-        pnt3 from{5.7053213, 20.258598, 0.012088779};
-        pnt3 to{5.3586664, 19.322538, -0.04810056};
-        vec3 up{0, 1, 0};
-        camera.inv_tform = inverse(v2::view(from, to, up));
+        camera = {cli.tex_width, cli.tex_height, pi_v<float> / 3, look_at, true};
+    } else {
+        camera = {cli.tex_width, cli.tex_height, pi_v<float> / 3, look_at, false};
     }
 
-    return {std::move(world), std::move(camera)};
+    return {std::move(world), std::move(camera), std::move(look_at)};
 }
 
 } // namespace wt

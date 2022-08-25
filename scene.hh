@@ -1,6 +1,7 @@
 #pragma once
 
 #include "camera.hh"
+#include "look_at.hh"
 #include "world.hh"
 
 namespace wt {
@@ -8,6 +9,10 @@ namespace wt {
 struct scene {
     struct world world;
     struct camera camera;
+    struct look_at look_at;
+
+    scene() noexcept;
+    scene(struct world world, struct camera camera, struct look_at look_at) noexcept;
 };
 
 struct cli;

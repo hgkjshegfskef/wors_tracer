@@ -50,12 +50,9 @@ int main(int argc, char** argv) {
     CLI11_PARSE(app, argc, argv);
 
     std::vector<std::function<scene(struct cli const&)>> scenes{
-        SCENE(0),
-        SCENE(1),
-        SCENE(2),
-        SCENE(3),
+        SCENE(0), SCENE(1), SCENE(2), SCENE(3), SCENE(4),
     };
-    struct scene scene;
+    scene scene;
     try {
         scene = scenes.at(cli.scene)(cli);
     } catch (std::exception const& ex) {
@@ -64,10 +61,10 @@ int main(int argc, char** argv) {
     }
 
     if (cli.render_backend == "sdl") {
-        render_sdl(scene.camera, scene.world, cli);
+        render_sdl(cli, scene.world, scene.look_at, scene.camera);
     } else if (cli.render_backend == "ppm") {
         canvas image{scene.camera.hsize, scene.camera.vsize};
-        render_ppm(scene.camera, scene.world, image);
+        render_ppm(cli, scene, image);
     } else {
         SPDLOG_ERROR("Incorrect rendering backend: {}", cli.render_backend);
         return 1;
