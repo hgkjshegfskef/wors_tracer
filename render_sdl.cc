@@ -183,7 +183,7 @@ void render_sdl(cli const& cli, world const& world, look_at const& look_at,
             from = position(from, up, cam_speed);
         }
 
-        camera.inv_tform = inverse(v3::view(from, forward, up));
+        camera.inv_tform = inverse(view(from, forward, up));
         //        SPDLOG_TRACE("from: {}, to: {}, up: {}", from, position(from, forward, 1), up);
 
         std::uint32_t* pixels;

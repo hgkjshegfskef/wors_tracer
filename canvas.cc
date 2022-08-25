@@ -15,13 +15,10 @@ namespace wt {
 canvas::canvas(unsigned int w, unsigned int h) noexcept
     : canvas_{std::make_unique<color[]>(/*may overflow*/ w * h)}, w_{w}, h_{h} {}
 
-color& canvas::operator()(unsigned int x, unsigned int y) noexcept {
-    // Internally, X grows right, but Y grows down, hence the conversion
-    return canvas_[(h_ - y - 1) * w_ + x];
-}
+color& canvas::operator()(unsigned int x, unsigned int y) noexcept { return canvas_[y * w_ + x]; }
 
 color const& canvas::operator()(unsigned int x, unsigned int y) const noexcept {
-    return canvas_[(h_ - y - 1) * w_ + x];
+    return canvas_[y * w_ + x];
 }
 
 unsigned canvas::size() const noexcept { return /*may overflow*/ w_ * h_; }

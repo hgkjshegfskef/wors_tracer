@@ -17,8 +17,7 @@ struct camera {
 
     camera() noexcept;
     camera(unsigned hsize, unsigned vsize, float fov) noexcept;
-    camera(unsigned hsize, unsigned vsize, float fov, look_at const& look_at,
-           bool invert_y) noexcept;
+    camera(unsigned hsize, unsigned vsize, float fov, look_at const& look_at) noexcept;
 };
 
 struct vec3;
@@ -27,14 +26,7 @@ struct ray;
 
 // Camera transformation matrix. up is unit len
 tform4 view(pnt3 const& from, pnt3 const& to, vec3 const& up) noexcept;
-
-namespace v2 {
-tform4 view(pnt3 const& from, pnt3 const& to, vec3 const& up) noexcept;
-} // namespace v2
-
-namespace v3 {
 tform4 view(pnt3 const& from, vec3 const& forward, vec3 const& up) noexcept;
-} // namespace v3
 
 ray ray_for_pixel(camera const& cam, float px, float py) noexcept;
 

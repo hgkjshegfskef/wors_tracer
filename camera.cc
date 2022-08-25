@@ -27,39 +27,15 @@ camera::camera(unsigned hsize, unsigned vsize, float fov) noexcept
     pixel_size = (half_width * 2.f) / hsize;
 }
 
-camera::camera(unsigned hsize, unsigned vsize, float fov, look_at const& look_at,
-               bool invert_y) noexcept
+camera::camera(unsigned hsize, unsigned vsize, float fov, look_at const& look_at) noexcept
     : camera{hsize, vsize, fov} {
-    if (!invert_y) {
-        inv_tform = inverse(view(look_at.from, look_at.to, look_at.up));
-    } else {
-        inv_tform = inverse(v2::view(look_at.from, look_at.to, look_at.up));
-    }
+    inv_tform = inverse(view(look_at.from, look_at.to, look_at.up));
 }
 
 tform4 view(pnt3 const& from, pnt3 const& to, vec3 const& up) noexcept {
-    vec3 const forward = normalize(to - from);
-    vec3 const left = normalize(cross(forward, normalize(up)));
-    vec3 const true_up = normalize(cross(left, forward));
-    tform4 orientation{left.x,     left.y,     left.z,     0, //
-                       true_up.x,  true_up.y,  true_up.z,  0, //
-                       -forward.x, -forward.y, -forward.z, 0};
-    return orientation * tform4::translate({-from.x, -from.y, -from.z});
+    return view(from, normalize(to - from), up);
 }
 
-namespace v2 {
-tform4 view(pnt3 const& from, pnt3 const& to, vec3 const& up) noexcept {
-    vec3 const forward = normalize(to - from);
-    vec3 const left = normalize(cross(forward, normalize(up)));
-    vec3 const true_up = -normalize(cross(left, forward));    // !!!
-    tform4 orientation{left.x,     left.y,     left.z,     0, //
-                       true_up.x,  true_up.y,  true_up.z,  0, //
-                       -forward.x, -forward.y, -forward.z, 0};
-    return orientation * tform4::translate({-from.x, -from.y, -from.z});
-}
-} // namespace v2
-
-namespace v3 {
 tform4 view(pnt3 const& from, vec3 const& forward, vec3 const& up) noexcept {
     vec3 const left = normalize(cross(normalize(forward), normalize(up)));
     vec3 const true_up = normalize(cross(left, forward));
@@ -68,7 +44,6 @@ tform4 view(pnt3 const& from, vec3 const& forward, vec3 const& up) noexcept {
                        -forward.x, -forward.y, -forward.z, 0};
     return orientation * tform4::translate({-from.x, -from.y, -from.z});
 }
-} // namespace v3
 
 ray ray_for_pixel(camera const& cam, float px, float py) noexcept {
     // cam looks towards -z, x is to the left

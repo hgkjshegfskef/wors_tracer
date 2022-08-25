@@ -14,8 +14,8 @@ using namespace std::numbers;
 
 TEST(RenderTest, DefaultWorld) {
     world w = world::make_default();
-    look_at look_at{{0, 0, -5},{0, 0, 0},{0, 1, 0}};
-    camera cam{11, 11, pi_v<float> / 2, look_at, true};
+    look_at look_at{{0, 0, -5}, {0, 0, 0}, {0, 1, 0}};
+    camera cam{11, 11, pi_v<float> / 2, look_at};
 
     cli cli;
     scene scene{w, cam, look_at};
