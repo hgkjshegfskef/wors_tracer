@@ -177,6 +177,7 @@ add_library(
   sphere_operations.cc
   plane.cc
   plane_operations.cc
+  pattern_operations.cc
   stripe_pattern.cc
   stripe_pattern_operations.cc
   gradient_pattern.cc

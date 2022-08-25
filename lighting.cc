@@ -2,6 +2,7 @@
 
 #include "mat3.hh"
 #include "material.hh"
+#include "pattern_operations.hh"
 #include "pnt_light.hh"
 #include "shape.hh"
 #include "tform4.hh"

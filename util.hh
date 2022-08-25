@@ -15,8 +15,6 @@ struct pnt3;
 
 float lerp(float x, float left_min, float left_max, float right_min, float right_max) noexcept;
 
-color blend(pnt3 const& point, color const& a, color const& b) noexcept;
-
 void write_ppm(char const* fname, std::string_view contents) noexcept;
 
 // float scale(float value, std::pair<float, float> source_range,
