@@ -4,6 +4,7 @@
 #include "checker3d_pattern_operations.hh"
 #include "color.hh"
 #include "gradient_pattern_operations.hh"
+#include "radial_gradient_pattern_operations.hh"
 #include "ring_pattern_operations.hh"
 #include "stripe_pattern_operations.hh"
 

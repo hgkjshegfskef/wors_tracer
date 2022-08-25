@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     CLI11_PARSE(app, argc, argv);
 
     std::vector<std::function<scene(struct cli const&)>> scenes{
-        SCENE(0), SCENE(1), SCENE(2), SCENE(3), SCENE(4),
+        SCENE(0), SCENE(1), SCENE(2), SCENE(3), SCENE(4), SCENE(5),
     };
     scene scene;
     try {

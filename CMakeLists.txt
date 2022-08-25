@@ -183,6 +183,8 @@ add_library(
   gradient_pattern_operations.cc
   ring_pattern.cc
   ring_pattern_operations.cc
+  radial_gradient_pattern.cc
+  radial_gradient_pattern_operations.cc
   checker2d_pattern.cc
   checker2d_pattern_operations.cc
   checker3d_pattern.cc
@@ -192,7 +194,8 @@ add_library(
   scene_1.cc
   scene_2.cc
   scene_3.cc
-  scene_4.cc)
+  scene_4.cc
+  scene_5.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL
