@@ -5,14 +5,14 @@
 namespace wt {
 
 struct cli {
-    std::string render_backend;
-    unsigned win_width;
-    unsigned win_height;
-    unsigned tex_width;
-    unsigned tex_height;
-    unsigned scene;
-    std::string ppm_fname;
-    bool vsync;
+    std::string render_backend{"sdl"};
+    unsigned win_width{1920};
+    unsigned win_height{1080};
+    unsigned tex_width{960};
+    unsigned tex_height{540};
+    unsigned scene{1};
+    std::string ppm_fname{"image.ppm"};
+    bool vsync{false};
 };
 
 } // namespace wt

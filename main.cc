@@ -24,28 +24,24 @@ int main(int argc, char** argv) {
 
     cli cli;
 
-    cli.render_backend = "sdl";
     app.add_option("-r,--render-backend", cli.render_backend, "Where to dump the pixels")
+        ->default_val(cli.render_backend)
         ->check(CLI::IsMember{{"ppm", "sdl"}});
 
-    cli.win_width = 1920;
-    app.add_option("--win-width", cli.win_width, "SDL window width");
-    cli.win_height = 1080;
-    app.add_option("--win-height", cli.win_height, "SDL window height");
+    app.add_option("--win-width", cli.win_width, "SDL window width")->default_val(cli.win_width);
+    app.add_option("--win-height", cli.win_height, "SDL window height")
+        ->default_val(cli.win_height);
 
-    cli.tex_width = 960;
-    app.add_option("--tex-width", cli.tex_width, "SDL texture width");
-    cli.tex_height = 540;
-    app.add_option("--tex-height", cli.tex_height, "SDL texture height");
+    app.add_option("--tex-width", cli.tex_width, "SDL texture width")->default_val(cli.tex_width);
+    app.add_option("--tex-height", cli.tex_height, "SDL texture height")
+        ->default_val(cli.tex_height);
 
-    cli.scene = 1;
-    app.add_option("-s,--scene", cli.scene, "Scene number");
+    app.add_option("-s,--scene", cli.scene, "Scene number")->default_val(cli.scene);
 
-    cli.ppm_fname = "image.ppm";
-    app.add_option("ppm-file", cli.ppm_fname, "PPM file name");
+    app.add_option("ppm-file", cli.ppm_fname, "PPM file name")->default_val("image.ppm");
 
-    cli.vsync = false;
-    app.add_flag("--vsync,!--no-vsync", cli.vsync, "Use vertical synchronization");
+    app.add_flag("--vsync,!--no-vsync", cli.vsync, "Use vertical synchronization")
+        ->default_val(cli.vsync);
 
     CLI11_PARSE(app, argc, argv);
 

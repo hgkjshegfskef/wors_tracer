@@ -60,7 +60,7 @@ scene scene_4(cli const& cli) noexcept {
     }
 
     world world{std::move(shapes), pnt_light{pnt3{-10, 10, -10}, color{1, 1, 1}}};
-    look_at look_at{{0, 1.5f, -5}, {0, 0, 0}, {0, 1, 0}};
+    look_at look_at{{0, 2, -5}, {0, 1, 0}, {0, 1, 0}};
 
     camera camera;
     if (cli.render_backend == "ppm") {

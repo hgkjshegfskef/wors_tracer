@@ -1,4 +1,4 @@
-#include "checker2d_pattern.hh"
+#include "checker3d_pattern.hh"
 #include "gradient_pattern.hh"
 #include "mat3.hh"
 #include "pattern.hh"
@@ -97,7 +97,7 @@ TEST_F(PatternTest, Ring) {
 }
 
 TEST_F(PatternTest, Checker) {
-    pattern pattern{checker2d_pattern{white, black}};
+    pattern pattern{checker3d_pattern{white, black}};
 
     EXPECT_EQ(pattern_at(pattern, {0, 0, 0}), white);
     EXPECT_EQ(pattern_at(pattern, {.99, 0, 0}), white);

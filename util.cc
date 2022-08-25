@@ -3,7 +3,7 @@
 #include "color.hh"
 #include "pnt3.hh"
 
-#include <fmt/core.h>
+#include <spdlog/spdlog.h>
 
 #include <algorithm> // clamp
 #include <cerrno>    // errno
@@ -37,7 +37,8 @@ void write_ppm(char const* fname, std::string_view contents) noexcept {
     auto close = [](FILE* f) { std::fclose(f); };
     std::unique_ptr<FILE, decltype(close)> fp{std::fopen(fname, "w"), std::move(close)};
     if (!fp) {
-        fmt::print("Opening file {} failed: {}", fname, std::strerror(errno));
+        SPDLOG_ERROR("Opening file '{}' failed: {}", fname, std::strerror(errno));
+        throw std::logic_error{""};
         return;
     }
 

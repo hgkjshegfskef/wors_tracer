@@ -14,12 +14,8 @@ using namespace std::numbers;
 
 TEST(RenderTest, DefaultWorld) {
     world w = world::make_default();
-    look_at look_at;
+    look_at look_at{{0, 0, -5},{0, 0, 0},{0, 1, 0}};
     camera cam{11, 11, pi_v<float> / 2, look_at, true};
-    pnt3 from{0, 0, -5};
-    pnt3 to{0, 0, 0};
-    vec3 up{0, 1, 0};
-    cam.inv_tform = inverse(view(from, to, up));
 
     cli cli;
     scene scene{w, cam, look_at};

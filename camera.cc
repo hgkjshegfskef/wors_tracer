@@ -31,9 +31,9 @@ camera::camera(unsigned hsize, unsigned vsize, float fov, look_at const& look_at
                bool invert_y) noexcept
     : camera{hsize, vsize, fov} {
     if (!invert_y) {
-        inv_tform = view(look_at.from, look_at.to, look_at.up);
+        inv_tform = inverse(view(look_at.from, look_at.to, look_at.up));
     } else {
-        inv_tform = v2::view(look_at.from, look_at.to, look_at.up);
+        inv_tform = inverse(v2::view(look_at.from, look_at.to, look_at.up));
     }
 }
 
