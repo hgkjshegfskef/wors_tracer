@@ -34,35 +34,23 @@ scene scene_5(cli const& cli) noexcept {
     plane right_wall{tform4::translate({0, 0, 5}) * rot_2 * rot_3,
                      material{.pattern = pattern{checker2d_pattern{{1, 0, 0}, {.5, .5, 0}}}}};
 
-    sphere left{tform4::translate({-2, 1, 0})
-                //            * scale(.33f, .33f, .33f)
-                ,
-                material{.pattern = pattern{ring_pattern{
-                             {.7, 0, 0}, {1, 1, .3},
-                             //                                                 scale(.33, .33, .33)
-                         }},
-                         .diffuse = .7f,
-                         .specular = .3f}};
-    sphere center{tform4::translate({0, 1, 0})
-                  //                           * scale(.5, .5, .5)
-                  ,
+    sphere left{
+        tform4::translate({-2, 1, 0}),
+        material{.pattern = pattern{ring_pattern{{.7, 0, 0}, {1, 1, .3}, scale(.33, .33, .33)}},
+                 .diffuse = .7f,
+                 .specular = .3f}};
+    sphere center{tform4::translate({0, .5, 0}) * scale(.5, .5, .5),
                   material{.pattern = pattern{radial_gradient_pattern{
-                               {.7, 0, 0}, {1, 1, .3},
-                               //                                    scale(.5, .5, .5)
-                           }},
+                               {.7, 0, 0}, {1, 1, .3}, rot_3 * scale(.75, .75, .75)}},
                            .diffuse = .7f,
                            .specular = .3f}};
 
-    sphere right{
-        tform4::translate({2, 1, 0})
-        //            * scale(.5, .5, .5)
-        ,
-        material{.pattern = pattern{gradient_pattern{
-                     {.7, 0, 0}, {1, 1, .3},
-                     //                                                     scale(.5, .5, .5)
-                 }},
-                 .diffuse = .7f,
-                 .specular = .3f}};
+    sphere right{tform4::translate({2, 1, 0}), material{.pattern = pattern{gradient_pattern{
+                                                            {.7, 0, 0},
+                                                            {1, 1, .3},
+                                                        }},
+                                                        .diffuse = .7f,
+                                                        .specular = .3f}};
 
     std::vector<shape> shapes;
     shapes.reserve(8);
