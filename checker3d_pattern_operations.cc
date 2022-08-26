@@ -2,7 +2,10 @@
 
 #include "checker3d_pattern.hh"
 #include "color.hh"
+#include "pattern_operations.hh"
 #include "pnt3.hh"
+#include "shape.hh"
+#include "stub_shape.hh"
 #include "tform4.hh"
 
 #include <cmath> // floor
@@ -13,12 +16,13 @@ tform4& inv_tform(checker3d_pattern& pattern) noexcept { return pattern.inv_tfor
 tform4 const& inv_tform(checker3d_pattern const& pattern) noexcept { return pattern.inv_tform; }
 
 color pattern_at(checker3d_pattern const& pattern, pnt3 const& world_point) noexcept {
+    shape stub{stub_shape{}};
     if (int(std::floor(world_point.x) + std::floor(world_point.y) + std::floor(world_point.z)) %
             2 ==
         0) {
-        return pattern.first;
+        return pattern_at(pattern.first, stub, world_point);
     }
-    return pattern.second;
+    return pattern_at(pattern.second, stub, world_point);
 }
 
 } // namespace wt

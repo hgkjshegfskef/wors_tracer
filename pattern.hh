@@ -4,7 +4,6 @@
 #include "checker3d_pattern_operations.hh"
 #include "color.hh"
 #include "gradient_pattern_operations.hh"
-#include "nested_checker2d_pattern_operations.hh"
 #include "radial_gradient_pattern_operations.hh"
 #include "ring_pattern_operations.hh"
 #include "solid_pattern_operations.hh"
@@ -47,7 +46,7 @@ class pattern {
 
     template <typename ConcretePattern> class pattern_model final : public pattern_concept {
       public:
-        explicit pattern_model(ConcretePattern&& concrete_pattern)
+        pattern_model(ConcretePattern&& concrete_pattern)
             : object_{std::forward<ConcretePattern>(concrete_pattern)} {}
 
         tform4& do_inv_tform() noexcept override { return inv_tform(object_); }

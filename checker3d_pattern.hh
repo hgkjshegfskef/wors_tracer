@@ -1,18 +1,18 @@
 #pragma once
 
-#include "color.hh"
+#include "pattern.hh"
 #include "tform4.hh"
 
 namespace wt {
 
 struct checker3d_pattern {
-    color first;
-    color second;
+    pattern first;
+    pattern second;
     tform4 tform;
     tform4 inv_tform;
 
-    checker3d_pattern(color first, color second) noexcept;
-    checker3d_pattern(color first, color second, tform4 tform) noexcept;
+    checker3d_pattern(pattern first, pattern second) noexcept;
+    checker3d_pattern(pattern first, pattern second, tform4 tform) noexcept;
 };
 
 } // namespace wt

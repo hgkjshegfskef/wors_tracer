@@ -1,8 +1,6 @@
 #include "checker2d_pattern.hh"
 #include "cli.hh"
 #include "mat3.hh"
-#include "nested_checker2d_pattern.hh"
-#include "pattern.hh"
 #include "plane.hh"
 #include "scene.hh"
 #include "solid_pattern.hh"
@@ -19,23 +17,11 @@ namespace wt {
 scene scene_6(cli const& cli) noexcept {
     plane floor{
         {},
-        material{
-            .pattern = pattern{nested_checker2d_pattern{
-                pattern{
-                    stripe_pattern{{0, 0, 0},
-                                   {1, 1, 1},
-                                   rotation<Axis::Y>(deg_to_rad(45)) * scale(.1, .1, .1)},
-                },
-                pattern{stripe_pattern{{0, 0, 0},
-                                       {1, 1, 1},
-                                       rotation<Axis::Y>(deg_to_rad(-45)) * scale(.1, .1, .1)}}}}}};
-
-    //    plane floor{
-    //        {},
-    //        material{
-    //            .pattern = pattern{stripe_pattern{
-    //                {0, 0, 0}, {1, 1, 1}, rotation<Axis::Y>(deg_to_rad(45)) * scale(.1, .1,
-    //                1)}}}};
+        material{.pattern = checker2d_pattern{
+                     stripe_pattern{solid_pattern{{1, 0, 0}}, solid_pattern{{0, 1, 0}},
+                                    rotation<Axis::Y>(deg_to_rad(45)) * scale(.1, .1, .1)},
+                     stripe_pattern{solid_pattern{{1, 1, 1}}, solid_pattern{{0, 0, 0}},
+                                    rotation<Axis::Y>(deg_to_rad(-45)) * scale(.1, .1, .1)}}}};
 
     std::vector<shape> shapes;
     for (auto& plane : {floor}) {

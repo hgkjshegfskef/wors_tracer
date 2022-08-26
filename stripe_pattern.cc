@@ -4,10 +4,10 @@
 
 namespace wt {
 
-stripe_pattern::stripe_pattern(color first, color second) noexcept
+stripe_pattern::stripe_pattern(pattern first, pattern second) noexcept
     : first{std::move(first)}, second{std::move(second)}, tform{}, inv_tform{} {}
 
-stripe_pattern::stripe_pattern(color first, color second, tform4 tform) noexcept
+stripe_pattern::stripe_pattern(pattern first, pattern second, tform4 tform) noexcept
     : first{std::move(first)}, second{std::move(second)}, tform{std::move(tform)},
       inv_tform{inverse(this->tform)} {}
 

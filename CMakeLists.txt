@@ -177,6 +177,8 @@ add_library(
   sphere_operations.cc
   plane.cc
   plane_operations.cc
+  stub_shape.cc
+  stub_shape_operations.cc
   pattern_operations.cc
   stripe_pattern.cc
   stripe_pattern_operations.cc
@@ -190,8 +192,6 @@ add_library(
   checker2d_pattern_operations.cc
   checker3d_pattern.cc
   checker3d_pattern_operations.cc
-  nested_checker2d_pattern.cc
-  nested_checker2d_pattern_operations.cc
   solid_pattern.cc
   solid_pattern_operations.cc
   scene.cc

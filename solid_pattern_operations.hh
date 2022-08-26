@@ -10,6 +10,6 @@ struct color;
 tform4& inv_tform(solid_pattern& pattern) noexcept;
 tform4 const& inv_tform(solid_pattern const& pattern) noexcept;
 
-color pattern_at(solid_pattern const& pattern, pnt3 const& world_point) noexcept;
+color pattern_at(solid_pattern const& pattern, pnt3 const& /*unused*/) noexcept;
 
 } // namespace wt

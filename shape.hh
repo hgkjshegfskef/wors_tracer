@@ -2,6 +2,7 @@
 
 #include "plane_operations.hh"
 #include "sphere_operations.hh"
+#include "stub_shape_operations.hh"
 #include "vec3.hh"
 
 #include <memory>      // unique_ptr
