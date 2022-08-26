@@ -18,9 +18,9 @@ scene scene_6(cli const& cli) noexcept {
     plane floor{
         {},
         material{.pattern = checker2d_pattern{
-                     stripe_pattern{solid_pattern{{1, 0, 0}}, solid_pattern{{0, 1, 0}},
+                     stripe_pattern{solid_pattern{0x77283B}, solid_pattern{0x964B5E},
                                     rotation<Axis::Y>(deg_to_rad(45)) * scale(.1, .1, .1)},
-                     stripe_pattern{solid_pattern{{1, 1, 1}}, solid_pattern{{0, 0, 0}},
+                     stripe_pattern{solid_pattern{0x656565}, solid_pattern{0x3C3C3C},
                                     rotation<Axis::Y>(deg_to_rad(-45)) * scale(.1, .1, .1)}}}};
 
     std::vector<shape> shapes;

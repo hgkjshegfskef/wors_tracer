@@ -4,7 +4,13 @@
 
 namespace wt {
 
+color::color() noexcept = default;
+
 color::color(float r, float g, float b) noexcept : r{r}, g{g}, b{b} {}
+
+color::color(std::uint32_t rgb_hex) noexcept
+    : r{((rgb_hex >> 16) & 0xFF) / 255.f}, g{((rgb_hex >> 8) & 0xFF) / 255.f}, b{((rgb_hex)&0xFF) /
+                                                                                 255.f} {}
 
 float& color::operator[](std::size_t idx) noexcept {
     switch (idx) {

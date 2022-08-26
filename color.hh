@@ -3,14 +3,16 @@
 #include <fmt/core.h> // fwd
 
 #include <cstddef> // size_t
+#include <cstdint> // uint32_t
 
 namespace wt {
 
 struct color {
     float r, g, b;
 
-    color() noexcept = default;
+    color() noexcept;
     color(float r, float g, float b) noexcept;
+    color(std::uint32_t rgb_hex) noexcept;
 
     float& operator[](std::size_t idx) noexcept;
     float const& operator[](std::size_t idx) const noexcept;
