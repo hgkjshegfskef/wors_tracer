@@ -7,16 +7,18 @@ using namespace wt;
 
 TEST(CanvasTest, Ctor) { canvas c(100, 100); }
 
-TEST(CanvasTest, DISABLED_ExportPpmSimple) {
+TEST(CanvasTest, ExportPpmSimple) {
     canvas c1{5, 3};
     c1.fill({0, 0, 0});
 
     color col1{1.5, 0, 0};
     color col2{0, 0.5, 0};
     color col3{-0.5, 0, 1};
-    c1(0, 2) = col1;
-    c1(2, 1) = col2;
-    c1(4, 0) = col3;
+
+    // flip Y axis
+    c1(0, 2 - 2) = col1;
+    c1(2, 2 - 1) = col2;
+    c1(4, 2 - 0) = col3;
 
     std::string const image = c1.as_ppm();
     std::string_view expected{"P3\n"
