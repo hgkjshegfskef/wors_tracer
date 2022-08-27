@@ -17,8 +17,8 @@ tform4 const& inv_tform(ring_pattern const& pattern) noexcept { return pattern.i
 
 color pattern_at(ring_pattern const& pattern, pnt3 const& world_point) noexcept {
     shape stub{stub_shape{}};
-    if (int(std::floor(std::sqrt(world_point.x * world_point.x + world_point.z * world_point.z) -
-                       1e-5f // this is a hack to account for fp impresicion
+    if (int(std::floor(std::sqrt(world_point.x * world_point.x + world_point.z * world_point.z)
+//                       - 1e-5f // this is a hack to account for fp impresicion
                        )) %
             2 ==
         0) {

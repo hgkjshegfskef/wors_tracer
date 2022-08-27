@@ -204,10 +204,9 @@ void render_sdl(cli const& cli, world const& world, look_at const& look_at,
                         color const color =
                             color_at(world, ray_for_pixel(camera, x, y), world_isecs);
                         pixels[y * camera.hsize + x] =
-                            SDL_MapRGB(pixel_format.get(),
-                                       lerp(clamp(color[0], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f),
-                                       lerp(clamp(color[1], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f),
-                                       lerp(clamp(color[2], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f));
+                            SDL_MapRGB(pixel_format.get(), std::clamp(color[0], 0.f, 1.f) * 255.f,
+                                       std::clamp(color[1], 0.f, 1.f) * 255.f,
+                                       std::clamp(color[2], 0.f, 1.f) * 255.f);
                     }
                 }
             });

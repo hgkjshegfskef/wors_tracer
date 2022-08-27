@@ -45,12 +45,9 @@ std::string canvas::as_ppm() const noexcept {
     // Print out batch_count batches of batch_size amount of colors each, one batch per line.
     for (unsigned nth_batch = 0; nth_batch < batch_count; ++nth_batch) {
         for (unsigned nth_color = 0; nth_color < batch_size; ++nth_color) {
-            color col;
-            for (unsigned component_idx = 0; component_idx < 3; ++component_idx) {
-                col[component_idx] = lerp(
-                    clamp(canvas_[nth_batch * batch_size + nth_color][component_idx], 0.f, 1.f),
-                    0.f, 0.f, 1.f, 255.f);
-            }
+            color col{std::clamp(canvas_[nth_batch * batch_size + nth_color][0], 0.f, 1.f) * 255.f,
+                      std::clamp(canvas_[nth_batch * batch_size + nth_color][1], 0.f, 1.f) * 255.f,
+                      std::clamp(canvas_[nth_batch * batch_size + nth_color][2], 0.f, 1.f) * 255.f};
             fmt::format_to(std::back_inserter(ss), "{:3.0f}", col);
             if (nth_color != batch_size - 1) {
                 fmt::format_to(std::back_inserter(ss), " ");
@@ -62,11 +59,11 @@ std::string canvas::as_ppm() const noexcept {
     if ((size() - batch_count * batch_size) != 0) { // Any colors remaining to be processed?
         unsigned already_processed = batch_count * batch_size;
         for (unsigned leftover = already_processed; leftover < size(); ++leftover) {
-            color col;
-            for (int component_idx = 0; component_idx < 3; ++component_idx) {
-                col[component_idx] =
-                    lerp(clamp(canvas_[leftover][component_idx], 0.f, 1.f), 0.f, 0.f, 1.f, 255.f);
-            }
+            color col{
+                std::clamp(canvas_[leftover][0], 0.f, 1.f) * 255.f,
+                std::clamp(canvas_[leftover][1], 0.f, 1.f) * 255.f,
+                std::clamp(canvas_[leftover][2], 0.f, 1.f) * 255.f,
+            };
             fmt::format_to(std::back_inserter(ss), "{:3.0f}", col);
             if (leftover != size() - 1) {
                 fmt::format_to(std::back_inserter(ss), " ");

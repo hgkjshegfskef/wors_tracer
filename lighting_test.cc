@@ -3,6 +3,7 @@
 #include "pattern.hh"
 #include "pnt_light.hh"
 #include "shape.hh"
+#include "solid_pattern.hh"
 #include "sphere.hh"
 #include "stripe_pattern.hh"
 #include "vec3.hh"
@@ -27,7 +28,8 @@ TEST(LightingTest, SurfaceInShadow) {
 }
 
 TEST(LightingTest, WithPattern) {
-    material mat{.pattern = pattern{stripe_pattern{{1, 1, 1}, {0, 0, 0}}},
+    material mat{.pattern =
+                     pattern{stripe_pattern{solid_pattern{{1, 1, 1}}, solid_pattern{{0, 0, 0}}}},
                  .ambient = 1,
                  .diffuse = 0,
                  .specular = 0};

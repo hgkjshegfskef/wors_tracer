@@ -2,9 +2,11 @@
 #include "gradient_pattern.hh"
 #include "mat3.hh"
 #include "pattern.hh"
+#include "pattern_operations.hh"
 #include "pnt3.hh"
 #include "ring_pattern.hh"
 #include "shape.hh"
+#include "solid_pattern.hh"
 #include "sphere.hh"
 #include "stripe_pattern.hh"
 
@@ -17,15 +19,8 @@ struct PatternTest : public testing::Test {
     color white{1, 1, 1};
 };
 
-TEST_F(PatternTest, PatternCtor) {
-    pattern pattern = stripe_pattern{white, black};
-
-    EXPECT_EQ(first(pattern), white);
-    EXPECT_EQ(second(pattern), black);
-}
-
 TEST_F(PatternTest, XAxis) {
-    pattern pattern{stripe_pattern{white, black}};
+    pattern pattern{stripe_pattern{solid_pattern{white}, solid_pattern{black}}};
 
     EXPECT_EQ(pattern_at(pattern, pnt3{0, 0, 0}), white);
     EXPECT_EQ(pattern_at(pattern, pnt3{0.9, 0, 0}), white);
@@ -36,7 +31,7 @@ TEST_F(PatternTest, XAxis) {
 }
 
 TEST_F(PatternTest, YAxis) {
-    pattern pattern = stripe_pattern{white, black};
+    pattern pattern{stripe_pattern{solid_pattern{white}, solid_pattern{black}}};
 
     EXPECT_EQ(pattern_at(pattern, pnt3{0, 0, 0}), white);
     EXPECT_EQ(pattern_at(pattern, pnt3{0, 1, 0}), white);
@@ -44,7 +39,7 @@ TEST_F(PatternTest, YAxis) {
 }
 
 TEST_F(PatternTest, ZAxis) {
-    pattern pattern = stripe_pattern{white, black};
+    pattern pattern{stripe_pattern{solid_pattern{white}, solid_pattern{black}}};
 
     EXPECT_EQ(pattern_at(pattern, pnt3{0, 0, 0}), white);
     EXPECT_EQ(pattern_at(pattern, pnt3{0, 0, 1}), white);
@@ -53,7 +48,7 @@ TEST_F(PatternTest, ZAxis) {
 
 TEST_F(PatternTest, WithShapeTform) {
     shape s{sphere{scale(2, 2, 2)}};
-    pattern pattern = stripe_pattern{white, black};
+    pattern pattern{stripe_pattern{solid_pattern{white}, solid_pattern{black}}};
 
     color c = pattern_at(pattern, s, {1.5, 0, 0});
 
@@ -62,7 +57,7 @@ TEST_F(PatternTest, WithShapeTform) {
 
 TEST_F(PatternTest, WithPatternTform) {
     shape s{sphere{}};
-    pattern pattern = stripe_pattern{white, black, {scale(2, 2, 2)}};
+    pattern pattern{stripe_pattern{solid_pattern{white}, solid_pattern{black}, scale(2, 2, 2)}};
 
     color c = pattern_at(pattern, s, {1.5, 0, 0});
 
@@ -71,7 +66,8 @@ TEST_F(PatternTest, WithPatternTform) {
 
 TEST_F(PatternTest, WithShapeAndPatternTform) {
     shape s{sphere{scale(2, 2, 2)}};
-    pattern pattern = stripe_pattern{white, black, {tform4::translate({.5, 0, 0})}};
+    pattern pattern{
+        stripe_pattern{solid_pattern{white}, solid_pattern{black}, tform4::translate({.5, 0, 0})}};
 
     color c = pattern_at(pattern, s, {2.5, 0, 0});
 
@@ -79,7 +75,7 @@ TEST_F(PatternTest, WithShapeAndPatternTform) {
 }
 
 TEST_F(PatternTest, Gradient) {
-    pattern pattern{gradient_pattern{white, black}};
+    pattern pattern{gradient_pattern{solid_pattern{white}, solid_pattern{black}}};
 
     EXPECT_EQ(pattern_at(pattern, {0, 0, 0}), white);
     EXPECT_EQ(pattern_at(pattern, {.25, 0, 0}), (color{.75, .75, .75}));
@@ -88,7 +84,7 @@ TEST_F(PatternTest, Gradient) {
 }
 
 TEST_F(PatternTest, Ring) {
-    pattern pattern{ring_pattern{white, black}};
+    pattern pattern{ring_pattern{solid_pattern{white}, solid_pattern{black}}};
 
     EXPECT_EQ(pattern_at(pattern, {0, 0, 0}), white);
     EXPECT_EQ(pattern_at(pattern, {1, 0, 0}), black);
@@ -97,7 +93,7 @@ TEST_F(PatternTest, Ring) {
 }
 
 TEST_F(PatternTest, Checker) {
-    pattern pattern{checker3d_pattern{white, black}};
+    pattern pattern{checker3d_pattern{solid_pattern{white}, solid_pattern{black}}};
 
     EXPECT_EQ(pattern_at(pattern, {0, 0, 0}), white);
     EXPECT_EQ(pattern_at(pattern, {.99, 0, 0}), white);
