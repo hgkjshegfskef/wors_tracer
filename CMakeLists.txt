@@ -192,6 +192,8 @@ add_library(
   checker2d_pattern_operations.cc
   checker3d_pattern.cc
   checker3d_pattern_operations.cc
+  blended_pattern.cc
+  blended_pattern_operations.cc
   solid_pattern.cc
   solid_pattern_operations.cc
   scene.cc
@@ -201,7 +203,8 @@ add_library(
   scene_3.cc
   scene_4.cc
   scene_5.cc
-  scene_6.cc)
+  scene_6.cc
+  scene_7.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL

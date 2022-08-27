@@ -1,4 +1,4 @@
-#include "checker2d_pattern.hh"
+#include "blended_pattern.hh"
 #include "cli.hh"
 #include "mat3.hh"
 #include "plane.hh"
@@ -14,14 +14,14 @@ using namespace std::numbers;
 
 namespace wt {
 
-scene scene_6(cli const& cli) noexcept {
+scene scene_7(cli const& cli) noexcept {
     plane floor{
         {},
-        material{.pattern = checker2d_pattern{
-                     stripe_pattern{solid_pattern{color{0x77283B}}, solid_pattern{color{0x964B5E}},
-                                    rotation<Axis::Y>(deg_to_rad(45)) * scale(.1, .1, .1)},
-                     stripe_pattern{solid_pattern{color{0x656565}}, solid_pattern{color{0x3C3C3C}},
-                                    rotation<Axis::Y>(deg_to_rad(-45)) * scale(.1, .1, .1)}}}};
+        material{.pattern = blended_pattern{
+                     stripe_pattern{solid_pattern{color{0x1D481D}}, solid_pattern{{1, 1, 1}}},
+                     stripe_pattern{solid_pattern{color{0x1D481D}}, solid_pattern{{1, 1, 1}},
+                                    rotation<Axis::Y>(deg_to_rad(90))},
+                     rotation<Axis::Y>(deg_to_rad(45))}}};
 
     std::vector<shape> shapes;
     for (auto& plane : {floor}) {

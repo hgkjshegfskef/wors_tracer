@@ -24,5 +24,6 @@ scene scene_3(cli const& cli) noexcept;
 scene scene_4(cli const& cli) noexcept;
 scene scene_5(cli const& cli) noexcept;
 scene scene_6(cli const& cli) noexcept;
+scene scene_7(cli const& cli) noexcept;
 
 } // namespace wt

@@ -12,7 +12,7 @@ struct color {
 
     color() noexcept;
     color(float r, float g, float b) noexcept;
-    color(std::uint32_t rgb_hex) noexcept;
+    explicit color(std::uint32_t rgb_hex) noexcept;
 
     float& operator[](std::size_t idx) noexcept;
     float const& operator[](std::size_t idx) const noexcept;
