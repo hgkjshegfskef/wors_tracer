@@ -10,8 +10,11 @@ struct solid_pattern {
     tform4 tform;
     tform4 inv_tform;
 
-    solid_pattern(struct color color) noexcept;
+    explicit solid_pattern(struct color color) noexcept;
     solid_pattern(struct color color, tform4 tform) noexcept;
+
+    solid_pattern(float r, float g, float b) noexcept;
+    solid_pattern(float r, float g, float b, tform4 tform) noexcept;
 };
 
 } // namespace wt

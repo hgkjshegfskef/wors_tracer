@@ -196,6 +196,9 @@ add_library(
   blended_pattern_operations.cc
   solid_pattern.cc
   solid_pattern_operations.cc
+  perturb_pattern.cc
+  perturb_pattern_operations.cc
+  perlin_noise.cc
   scene.cc
   scene_0.cc
   scene_1.cc
@@ -204,7 +207,8 @@ add_library(
   scene_4.cc
   scene_5.cc
   scene_6.cc
-  scene_7.cc)
+  scene_7.cc
+  scene_8.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL
