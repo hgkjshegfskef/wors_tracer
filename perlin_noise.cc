@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-// Improved Perlin noise (2002), based on https://cs.nyu.edu/~perlin/noise/
+// Improved Perlin noise (2002), port of https://cs.nyu.edu/~perlin/noise/
 
 namespace {
 
@@ -78,6 +78,8 @@ float grad(int hash, float x, float y, float z) {
     }
 }
 
+float lerp(float t, float a, float b) { return a + t * (b - a); }
+
 } // namespace
 
 namespace wt {
@@ -106,14 +108,12 @@ float perlin_noise(float x, float y, float z) noexcept {
     int const BA = p[B] + Z;
     int const BB = p[B + 1] + Z;
 
-    return std::lerp(
-        std::lerp(std::lerp(grad(p[AA], x, y, z), grad(p[BA], x - 1, y, z), u),
-                  std::lerp(grad(p[AB], x, y - 1, z), grad(p[BB], x - 1, y - 1, z), u), v),
-        std::lerp(
-            std::lerp(grad(p[AA + 1], x, y, z - 1), grad(p[BA + 1], x - 1, y, z - 1), u),
-            std::lerp(grad(p[AB + 1], x, y - 1, z - 1), grad(p[BB + 1], x - 1, y - 1, z - 1), u),
-            v),
-        w);
+    return lerp(
+        w,
+        lerp(v, lerp(u, grad(p[AA], x, y, z), grad(p[BA], x - 1, y, z)),
+             lerp(u, grad(p[AB], x, y - 1, z), grad(p[BB], x - 1, y - 1, z))),
+        lerp(v, lerp(u, grad(p[AA + 1], x, y, z - 1), grad(p[BA + 1], x - 1, y, z - 1)),
+             lerp(u, grad(p[AB + 1], x, y - 1, z - 1), grad(p[BB + 1], x - 1, y - 1, z - 1))));
 }
 
 // https://adrianb.io/2014/08/09/perlinnoise.html
