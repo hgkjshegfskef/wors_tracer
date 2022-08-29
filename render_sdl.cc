@@ -201,8 +201,8 @@ void render_sdl(cli const& cli, world const& world, look_at const& look_at,
                 world_isecs.reserve(world.shapes.size() * 2);
                 for (unsigned y = range.rows().begin(); y != range.rows().end(); ++y) {
                     for (unsigned x = range.cols().begin(); x != range.cols().end(); ++x) {
-                        color const color =
-                            color_at(world, ray_for_pixel(camera, x, y), world_isecs);
+                        color const color = color_at(world, ray_for_pixel(camera, x, y),
+                                                     world_isecs, cli.reflection_depth);
                         pixels[y * camera.hsize + x] =
                             SDL_MapRGB(pixel_format.get(), std::clamp(color[0], 0.f, 1.f) * 255.f,
                                        std::clamp(color[1], 0.f, 1.f) * 255.f,

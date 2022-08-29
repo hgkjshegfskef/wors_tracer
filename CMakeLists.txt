@@ -208,7 +208,8 @@ add_library(
   scene_5.cc
   scene_6.cc
   scene_7.cc
-  scene_8.cc)
+  scene_8.cc
+  scene_9.cc)
 
 target_include_directories(lib${PROJECT_NAME} PUBLIC .)
 target_compile_definitions(lib${PROJECT_NAME} PUBLIC SPDLOG_FMT_EXTERNAL

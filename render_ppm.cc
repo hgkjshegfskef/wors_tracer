@@ -30,7 +30,7 @@ void render_ppm(cli const& cli, scene const& scene, canvas& image, size_t frames
                                   for (int x = range.cols().begin(); x != range.cols().end(); ++x) {
                                       image(x, y) =
                                           color_at(scene.world, ray_for_pixel(scene.camera, x, y),
-                                                   world_isecs);
+                                                   world_isecs, cli.reflection_depth);
                                   }
                               }
                           });

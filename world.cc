@@ -54,22 +54,23 @@ intersect(world const& world, ray const& world_ray,
 }
 
 color shade_hit(world const& world, shading const& shading_info,
-                std::vector<intersection>& world_isecs) noexcept {
+                std::vector<intersection>& world_isecs, unsigned remaining) noexcept {
     return lighting(mater(world.shapes[shading_info.isec.shape_id]),
                     world.shapes[shading_info.isec.shape_id], world.light, shading_info.isec_pnt,
                     shading_info.eye, shading_info.normal,
-                    is_shadowed(world, shading_info.over_pnt, world_isecs));
+                    is_shadowed(world, shading_info.over_pnt, world_isecs)) +
+           reflected_color(world, shading_info, world_isecs, remaining);
 }
 
-color color_at(world const& world, ray const& world_ray,
-               std::vector<intersection>& world_isecs) noexcept {
+color color_at(world const& world, ray const& world_ray, std::vector<intersection>& world_isecs,
+               unsigned remaining) noexcept {
     world_isecs.clear();
     auto hit = intersect(world, world_ray, world_isecs);
     if (hit == world_isecs.cend()) {
         return color{0, 0, 0};
     }
     shading sh{*hit, world_ray, world.shapes[hit->shape_id]};
-    return shade_hit(world, sh, world_isecs);
+    return shade_hit(world, sh, world_isecs, remaining);
 }
 
 bool is_shadowed(world const& world, pnt3 const& world_point,
@@ -79,6 +80,17 @@ bool is_shadowed(world const& world, pnt3 const& world_point,
     world_isecs.clear();
     auto hit = intersect(world, {world_point, normalize(v)}, world_isecs);
     return hit != world_isecs.cend() && hit->t < dist;
+}
+
+color reflected_color(world const& world, shading const& shading_info,
+                      std::vector<intersection>& world_isecs, unsigned remaining) noexcept {
+    float const& reflective = mater(world.shapes[shading_info.isec.shape_id]).reflective;
+    if (reflective == 0 || remaining == 0) {
+        return {0, 0, 0};
+    }
+    ray const reflect{shading_info.over_pnt, shading_info.reflect};
+    color const color = color_at(world, reflect, world_isecs, remaining - 1);
+    return color * reflective;
 }
 
 } // namespace wt

@@ -1,3 +1,4 @@
+#include "plane.hh"
 #include "ray.hh"
 #include "shading.hh"
 #include "shape.hh"
@@ -5,7 +6,10 @@
 
 #include <gtest/gtest.h>
 
+#include <numbers>
+
 using namespace wt;
+using namespace std::numbers;
 
 TEST(ShadingTest, OutsideIntersection) {
     ray r{pnt3{0, 0, -5}, vec3{0, 0, 1}};
@@ -42,4 +46,14 @@ TEST(ShadingTest, HitOffsetsPoint) {
     shading sh{isec, r, s};
     EXPECT_TRUE(sh.over_pnt.z < -1e-6f / 2);
     EXPECT_TRUE(sh.isec_pnt.z > sh.over_pnt.z);
+}
+
+TEST(ShadingTest, ReflectionVector) {
+    shape s{plane{}};
+    ray r{{0, 1, -1}, {0, -sqrt2_v<float> / .2f, sqrt2_v<float> / .2f}};
+    intersection isec{0, sqrt2_v<float>};
+
+    shading sh{isec, r, s};
+
+    EXPECT_EQ(sh.reflect, (vec3{0, sqrt2_v<float> / .2f, sqrt2_v<float> / .2f}));
 }

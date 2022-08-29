@@ -14,6 +14,7 @@ struct material {
     float diffuse{.9f};
     float specular{.9f};
     float shininess{200.f};
+    float reflective{0.f};
 };
 
 } // namespace wt

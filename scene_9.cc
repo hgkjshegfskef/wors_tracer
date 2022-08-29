@@ -20,42 +20,48 @@ using namespace std::numbers;
 
 namespace wt {
 
-scene scene_5(cli const& cli) noexcept {
+scene scene_9(cli const& cli) noexcept {
     tform4 rot_1{rotation<Axis::Y>(-pi_v<float> / 4)};
     tform4 rot_2{rotation<Axis::Y>(pi_v<float> / 4)};
     tform4 rot_3{rotation<Axis::X>(pi_v<float> / 2)};
 
     plane floor{{},
                 material{.pattern = stripe_pattern{solid_pattern{{1, 1, 1}},
-                                                   solid_pattern{{.8, .8, .8}}, scale(2, 2, 2)}}};
+                                                   solid_pattern{{.8, .8, .8}}, scale(2, 2, 2)},
+                         .reflective = 1}};
     plane left_wall{
         tform4::translate({0, 0, 5}) * rot_1 * rot_3,
         material{.pattern = gradient_pattern{solid_pattern{{.7, 0, 0}}, solid_pattern{{1, 1, .3}},
-                                             rotation<Axis::Y>(pi_v<float> / 2)}}};
-    plane right_wall{tform4::translate({0, 0, 5}) * rot_2 * rot_3,
-                     material{.pattern = checker2d_pattern{solid_pattern{{1, 0, 0}},
-                                                           solid_pattern{{.5, .5, 0}}}}};
+                                             rotation<Axis::Y>(pi_v<float> / 2)},
+                 .reflective = .5}};
+    plane right_wall{
+        tform4::translate({0, 0, 5}) * rot_2 * rot_3,
+        material{.pattern = checker2d_pattern{solid_pattern{{1, 0, 0}}, solid_pattern{{.5, .5, 0}}},
+                 .reflective = .5}};
 
     sphere left{tform4::translate({-2, 1, 0}),
                 material{.pattern = ring_pattern{solid_pattern{{.7, 0, 0}},
                                                  solid_pattern{{1, 1, .3}}, scale(.33, .33, .33)},
                          .diffuse = .7f,
-                         .specular = .3f}};
+                         .specular = .3f,
+                         .reflective = .1}};
     sphere center{tform4::translate({0, .5, 0}) * scale(.5, .5, .5),
                   material{.pattern = radial_gradient_pattern{solid_pattern{{.7, 0, 0}},
                                                               solid_pattern{{1, 1, .3}},
                                                               rot_3 * scale(.75, .75, .75)},
                            .diffuse = .7f,
-                           .specular = .3f}};
+                           .specular = .3f,
+                           .reflective = .1}};
 
     sphere right{
         tform4::translate({2, 1, 0}),
         material{.pattern = gradient_pattern{solid_pattern{{.7, 0, 0}}, solid_pattern{{1, 1, .3}}},
                  .diffuse = .7f,
-                 .specular = .3f}};
+                 .specular = .3f,
+                 .reflective = .1}};
 
     std::vector<shape> shapes;
-    shapes.reserve(8);
+    shapes.reserve(6);
     for (auto& sphere : {left, center, right}) {
         shapes.emplace_back(sphere);
     }

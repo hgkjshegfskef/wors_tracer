@@ -13,6 +13,7 @@ struct cli {
     unsigned scene{1};
     std::string ppm_fname{"image.ppm"};
     bool vsync{false};
+    unsigned reflection_depth{5};
 };
 
 } // namespace wt

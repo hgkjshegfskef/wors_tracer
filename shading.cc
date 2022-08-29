@@ -1,5 +1,6 @@
 #include "shading.hh"
 
+#include "mat3.hh"
 #include "ray.hh"
 #include "shape.hh"
 #include "tform4.hh"
@@ -13,6 +14,7 @@ shading::shading(intersection const& isec, ray const& r, shape const& s) noexcep
         inside = true;
         normal = -normal;
     }
+    reflect = tform4{reflection(normal)} * r.direction;
     // TODO: per-scene acne epsilon
     over_pnt = isec_pnt + normal * 1e-3f; // remove acne
 }

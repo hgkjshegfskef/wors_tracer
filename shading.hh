@@ -17,6 +17,7 @@ struct shading {
     pnt3 over_pnt;
     vec3 eye;
     vec3 normal;
+    vec3 reflect;
     bool inside;
 
     shading() noexcept = default;

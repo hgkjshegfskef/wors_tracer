@@ -32,12 +32,15 @@ intersect(world const& world, ray const& world_ray,
           std::vector<intersection>& world_isecs) noexcept;
 
 color shade_hit(world const& world, shading const& shading_info,
-                std::vector<intersection>& world_isecs) noexcept;
+                std::vector<intersection>& world_isecs, unsigned remaining) noexcept;
 
-color color_at(world const& world, ray const& world_ray,
-               std::vector<intersection>& world_isecs) noexcept;
+color color_at(world const& world, ray const& world_ray, std::vector<intersection>& world_isecs,
+               unsigned remaining) noexcept;
 
 bool is_shadowed(world const& world, pnt3 const& world_point,
                  std::vector<intersection>& world_isecs) noexcept;
+
+color reflected_color(world const& world, shading const& shading_info,
+                      std::vector<intersection>& world_isecs, unsigned remaining = 5) noexcept;
 
 } // namespace wt
