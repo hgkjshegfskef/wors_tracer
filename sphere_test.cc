@@ -76,3 +76,10 @@ TEST(RayTest, SphereOneHit) {
     EXPECT_EQ(pi1, pnt3(0, 2, 0));
     EXPECT_EQ(pi2, pnt3(0, 2, 0));
 }
+
+TEST(SphereTest, Glass) {
+    shape s{sphere{{}, material::glass()}};
+
+    EXPECT_EQ(mater(s).transparency, 1.f);
+    EXPECT_EQ(mater(s).refractive, 1.5f);
+}

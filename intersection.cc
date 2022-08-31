@@ -4,6 +4,8 @@
 
 #include <fmt/format.h>
 
+#include <tuple>
+
 namespace wt {
 
 intersection::intersection() noexcept = default;
@@ -13,6 +15,13 @@ intersection::intersection(unsigned shape_id, float t) noexcept
 
 bool operator<(intersection const l, intersection const r) noexcept {
     if (l.t < r.t) {
+        return true;
+    }
+    return false;
+}
+
+bool operator==(intersection const l, intersection const r) noexcept {
+    if (std::tie(l.shape_id, l.t) == std::tie(r.shape_id, r.t)) {
         return true;
     }
     return false;

@@ -173,6 +173,7 @@ add_library(
   look_at.cc
   render_ppm.cc
   render_sdl.cc
+  material.cc
   sphere.cc
   sphere_operations.cc
   plane.cc

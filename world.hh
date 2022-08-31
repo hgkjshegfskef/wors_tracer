@@ -43,4 +43,9 @@ bool is_shadowed(world const& world, pnt3 const& world_point,
 color reflected_color(world const& world, shading const& shading_info,
                       std::vector<intersection>& world_isecs, unsigned remaining = 5) noexcept;
 
+color refracted_color(world const& world, shading const& shading_info,
+                      std::vector<intersection>& world_isecs, unsigned remaining) noexcept;
+
+float schlick(shading const& shading_info) noexcept;
+
 } // namespace wt

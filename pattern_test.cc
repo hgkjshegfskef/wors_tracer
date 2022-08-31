@@ -9,6 +9,7 @@
 #include "solid_pattern.hh"
 #include "sphere.hh"
 #include "stripe_pattern.hh"
+#include "test_pattern.hh"
 
 #include <gtest/gtest.h>
 
@@ -48,30 +49,29 @@ TEST_F(PatternTest, ZAxis) {
 
 TEST_F(PatternTest, WithShapeTform) {
     shape s{sphere{scale(2, 2, 2)}};
-    pattern pattern{stripe_pattern{solid_pattern{white}, solid_pattern{black}}};
+    pattern pattern{test_pattern{}};
 
-    color c = pattern_at(pattern, s, {1.5, 0, 0});
+    color c = pattern_at(pattern, s, {2, 3, 4});
 
-    EXPECT_EQ(c, white);
+    EXPECT_EQ(c, (color{1, 1.5, 2}));
 }
 
 TEST_F(PatternTest, WithPatternTform) {
     shape s{sphere{}};
-    pattern pattern{stripe_pattern{solid_pattern{white}, solid_pattern{black}, scale(2, 2, 2)}};
+    pattern pattern{test_pattern{scale(2, 2, 2)}};
 
-    color c = pattern_at(pattern, s, {1.5, 0, 0});
+    color c = pattern_at(pattern, s, {2, 3, 4});
 
-    EXPECT_EQ(c, white);
+    EXPECT_EQ(c, (color{1, 1.5, 2}));
 }
 
 TEST_F(PatternTest, WithShapeAndPatternTform) {
     shape s{sphere{scale(2, 2, 2)}};
-    pattern pattern{
-        stripe_pattern{solid_pattern{white}, solid_pattern{black}, tform4::translate({.5, 0, 0})}};
+    pattern pattern{test_pattern{tform4::translate({.5, 1, 1.5})}};
 
-    color c = pattern_at(pattern, s, {2.5, 0, 0});
+    color c = pattern_at(pattern, s, {2.5, 3, 3.5});
 
-    EXPECT_EQ(c, white);
+    EXPECT_EQ(c, (color{.75, .5, .25}));
 }
 
 TEST_F(PatternTest, Gradient) {

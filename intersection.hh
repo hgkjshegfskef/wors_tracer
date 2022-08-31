@@ -17,6 +17,7 @@ struct intersection {
 };
 
 bool operator<(intersection const l, intersection const r) noexcept;
+bool operator==(intersection const l, intersection const r) noexcept;
 
 } // namespace wt
 

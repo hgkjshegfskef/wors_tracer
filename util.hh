@@ -1,3 +1,5 @@
+#include <cmath>
+#include <functional>
 #include <string_view>
 #include <utility>
 
@@ -26,5 +28,13 @@ float deg_to_rad(float deg) noexcept;
 float rad_to_deg(float rad) noexcept;
 
 float clamp(float x, float min, float max) noexcept;
+
+template <class T> constexpr auto operator^(T base, decltype(std::placeholders::_2)) {
+    return base * base;
+}
+
+template <class T> constexpr auto operator^(T base, decltype(std::placeholders::_5)) {
+    return std::pow(base, 5);
+}
 
 } // namespace wt

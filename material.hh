@@ -15,6 +15,10 @@ struct material {
     float specular{.9f};
     float shininess{200.f};
     float reflective{0.f};
+    float transparency{0.f};
+    float refractive{1.f};
+
+    static material glass() noexcept;
 };
 
 } // namespace wt
