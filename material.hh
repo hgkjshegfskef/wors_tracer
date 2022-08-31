@@ -14,9 +14,9 @@ struct material {
     float diffuse{.9f};
     float specular{.9f};
     float shininess{200.f};
-    float reflective{0.f};
+    float reflectivity{0.f};
     float transparency{0.f};
-    float refractive{1.f};
+    float refraction_index{1.f};
 
     static material glass() noexcept;
 };

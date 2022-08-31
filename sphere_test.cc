@@ -81,5 +81,5 @@ TEST(SphereTest, Glass) {
     shape s{sphere{{}, material::glass()}};
 
     EXPECT_EQ(mater(s).transparency, 1.f);
-    EXPECT_EQ(mater(s).refractive, 1.5f);
+    EXPECT_EQ(mater(s).refraction_index, 1.5f);
 }

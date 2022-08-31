@@ -60,14 +60,15 @@ intersect(world const& world, ray const& world_ray,
 color shade_hit(world const& world, shading const& shading_info,
                 std::vector<intersection>& world_isecs, unsigned remaining) noexcept {
     material const& mat = mater(world.shapes[shading_info.isec.shape_id]);
-    color surface = lighting(mat, world.shapes[shading_info.isec.shape_id], world.light,
-                             shading_info.isec_pnt, shading_info.eye, shading_info.normal,
-                             is_shadowed(world, shading_info.over_pnt, world_isecs));
-    color reflected = reflected_color(world, shading_info, world_isecs, remaining);
-    color refracted = refracted_color(world, shading_info, world_isecs, remaining);
+    bool const in_shadow = is_shadowed(world, shading_info.over_pnt, world_isecs);
+    color const surface =
+        lighting(mat, world.shapes[shading_info.isec.shape_id], world.light, shading_info.isec_pnt,
+                 shading_info.eye, shading_info.normal, in_shadow);
+    color const reflected = reflected_color(world, shading_info, world_isecs, remaining);
+    color const refracted = refracted_color(world, shading_info, world_isecs, remaining);
 
-    if (mat.reflective > 0 && mat.transparency > 0) {
-        float reflectance = schlick(shading_info);
+    if (mat.reflectivity > 0 && mat.transparency > 0) {
+        float const reflectance = schlick(shading_info);
         return surface + reflected * reflectance + refracted * (1 - reflectance);
     }
     return surface + reflected + refracted;
@@ -96,7 +97,7 @@ bool is_shadowed(world const& world, pnt3 const& world_point,
 
 color reflected_color(world const& world, shading const& shading_info,
                       std::vector<intersection>& world_isecs, unsigned remaining) noexcept {
-    float const& reflective = mater(world.shapes[shading_info.isec.shape_id]).reflective;
+    float const& reflective = mater(world.shapes[shading_info.isec.shape_id]).reflectivity;
     if (reflective == 0 || remaining == 0) {
         return {0, 0, 0};
     }

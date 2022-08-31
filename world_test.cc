@@ -165,7 +165,7 @@ TEST_F(WorldTest, ReflectedColorForNonreflectiveMaterial) {
 
 TEST_F(WorldTest, ReflectedColorForReflectiveMaterial) {
     world w = world::make_default();
-    w.shapes.emplace_back(plane{tform4::translate({0, -1, 0}), material{.reflective = .5}});
+    w.shapes.emplace_back(plane{tform4::translate({0, -1, 0}), material{.reflectivity = .5}});
     ray r{{0, 0, -3}, {0, -sqrt2_v<float> / 2.f, sqrt2_v<float> / 2.f}};
     std::vector<intersection> world_isecs{{2, sqrt2_v<float>}};
 
@@ -179,7 +179,7 @@ TEST_F(WorldTest, ReflectedColorForReflectiveMaterial) {
 
 TEST_F(WorldTest, ShadeHitWithReflectiveMaterial) {
     world w = world::make_default();
-    w.shapes.emplace_back(plane{tform4::translate({0, -1, 0}), material{.reflective = .5}});
+    w.shapes.emplace_back(plane{tform4::translate({0, -1, 0}), material{.reflectivity = .5}});
     ray r{{0, 0, -3}, {0, -sqrt2_v<float> / 2.f, sqrt2_v<float> / 2.f}};
     std::vector<intersection> world_isecs{{2, sqrt2_v<float>}};
 
@@ -192,8 +192,8 @@ TEST_F(WorldTest, ShadeHitWithReflectiveMaterial) {
 }
 
 TEST(WorldDeathTest, MutuallyReflectiveSurfaces) {
-    world w{{plane{tform4::translate({0, -1, 0}), material{.reflective = 1}},
-             plane{tform4::translate({0, 1, 0}), material{.reflective = 1}}},
+    world w{{plane{tform4::translate({0, -1, 0}), material{.reflectivity = 1}},
+             plane{tform4::translate({0, 1, 0}), material{.reflectivity = 1}}},
             pnt_light{pnt3{0, 0, 0}, color{1, 1, 1}}};
     ray r{pnt3{0, 0, 0}, vec3{0, 1, 0}};
     std::vector<intersection> world_isecs;
@@ -259,7 +259,7 @@ TEST_F(WorldTest, RefractedColorOfRefractedRay) {
 
 TEST_F(WorldTest, ShadeHitWithTransparentMaterial) {
     world w = world::make_default();
-    plane floor{tform4::translate({0, -1, 0}), material{.transparency = .5, .refractive = 1.5}};
+    plane floor{tform4::translate({0, -1, 0}), material{.transparency = .5, .refraction_index = 1.5}};
     w.shapes.emplace_back(floor);
     sphere ball{tform4::translate({0, -3.5, -.5}), material{.col = {1, 0, 0}, .ambient = .5}};
     w.shapes.emplace_back(ball);
@@ -310,7 +310,7 @@ TEST_F(WorldTest, SchlickSmallAngle) {
 TEST_F(WorldTest, ShadeHitWithTransparentReflectiveMaterial) {
     world w = world::make_default();
     plane floor{tform4::translate({0, -1, 0}),
-                material{.reflective = .5, .transparency = .5, .refractive = 1.5}};
+                material{.reflectivity = .5, .transparency = .5, .refraction_index = 1.5}};
     w.shapes.emplace_back(floor);
     sphere ball{tform4::translate({0, -3.5, -.5}), material{.col = {1, 0, 0}, .ambient = .5}};
     w.shapes.emplace_back(ball);

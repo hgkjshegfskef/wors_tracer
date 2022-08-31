@@ -24,8 +24,8 @@ shading::shading(std::vector<shape> const& shapes, ray const& r,
     }
     reflect = tform4{reflection(normal)} * r.direction;
     // TODO: per-scene acne epsilon
-    over_pnt = isec_pnt + normal * 1e-3f;
-    under_pnt = isec_pnt - normal * 1e-3f;
+    over_pnt = isec_pnt + normal * 1e-5f;
+    under_pnt = isec_pnt - normal * 1e-5f;
 
     // TODO: dynamic allocations here
     std::list<unsigned> shape_ids;
@@ -34,7 +34,7 @@ shading::shading(std::vector<shape> const& shapes, ray const& r,
             if (shape_ids.empty()) {
                 n1 = 1.f;
             } else {
-                n1 = mater(shapes[shape_ids.back()]).refractive;
+                n1 = mater(shapes[shape_ids.back()]).refraction_index;
             }
         }
         if (auto it = std::find(shape_ids.begin(), shape_ids.end(), i.shape_id);
@@ -47,7 +47,7 @@ shading::shading(std::vector<shape> const& shapes, ray const& r,
             if (shape_ids.empty()) {
                 n2 = 1.f;
             } else {
-                n2 = mater(shapes[shape_ids.back()]).refractive;
+                n2 = mater(shapes[shape_ids.back()]).refraction_index;
             }
             break;
         }
