@@ -76,9 +76,10 @@ struct RefractionTestExamples {
 class RefractionTest : public testing::TestWithParam<RefractionTestExamples> {
   protected:
     void SetUp() override {
-        shapes = {sphere{scale(2, 2, 2), {.transparency = 1, .refractive = 1.5}},
-                  sphere{tform4::translate({0, 0, -.25}), {.transparency = 1, .refractive = 2}},
-                  sphere{tform4::translate({0, 0, .25}), {.transparency = 1, .refractive = 2.5}}};
+        shapes = {
+            sphere{scale(2, 2, 2), {.transparency = 1, .refraction_index = 1.5}},
+            sphere{tform4::translate({0, 0, -.25}), {.transparency = 1, .refraction_index = 2}},
+            sphere{tform4::translate({0, 0, .25}), {.transparency = 1, .refraction_index = 2.5}}};
         r = {pnt3{0, 0, -4}, vec3{0, 0, 1}};
         isecs = {{0, 2}, {1, 2.75}, {2, 3.25}, {1, 4.75}, {2, 5.25}, {0, 6}};
     }
@@ -111,6 +112,6 @@ TEST(ShadingTest, UnderPoint) {
 
     shading sh{shapes, r, world_isecs, isec};
 
-    EXPECT_GT(sh.under_pnt.z, 1e-3f / 2.f);
+    EXPECT_GT(sh.under_pnt.z, 1e-5f / 2.f);
     EXPECT_LT(sh.isec_pnt.z, sh.under_pnt.z);
 }
