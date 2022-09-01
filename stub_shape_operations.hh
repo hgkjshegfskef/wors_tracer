@@ -21,6 +21,9 @@ tform4 const& inv_tform(stub_shape const& s) noexcept;
 struct material& mater(stub_shape& s) noexcept;
 struct material const& mater(stub_shape const& s) noexcept;
 
+bool& cast_shadow(stub_shape& s) noexcept;
+bool const& cast_shadow(stub_shape const& s) noexcept;
+
 void intersect(stub_shape const& /*unused*/, ray const& /*unused*/, unsigned /*unused*/,
                std::vector<intersection>& /*unused*/) noexcept;
 

@@ -92,7 +92,7 @@ bool is_shadowed(world const& world, pnt3 const& world_point,
     float const dist = magnitude(v);
     world_isecs.clear();
     auto hit = intersect(world, {world_point, normalize(v)}, world_isecs);
-    return hit != world_isecs.cend() && hit->t < dist;
+    return hit != world_isecs.cend() && cast_shadow(world.shapes[hit->shape_id]) && hit->t < dist;
 }
 
 color reflected_color(world const& world, shading const& shading_info,

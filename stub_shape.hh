@@ -10,10 +10,12 @@ struct stub_shape {
     tform4 tform;
     tform4 inv_tform;
     struct material material;
+    bool cast_shadow;
 
     stub_shape() noexcept;
     explicit stub_shape(tform4 tform) noexcept;
     stub_shape(tform4 tform, struct material material) noexcept;
+    stub_shape(tform4 tform, struct material material, bool cast_shadow) noexcept;
 };
 
 } // namespace wt

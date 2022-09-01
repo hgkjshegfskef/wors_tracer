@@ -10,10 +10,12 @@ struct sphere {
     tform4 tform;
     tform4 inv_tform;
     struct material material;
+    bool cast_shadow; // to cast the shadow or not
 
     sphere() noexcept;
-    explicit sphere(tform4 const& tform) noexcept;
-    sphere(tform4 const& tform, struct material const& material) noexcept;
+    explicit sphere(tform4 tform) noexcept;
+    sphere(tform4 tform, struct material material) noexcept;
+    sphere(tform4 tform, struct material material, bool cast_shadow) noexcept;
 };
 
 } // namespace wt

@@ -21,6 +21,9 @@ class shape {
     friend material& mater(shape& s) noexcept { return s.pimpl_->do_mater(); }
     friend material const& mater(shape const& s) noexcept { return s.pimpl_->do_mater(); }
 
+    friend bool& cast_shadow(shape& s) noexcept { return s.pimpl_->do_cast_shadow(); }
+    friend bool const& cast_shadow(shape const& s) noexcept { return s.pimpl_->do_cast_shadow(); }
+
     friend void intersect(shape const& s, ray const& object_ray, unsigned shape_id,
                           std::vector<intersection>& world_isecs) noexcept {
         s.pimpl_->do_intersect(object_ray, std::move(shape_id), world_isecs);
@@ -43,6 +46,9 @@ class shape {
 
         virtual material& do_mater() noexcept = 0;
         virtual material const& do_mater() const noexcept = 0;
+
+        virtual bool& do_cast_shadow() noexcept = 0;
+        virtual bool const& do_cast_shadow() const noexcept = 0;
 
         virtual void do_intersect(ray const& object_ray, unsigned shape_id,
                                   std::vector<intersection>& world_isecs) const noexcept = 0;
@@ -73,6 +79,9 @@ class shape {
 
         material& do_mater() noexcept override { return mater(object_); }
         material const& do_mater() const noexcept override { return mater(object_); }
+
+        bool& do_cast_shadow() noexcept override { return cast_shadow(object_); }
+        bool const& do_cast_shadow() const noexcept override { return cast_shadow(object_); }
 
         void do_intersect(ray const& object_ray, unsigned shape_id,
                           std::vector<intersection>& world_isecs) const noexcept override {

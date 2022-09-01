@@ -20,6 +20,9 @@ tform4 const& inv_tform(stub_shape const& s) noexcept { return s.inv_tform; }
 struct material& mater(stub_shape& s) noexcept { return s.material; }
 struct material const& mater(stub_shape const& s) noexcept { return s.material; }
 
+bool& cast_shadow(stub_shape& s) noexcept { return s.cast_shadow; }
+bool const& cast_shadow(stub_shape const& s) noexcept { return s.cast_shadow; }
+
 void intersect(stub_shape const& /*unused*/, ray const& /*unused*/, unsigned /*unused*/,
                std::vector<intersection>& /*unused*/) noexcept {
     SPDLOG_ERROR("{} is a stub and shouldn't be called", __PRETTY_FUNCTION__);

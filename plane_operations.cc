@@ -18,6 +18,9 @@ tform4 const& inv_tform(plane const& p) noexcept { return p.inv_tform; }
 struct material& mater(plane& p) noexcept { return p.material; }
 struct material const& mater(plane const& p) noexcept { return p.material; }
 
+bool& cast_shadow(plane& p) noexcept { return p.cast_shadow; }
+bool const& cast_shadow(plane const& p) noexcept { return p.cast_shadow; }
+
 void intersect(plane const& /*unused*/, ray const& object_ray, unsigned shape_id,
                std::vector<intersection>& world_isecs) noexcept {
     if (std::abs(object_ray.direction.y) < 1e-6f) {

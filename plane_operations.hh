@@ -21,6 +21,9 @@ tform4 const& inv_tform(plane const& p) noexcept;
 struct material& mater(plane& p) noexcept;
 struct material const& mater(plane const& p) noexcept;
 
+bool& cast_shadow(plane& p) noexcept;
+bool const& cast_shadow(plane const& p) noexcept;
+
 void intersect(plane const& /*unused*/, ray const& object_ray, unsigned shape_id,
                std::vector<intersection>& world_isecs) noexcept;
 

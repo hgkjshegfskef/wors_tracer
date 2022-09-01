@@ -10,10 +10,12 @@ struct plane {
     tform4 tform;
     tform4 inv_tform;
     struct material material;
+    bool cast_shadow;
 
     plane() noexcept;
-    explicit plane(tform4 const& tform) noexcept;
-    plane(tform4 const& tform, struct material const& material) noexcept;
+    explicit plane(tform4 tform) noexcept;
+    plane(tform4 tform, struct material material) noexcept;
+    plane(tform4 tform, struct material material, bool cast_shadow) noexcept;
 };
 
 } // namespace wt

@@ -18,6 +18,9 @@ tform4 const& inv_tform(sphere const& s) noexcept { return s.inv_tform; }
 struct material& mater(sphere& s) noexcept { return s.material; }
 struct material const& mater(sphere const& s) noexcept { return s.material; }
 
+bool& cast_shadow(sphere& s) noexcept { return s.cast_shadow; }
+bool const& cast_shadow(sphere const& s) noexcept { return s.cast_shadow; }
+
 void intersect(sphere const& /*unused*/, ray const& object_ray, unsigned shape_id,
                std::vector<intersection>& world_isecs) noexcept {
     //  Sphere equation: (x-c)⋅(x-c) = r²

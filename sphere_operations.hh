@@ -21,6 +21,9 @@ tform4 const& inv_tform(sphere const& s) noexcept;
 struct material& mater(sphere& s) noexcept;
 struct material const& mater(sphere const& s) noexcept;
 
+bool& cast_shadow(sphere& s) noexcept;
+bool const& cast_shadow(sphere const& s) noexcept;
+
 void intersect(sphere const& /*unused*/, ray const& object_ray, unsigned shape_id,
                std::vector<intersection>& world_isecs) noexcept;
 
