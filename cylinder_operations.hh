@@ -24,10 +24,9 @@ struct material const& mater(cylinder const& c) noexcept;
 bool& cast_shadow(cylinder& c) noexcept;
 bool const& cast_shadow(cylinder const& c) noexcept;
 
-void intersect(cylinder const& /*unused*/, ray const& object_ray, unsigned shape_id,
+void intersect(cylinder const& cylinder, ray const& object_ray, unsigned shape_id,
                std::vector<intersection>& world_isecs) noexcept;
 
-vec3 normal_at(cylinder const& /*unused*/, pnt3 const& world_point,
-               tform4 const& inv_tform) noexcept;
+vec3 normal_at(cylinder const& cylinder, pnt3 const& world_point, tform4 const& inv_tform) noexcept;
 
 } // namespace wt
