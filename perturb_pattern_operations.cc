@@ -16,7 +16,8 @@ tform4 const& inv_tform(perturb_pattern const& pattern) noexcept { return patter
 
 color pattern_at(perturb_pattern const& pattern, pnt3 const& world_point) noexcept {
     shape stub{stub_shape{}};
-    float jitter = perlin_noise(world_point.x, world_point.y, world_point.z);
+    float const jitter = octave_perlin_noise(world_point.x, world_point.y, world_point.z,
+                                             pattern.octaves, pattern.persistence);
     return pattern_at(pattern.pattern, stub,
                       {world_point.x + pattern.scale * jitter,
                        world_point.y + pattern.scale * jitter,

@@ -50,8 +50,8 @@ int main(int argc, char** argv) {
     CLI11_PARSE(app, argc, argv);
 
     std::vector<std::function<scene(struct cli const&)>> scenes{
-        SCENE(0), SCENE(1), SCENE(2), SCENE(3), SCENE(4), SCENE(5),
-        SCENE(6), SCENE(7), SCENE(8), SCENE(9), SCENE(10)};
+        SCENE(0), SCENE(1), SCENE(2), SCENE(3), SCENE(4),  SCENE(5),
+        SCENE(6), SCENE(7), SCENE(8), SCENE(9), SCENE(10), SCENE(11)};
     scene scene;
     try {
         scene = scenes.at(cli.scene)(cli);

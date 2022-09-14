@@ -5,6 +5,8 @@
 #include "pnt3.hh"
 #include "ray.hh"
 
+#include <spdlog/spdlog.h>
+
 #include <algorithm> // min, max, abs
 
 namespace {
@@ -48,7 +50,7 @@ void intersect(cube const& /*unused*/, ray const& object_ray, unsigned shape_id,
     ts const z = check_axis(object_ray.origin.z, object_ray.direction.z);
     float const tmin = std::max({x.tmin, y.tmin, z.tmin});
     float const tmax = std::min({x.tmax, y.tmax, z.tmax});
-    if (tmin <= tmax) {
+    if (tmin < tmax) {
         world_isecs.emplace_back(shape_id, tmin);
         world_isecs.emplace_back(shape_id, tmax);
     }
@@ -61,12 +63,16 @@ vec3 normal_at(cube const& /*unused*/, pnt3 const& world_point, tform4 const& in
     float const abs_z = std::abs(object_point.z);
     float const abs_max = std::max({abs_x, abs_y, abs_z});
     if (abs_max == abs_x) {
-        return vec3{object_point.x, 0, 0} * inv_tform;
+        return normalize(vec3{object_point.x, 0, 0} * inv_tform);
     }
     if (abs_max == abs_y) {
-        return vec3{0, object_point.y, 0} * inv_tform;
+        return normalize(vec3{0, object_point.y, 0} * inv_tform);
     }
-    return vec3{0, 0, object_point.z} * inv_tform;
+    if (abs_max == abs_z) {
+        return normalize(vec3{0, 0, object_point.z} * inv_tform);
+    }
+    SPDLOG_TRACE("impossibru");
+    std::exit(1);
 }
 
 } // namespace wt
