@@ -182,6 +182,8 @@ add_library(
   stub_shape_operations.cc
   cube.cc
   cube_operations.cc
+  cylinder.cc
+  cylinder_operations.cc
   pattern_operations.cc
   stripe_pattern.cc
   stripe_pattern_operations.cc
@@ -292,6 +294,7 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
               lighting_test.cc
               pattern_test.cc
               cube_test.cc
+              cylinder_test.cc
               test_main.cc
               log.cc)
 

@@ -31,7 +31,7 @@ struct CubeHitIntersectionTest : CubeIntersectionTest,
                                  testing::TestWithParam<CubeHitIntersectionTestParams> {};
 
 TEST_P(CubeHitIntersectionTest, Hit) {
-    ray r{GetParam().origin, GetParam().direction};
+    ray r{GetParam().origin, normalize(GetParam().direction)};
 
     intersect(s, r, 0, world_isecs);
     std::sort(world_isecs.begin(), world_isecs.end());
@@ -61,7 +61,7 @@ struct CubeMissIntersectionTest : CubeIntersectionTest,
                                   testing::TestWithParam<CubeMissIntersectionTestParams> {};
 
 TEST_P(CubeMissIntersectionTest, Miss) {
-    ray r{GetParam().origin, GetParam().direction};
+    ray r{GetParam().origin, normalize(GetParam().direction)};
 
     intersect(s, r, 0, world_isecs);
     std::sort(world_isecs.begin(), world_isecs.end());
