@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cone_operations.hh"
 #include "cube_operations.hh"
 #include "cylinder_operations.hh"
 #include "plane_operations.hh"

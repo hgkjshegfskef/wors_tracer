@@ -184,6 +184,8 @@ add_library(
   cube_operations.cc
   cylinder.cc
   cylinder_operations.cc
+  cone.cc
+  cone_operations.cc
   pattern_operations.cc
   stripe_pattern.cc
   stripe_pattern_operations.cc
@@ -295,6 +297,7 @@ if(${PROJECT_NAME}_BUILD_TESTING OR PROJECT_IS_TOP_LEVEL)
               pattern_test.cc
               cube_test.cc
               cylinder_test.cc
+              cone_test.cc
               test_main.cc
               log.cc)
 

@@ -44,10 +44,11 @@ void intersect(sphere const& /*unused*/, ray const& object_ray, unsigned shape_i
     float const quad_b = 2.f * uoc;
     float const quad_c = dot(oc, oc) - 1.f;
 
-    float const quad_D = quad_b * quad_b - 4.f * quad_a * quad_c;
-    if (quad_D < 0) {
+    float quad_D = quad_b * quad_b - 4.f * quad_a * quad_c;
+    if (quad_D < -1e-6f) {
         return;
     }
+    quad_D = std::abs(quad_D);
 
     float const sqrt_quad_D = std::sqrt(quad_D);
     float const two_quad_a = 2.f * quad_a;

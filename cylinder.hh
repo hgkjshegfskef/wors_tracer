@@ -7,7 +7,7 @@
 
 namespace wt {
 
-// Cube is axis-aligned bounding box positioned at the world origin (0,0,0).
+// Cylinder has radius 1, extended infinitely in Y, is hollow. Can be truncated, can be solid.
 struct cylinder {
     tform4 tform;
     tform4 inv_tform;
