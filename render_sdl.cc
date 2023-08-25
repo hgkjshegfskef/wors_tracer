@@ -6,8 +6,8 @@
 #include "util.hh"
 
 #include <SDL2/SDL.h>
-#include <oneapi/tbb/blocked_range2d.h>
-#include <oneapi/tbb/parallel_for.h>
+#include <tbb/blocked_range2d.h>
+#include <tbb/parallel_for.h>
 
 #include <fmt/chrono.h>
 #include <spdlog/spdlog.h>
@@ -17,8 +17,6 @@
 #include <cstdint>
 #include <cstdlib> //atexit
 #include <vector>
-
-using namespace oneapi;
 
 namespace wt {
 

@@ -139,6 +139,9 @@ find_package_message(spdlog "Using spdlog ${spdlog_VERSION}"
                      "[${spdlog_VERSION}]")
 find_package(TBB CONFIG REQUIRED)
 find_package_message(TBB "Using TBB ${TBB_VERSION}" "[${TBB_VERSION}]")
+# TODO: TBB headers are sometimes shipped under just tbb folder, without oneapi prefix.
+# So, we use tbb/ style of includes, and we should use ...include/oneapi path to includes
+# where necessary. On Fedora there is no openapi prefix, but AUR package has one I think.
 find_package(SDL2 CONFIG REQUIRED)
 find_package_message(SDL2 "Using SDL2 ${SDL2_VERSION}" "[${SDL2_VERSION}]")
 find_package(CLI11 CONFIG REQUIRED)

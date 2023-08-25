@@ -6,15 +6,13 @@
 #include "scene.hh"
 #include "util.hh"
 
-#include <oneapi/tbb/blocked_range2d.h>
-#include <oneapi/tbb/parallel_for.h>
+#include <tbb/blocked_range2d.h>
+#include <tbb/parallel_for.h>
 
 #include <fmt/chrono.h>
 #include <spdlog/spdlog.h>
 
 #include <chrono>
-
-using namespace oneapi;
 
 namespace wt {
 
